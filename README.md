@@ -26,3 +26,8 @@ Fan-made project, not affiliated with or endorsed by Rockstar Games or Take-Two 
 
 ## License
 MIT – see `LICENSE`.
+
+## Deployment
+Every push to `main` uploads `index.html` to https://atomilab.fi/stringboard/ via FTP (`.github/workflows/deploy-ftp.yml`).
+Required repository secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`.
+Optional repository variables: `FTP_SERVER_DIR` (default `public_html/stringboard/`), `FTP_PROTOCOL` (default `ftps`; set to `ftp` if the host does not support FTPS).
