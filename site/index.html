@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stringboard</title>
+<meta name="description" content="A spoiler-safe detective board that helps you keep track of characters and plot in games, movies, TV series and books.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/common.css">
+<style>
+main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(24px,5vw,64px) 16px 40px;gap:clamp(18px,3vw,30px)}
+.logo{width:min(640px,92vw);height:auto;filter:drop-shadow(0 14px 22px rgba(0,0,0,.65))}
+.tag{margin:-8px 0 0;color:var(--muted);text-align:center;max-width:560px;font-size:16px}
+form.plate{width:min(560px,100%);padding:34px clamp(18px,4vw,34px) 40px;display:grid;gap:22px}
+.screw.tl{left:10px;top:10px}.screw.tr{right:10px;top:10px}.screw.bl{left:10px;bottom:10px}.screw.br{right:10px;bottom:10px}
+.reveal{display:flex;gap:12px;align-items:flex-start;padding:14px;border:2px dashed #7a5d2a;border-radius:8px;background:rgba(242,194,48,.06);cursor:pointer}
+.reveal input{width:22px;height:22px;margin:2px 0 0;accent-color:#c62a23;flex:none}
+.reveal b{display:block;font-family:"Saira Condensed",sans-serif;font-style:italic;font-size:18px;letter-spacing:.04em;text-transform:uppercase;color:#f2c230}
+.reveal span{font-size:14px;color:var(--muted)}
+.status{font-size:14px;margin:8px 0 0;min-height:21px}
+.status.ok{color:#8fd18a}.status.no{color:#e6b95c}
+.hidden{display:none!important}
+.continue{font-size:15px;color:var(--muted);text-align:center}
+.continue a{color:#f2c230}
+footer{font-size:13px;color:#9c8d76;text-align:center;max-width:620px}
+footer a{color:#cbb994}
+</style></head><body>
+<main>
+<img class="logo" src="assets/logo.png" alt="AtomiLabSlop Stringboard" width="1100" height="378">
+<p class="tag">A spoiler-safe detective board for characters and plot. Tell us where you are, and we only pin up what you've already seen.</p>
+
+<form class="plate" id="f" novalidate>
+<i class="screw tl"></i><i class="screw tr"></i><i class="screw bl"></i><i class="screw br"></i>
+<div class="field">
+<label for="game">Game</label>
+<select id="game"><option value="">Choose a game…</option><option value="gta6">Grand Theft Auto VI</option></select>
+</div>
+
+<div id="step2" class="hidden" style="display:grid;gap:22px">
+<div class="field">
+<label for="chapter">Chapter</label>
+<input id="chapter" type="text" inputmode="numeric" autocomplete="off" placeholder="Enter chapter number, e.g. 1" aria-describedby="chHelp">
+<p class="help" id="chHelp">The board shows everything up to the <b>start</b> of the chapter you enter. If Chapter 3 has just begun, enter 3.</p>
+</div>
+
+<div class="field hidden" id="lastWrap">
+<label for="last">What did you do last? <span style="opacity:.7">(optional)</span></label>
+<textarea id="last" placeholder="e.g. Did my first drug deal with Jason's friend"></textarea>
+<p class="help">Describe your latest mission or a character you just met, in any words. We use it to move the board a bit further into the chapter, without showing anything you haven't seen.</p>
+<p class="status" id="status" aria-live="polite"></p>
+</div>
+
+<label class="reveal" for="all">
+<input type="checkbox" id="all">
+<div><b>Reveal the whole story</b><span>Shows every event we have data for. Contains major spoilers.</span></div>
+</label>
+</div>
+
+<div class="row">
+<button type="button" class="btn secondary" id="reset">Reset fields</button>
+<button type="submit" class="btn primary" id="start" disabled>Start</button>
+</div>
+</form>
+<p class="continue hidden" id="cont"></p>
+<footer>Fan-made project by AtomiLabSlop. Not affiliated with or endorsed by any game publisher. <a href="https://github.com/AtomiLabSlop/stringboard">Open source on GitHub</a>.</footer>
+</main>
+
+<div class="modal" id="spoil" role="dialog" aria-modal="true" aria-labelledby="spT">
+<div class="plate warn">
+<h2 id="spT">Spoiler warning</h2>
+<p>The board will show <b>every story event we have</b> for this game: who dies, who betrays whom, and how it all connects. You can't un-see it.</p>
+<div class="row" style="margin-top:22px">
+<button class="btn secondary" id="spNo" type="button">Take me back</button>
+<button class="btn primary" id="spYes" type="button">Reveal everything</button>
+</div></div></div>
+
+<script src="js/story.js"></script>
+<script>
+{
+const $=s=>document.querySelector(s);
+const game=$('#game'),ch=$('#chapter'),last=$('#last'),all=$('#all'),start=$('#start'),status=$('#status');
+let S=null;
+function chNum(){const v=ch.value.trim();return /^\d{1,3}$/.test(v)&&+v>=1?+v:0}
+function base(){return SB.chapterStart(S,chNum())}
+function recog(){
+  status.textContent='';status.className='status';
+  if(!S||!chNum()||!last.value.trim())return -1;
+  const n=chNum(),b=base(),m=SB.match(S,last.value,b,SB.chapterEnd(S,n));
+  if(m>=0){status.textContent='✓ Recognized. Your latest progress will be on the board.';status.classList.add('ok')}
+  else{status.textContent='Not recognized. The board will start from the beginning of Chapter '+n+'. Try a mission name or a character you just met.';status.classList.add('no')}
+  return m;
+}
+function update(){
+  const g=game.value;
+  $('#step2').classList.toggle('hidden',!g);
+  ch.disabled=all.checked;
+  $('#lastWrap').classList.toggle('hidden',!g||all.checked||!chNum());
+  start.disabled=!(g&&S&&(all.checked||chNum()));
+  if(!all.checked)recog();
+}
+game.addEventListener('change',async()=>{
+  S=null;update();
+  if(!game.value)return;
+  try{S=await SB.load(game.value)}catch(e){alertBox('Could not load story data.')}
+  const st=SB.getState(game.value);
+  const c=$('#cont');
+  if(st.now!=null&&S){c.innerHTML='';const a=document.createElement('a');a.href='board.html?game='+game.value;a.textContent='Continue your saved board';c.append('Played before? ',a,'.');c.classList.remove('hidden')}else c.classList.add('hidden');
+  update();
+});
+[ch,last].forEach(e=>e.addEventListener('input',update));
+all.addEventListener('change',update);
+$('#reset').addEventListener('click',()=>{game.value='';ch.value='';last.value='';all.checked=false;S=null;$('#cont').classList.add('hidden');update();game.focus()});
+function go(now,reveal){
+  const g=game.value,st=SB.getState(g);
+  st.now=now;st.reveal=!!reveal;st.chapter=reveal?SB.maxChapter(S):Math.min(chNum(),SB.maxChapter(S));
+  SB.setState(g,st);
+  location.href='board.html?game='+encodeURIComponent(g);
+}
+$('#f').addEventListener('submit',e=>{
+  e.preventDefault();if(start.disabled)return;
+  if(all.checked){$('#spoil').classList.add('on');$('#spNo').focus();return}
+  const m=recog();go(Math.max(base(),m));
+});
+$('#spNo').addEventListener('click',()=>$('#spoil').classList.remove('on'));
+$('#spYes').addEventListener('click',()=>go(S.steps.length-1,true));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#spoil').classList.remove('on')});
+function alertBox(t){status.textContent=t}
+update();
+}
+</script>
+</body></html>

@@ -16,11 +16,6 @@ jobs:
       - name: Get latest code
         uses: actions/checkout@v6
 
-      - name: Collect site files
-        run: |
-          mkdir -p deploy
-          cp index.html deploy/
-
       - name: Upload via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
@@ -28,5 +23,5 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
-          local-dir: ./deploy/
+          local-dir: ./site/
           server-dir: ${{ vars.FTP_SERVER_DIR || 'httpdocs/stringboard/' }}

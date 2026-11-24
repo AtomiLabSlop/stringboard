@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stringboard – board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;800&family=Inter:wght@400;500;600&family=Special+Elite&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/board.css">
+</head><body>
+<div class="app" id="app">
+<header class="top plate">
+  <a class="mini" href="index.html" title="Back to start"><img src="assets/logo.png" alt="Stringboard home"></a>
+  <div class="tl">
+    <div class="tlrow"><span>Start</span><input id="tl" type="range" min="0" step="1" aria-label="Story timeline"><span>Now</span></div>
+    <div class="cap"><b id="capT"></b> <span id="capD"></span></div>
+  </div>
+  <button class="btn secondary upd" id="updBtn" type="button">Update progress</button>
+  <div class="hw">
+    <button class="pushbtn" id="infoBtn" type="button" aria-label="Info and settings" aria-expanded="false"><span>i</span></button>
+    <button class="switch" id="lampBtn" type="button" role="switch" aria-checked="false" aria-label="Desk lamp"><i class="lever"></i><i class="screw s1"></i><i class="screw s2"></i></button>
+  </div>
+</header>
+
+<section class="frameWrap">
+  <div class="frame" id="frame">
+    <img class="flogo" src="assets/logo.png" alt="">
+    <div class="board" id="board">
+      <div class="stage" id="stage">
+        <img class="map" id="map" src="assets/map.jpg" alt="" draggable="false">
+        <div id="cards"></div>
+        <svg class="strings" id="strings" viewBox="0 0 1100 1000"></svg>
+        <div id="notes"></div>
+        <svg class="ink" id="ink" viewBox="0 0 1100 1000"></svg>
+      </div>
+      <div class="lamp" aria-hidden="true"><i class="shade"></i><i class="glow"></i></div>
+
+      <aside class="panel" id="info" hidden>
+        <div class="ph"><h2>How it works</h2><button class="x" data-close="info" aria-label="Close">×</button></div>
+        <ul class="howto">
+          <li>The timeline slider only goes up to where you are. Slide left to rewind the story.</li>
+          <li>Drag cards and notes anywhere. Click a card for what you know, colours, image and text.</li>
+          <li>Pick up the marker to draw, the eraser to wipe. Drag a sticky note from its pad.</li>
+          <li>Everything is saved in this browser only.</li>
+        </ul>
+        <h3>Cards</h3>
+        <label class="sl">Card size <input type="range" id="sCard" min="0.7" max="1.4" step="0.05"></label>
+        <label class="sl">Image size <input type="range" id="sImg" min="0.6" max="1.5" step="0.05"></label>
+        <div class="grp" role="radiogroup" aria-label="Image frame"><span>Image frame</span>
+          <label><input type="radio" name="shape" value="rect"> Rectangle</label>
+          <label><input type="radio" name="shape" value="circle"> Circle</label>
+          <label class="tog"><input type="checkbox" id="sRound"> Rounded corners</label></div>
+        <div class="grp" role="radiogroup" aria-label="Card style"><span>Card style</span>
+          <label><input type="radio" name="style" value="flat"> Flat</label>
+          <label><input type="radio" name="style" value="authentic"> Authentic</label>
+          <label><input type="radio" name="style" value="photo"> Photo</label></div>
+        <div class="grp" role="radiogroup" aria-label="Font"><span>Font</span>
+          <label><input type="radio" name="font" value="mono"> <span class="f-mono">Typewriter</span></label>
+          <label><input type="radio" name="font" value="sans"> <span class="f-sans">Sans serif</span></label>
+          <label><input type="radio" name="font" value="hand"> <span class="f-hand">Handwritten</span></label></div>
+        <label class="sl">Font size <input type="range" id="sFont" min="0.8" max="1.5" step="0.05"></label>
+        <label class="sl">Random tilt <input type="range" id="sTilt" min="0" max="10" step="0.5"></label>
+        <h3>Board</h3>
+        <div class="grp" role="radiogroup" aria-label="Background"><span>Background</span>
+          <label><input type="radio" name="bg" value="gloss"> Light gloss</label>
+          <label><input type="radio" name="bg" value="cork"> Light cork</label>
+          <label><input type="radio" name="bg" value="darkcork"> Dark cork</label>
+          <label><input type="radio" name="bg" value="leather"> Grey leather</label>
+          <label><input type="radio" name="bg" value="map"> Map</label></div>
+        <div class="grp" role="radiogroup" aria-label="Frame"><span>Frame</span>
+          <label><input type="radio" name="frame" value="black"> Black</label>
+          <label><input type="radio" name="frame" value="white"> White</label>
+          <label><input type="radio" name="frame" value="lightwood"> Light wood</label>
+          <label><input type="radio" name="frame" value="darkwood"> Dark wood</label></div>
+        <div class="grp"><span>String colour</span><div class="sw" id="swStr"></div></div>
+        <label class="sl">String slack <input type="range" id="sTen" min="0" max="1" step="0.05"></label>
+        <div class="grp"><span>Pin colour</span><div class="sw" id="swPin"></div></div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn secondary small" id="resetLayout" type="button">Reset layout</button>
+          <button class="btn secondary small" id="clearInk" type="button">Clear drawings</button>
+        </div>
+        <p class="fine">Fan-made, not affiliated with any publisher. Plot summaries written by AtomiLabSlop. <a href="https://github.com/AtomiLabSlop/stringboard" target="_blank" rel="noopener">GitHub</a></p>
+      </aside>
+
+      <aside class="panel" id="cardPanel" hidden>
+        <div class="ph"><h2 id="cpName"></h2><button class="x" data-close="cardPanel" aria-label="Close">×</button></div>
+        <h3>What you know so far</h3>
+        <ul class="facts" id="cpFacts"></ul>
+        <h3>Card colour</h3><div class="sw" id="cpBg"></div>
+        <div id="cpImgWrap"><h3>Image</h3>
+          <div class="grp"><label><input type="radio" name="img" value="default"> Default</label>
+          <label><input type="radio" name="img" value="file"> From your computer</label>
+          <label><input type="radio" name="img" value="url"> From a link</label></div>
+          <input type="file" id="cpFile" accept="image/*" hidden>
+          <div class="urlrow" id="cpUrlRow" hidden><input type="url" id="cpUrl" placeholder="https://…/image.jpg"><button class="btn secondary small" id="cpUrlGo" type="button">Use</button></div>
+        </div>
+        <h3>Text</h3>
+        <input type="text" id="cpN" aria-label="Name"><input type="text" id="cpR" aria-label="Description" style="margin-top:8px">
+        <div class="row" style="margin-top:14px"><button class="btn secondary small" id="cpReset" type="button">Reset card</button><button class="btn primary small" data-close="cardPanel" type="button">Done</button></div>
+      </aside>
+
+      <div class="notebar" id="noteBar" hidden>
+        <div class="seg" data-k="size"><button data-v="S">S</button><button data-v="M">M</button><button data-v="L">L</button></div>
+        <div class="seg" data-k="font"><button data-v="hand" class="f-hand">Aa</button><button data-v="sans" class="f-sans">Aa</button><button data-v="mono" class="f-mono">Aa</button></div>
+        <div class="seg" data-k="color"><button data-v="yellow" class="dot" style="--c:#fde96b" aria-label="Yellow"></button><button data-v="blue" class="dot" style="--c:#c3e2f4" aria-label="Light blue"></button></div>
+        <button class="del" id="noteDel" aria-label="Delete note">Delete</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="tray plate">
+  <div class="holder">
+    <button class="marker" id="pen" type="button" aria-label="Marker" aria-pressed="false"><i class="cap"></i><i class="body"></i><i class="tip"></i></button>
+    <div class="sw pens" id="swPen"></div>
+    <button class="eraser" id="eraser" type="button" aria-label="Eraser" aria-pressed="false"><i></i></button>
+  </div>
+  <div class="pads">
+    <div class="pad" data-color="yellow" title="Drag a note onto the board"><i></i><i></i><i></i></div>
+    <div class="pad blue" data-color="blue" title="Drag a note onto the board"><i></i><i></i><i></i></div>
+  </div>
+</footer>
+</div>
+
+<div class="modal" id="upd" role="dialog" aria-modal="true" aria-labelledby="updT">
+<div class="plate"><h2 id="updT" style="margin:4px 0 14px;font-style:italic;font-size:28px">Update progress</h2>
+<div class="field"><label for="uCh">Current chapter</label><input id="uCh" type="text" inputmode="numeric" placeholder="Enter chapter number, e.g. 1"></div>
+<div class="field" style="margin-top:16px"><label for="uTxt">What happened since?</label><textarea id="uTxt" placeholder="A mission you finished, a new character you met…"></textarea>
+<p class="help">We match your words against the story up to the chapter you entered, and never show anything you didn't describe.</p></div>
+<p class="status" id="uMsg" aria-live="polite"></p>
+<div class="row" style="margin-top:18px"><button class="btn secondary" id="uCancel" type="button">Cancel</button><button class="btn primary" id="uGo" type="button">Update board</button></div>
+</div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/story.js"></script>
+<script src="js/board.js"></script>
+</body></html>

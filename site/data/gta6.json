@@ -1,0 +1,50 @@
+{
+  "id": "gta6",
+  "title": "Grand Theft Auto VI",
+  "wiki": "https://gta.fandom.com",
+  "steps": [
+    {"ch": 1, "title": "Prologue", "text": "Lucia is in prison, discussing early release. Jason lives in the Leonida Keys.", "kw": ["prologue", "prison", "counselor", "vankila", "prologi"]},
+    {"ch": 1, "title": "Gone Fishing", "text": "A smuggling run goes wrong and Jason rescues Donnie from the Kingfishers. Lucia says she is getting out early.", "kw": ["gone fishing", "donnie", "kingfisher", "smuggl", "salakulj", "pelican", "rescue", "pelast"]},
+    {"ch": 1, "title": "Jobs for Brian", "text": "Jason collects rent and runs jobs with Cal for Brian Heder.", "kw": ["brian", "rent", "vuokra", "lab fees", "acid", "impound", "arnold", "pipework", "unwanted attention", "gear up", "just a scratch"]},
+    {"ch": 1, "title": "Island Dreams", "text": "Jason finds treasure on a dive and agrees to work with Kenton.", "kw": ["island dreams", "treasure", "aarre", "dive", "sukel", "kenton", "bachelor", "polttar"]},
+    {"ch": 1, "title": "Coming Home", "text": "Lucia is released. At the Rusty Anchor they meet Kat and her boyfriend Mattia.", "kw": ["coming home", "released", "vapaut", "rusty anchor", "kat ", "mattia", "lori", "buck me", "buckme", "feng shui"]},
+    {"ch": 1, "title": "Day Release", "text": "Mattia gets Lucia's ankle tag removed and offers a well-paid job: fetching a bag.", "kw": ["day release", "ankle", "nilkka", "yacht", "jahti", "locker", "lokero", "clear skies", "down to earth", "seaplane"]},
+    {"ch": 1, "title": "Swamped", "text": "The sit-down with the Kingfishers is a setup. Donnie dies and Brian quits smuggling.", "kw": ["swamped", "donnie died", "donnie dies", "donnie kuol", "kuoli", "hostage", "pantti", "don gone", "trailer", "recalibration", "fishing with cal"]},
+    {"ch": 1, "title": "Tourist Trap", "text": "Disguised as Mattia and Kat, the pair grab the bag. Dirty cops attack and Jason is badly hurt.", "kw": ["tourist trap", "visitor center", "disguis", "naamioi", "dirty cop", "likai", "wounded", "haavoit", "grassrivers", "got the bag", "haettiin laukku"]},
+    {"ch": 1, "title": "Discharge Time", "text": "Masked men burn the house. The pair fight out of the hospital and flee west.", "kw": ["discharge", "hospital", "sairaala", "burn", "pala", "masked", "naamiomie", "home sweet home", "kelly county"]},
+    {"ch": 2, "title": "What's in the Bag?", "text": "A Port Gellhorn motel. Captain Mendez blames them on the news. The bag holds a statue and a hard drive.", "kw": ["what's in the bag", "whats in the bag", "motel", "port gellhorn", "mendez", "statue", "patsas", "hard drive", "kovalevy", "ambulance", "ambulanssi", "gas station", "huoltoasema"]},
+    {"ch": 2, "title": "Girls' Trip & Slam Dunk", "text": "Lucia meets dancer Vicki and dealer Dunk and gets painkillers for Jason.", "kw": ["girls trip", "girls' trip", "vicki", "dunk", "painkiller", "kipulaak", "dr. bill", "dr bill", "doctor", "laakari", "slam dunk", "delights"]},
+    {"ch": 2, "title": "Moses", "text": "Mechanic Moses Watkins buys the cars Lucia steals.", "kw": ["moses", "mechanic", "mekaanik", "daily driver", "canis", "crawler", "watkins"]},
+    {"ch": 2, "title": "Robbery spree", "text": "The pair rob their way across rural Leonida and hit Delights Cabaret with Vicki. The goal: Vice City and Dre'Quan.", "kw": ["breakfast run", "waffle", "vohveli", "robber", "robbed", "ryost", "coffee break", "afternoon delight", "ladies night", "stripper", "mario", "cabaret"]},
+    {"ch": 2, "title": "Checking Out", "text": "The masked men find the motel. The pair escape to Vice City.", "kw": ["checking out", "starlet", "escape to vice", "pakenivat", "fled to vice"]},
+    {"ch": 3, "title": "Welcome to Vice City", "text": "Dre'Quan welcomes them. His boss Boobie Ike lends them an apartment.", "kw": ["welcome to vice city", "dre'quan", "drequan", "dre quan", "boobie", "jack of hearts", "apartment", "asunto", "crosstown", "bayside"]},
+    {"ch": 3, "title": "Dealer's Choice", "text": "As a favor to Boobie, Jason does a drug deal with Dre'Quan, picking up the product from Tyrone. Cal fails to crack the hard drive.", "kw": ["dealer's choice", "dealers choice", "drug deal", "huumekaup", "huumediil", "huumekeik", "coke", "kokaiini", "tyrone", "favor", "palvelus", "sold", "myin", "football", "jalkapallo", "southside"]}
+  ],
+  "chars": [
+    {"id": "brian", "x": 106, "y": 30, "n": "Brian Heder", "r": "Jason's boss", "a": 1, "wiki": "Brian Heder", "f": [[1, "Crooked landlord and smuggler in the Keys; Jason's employer."], [2, "Has Jason collect rent and run jobs."], [6, "Quits smuggling after Donnie's death."]]},
+    {"id": "cal", "x": 334, "y": 30, "n": "Cal", "r": "Jason's friend", "a": 1, "wiki": "Cal Hampton", "f": [[1, "Jason's friend and job partner in the Keys."], [7, "Takes the wounded Jason to hospital."], [15, "Tries and fails to crack the bag's hard drive in Vice City."]]},
+    {"id": "mattia", "x": 634, "y": 30, "n": "Mattia", "r": "Gave the job", "a": 4, "wiki": "Mattia GTA VI", "f": [[4, "Kat's rich boyfriend."], [5, "Gets Lucia's ankle tag removed and offers a job fetching a bag from a locker."], [7, "The pair grab the bag disguised as Mattia and Kat, and it goes badly wrong."]]},
+    {"id": "kat", "x": 862, "y": 30, "n": "Kat", "r": "Ex-cellmate", "a": 4, "wiki": "Kat GTA VI", "f": [[4, "Lucia's former cellmate. Brings Mattia into the picture."], [5, "On the yacht trip where the bag job is offered."]]},
+    {"id": "lori", "x": 106, "y": 190, "n": "Lori Heder", "r": "Brian's partner", "a": 4, "wiki": "Lori Heder", "f": [[4, "Brian's partner."], [6, "Taken hostage in the Kingfishers setup; Jason rescues her."]]},
+    {"id": "donnie", "x": 334, "y": 190, "n": "Donnie", "r": "Smuggler", "a": 1, "dead": 6, "rs": [[6, "Dead"]], "wiki": "Donnie GTA VI", "f": [[1, "Jason's smuggling buddy. Jason rescues him from the Kingfishers."], [6, "Killed in the Kingfishers setup. Brian stages it to look like he skipped town."]]},
+    {"id": "bag", "x": 748, "y": 205, "n": "The bag", "r": "Contents unknown", "note": true, "a": 5, "rs": [[9, "Statue + hard drive"], [15, "Statue + hard drive · Cal couldn't crack it"]], "f": [[5, "Mattia's job: fetch the bag from a locker."], [7, "Grabbed, and dirty cops attack right away."], [8, "Masked men hunt for it and burn the house."], [9, "Contains an old statue and a hard drive."], [13, "The masked men track it to the motel."], [15, "Cal can't crack the hard drive."]]},
+    {"id": "king", "x": 106, "y": 360, "n": "Kingfishers", "r": "Gang", "grp": true, "a": 1, "wiki": "Kingfishers", "f": [[1, "Pelican Valley gang Jason rescues Donnie from."], [6, "The sit-down is a setup and Donnie dies."]]},
+    {"id": "jason", "x": 340, "y": 350, "n": "Jason Duval", "r": "Protagonist", "main": true, "a": 0, "wiki": "Jason Duval", "f": [[0, "Lives in the Keys doing small jobs."], [2, "Works for Brian Heder."], [7, "Badly wounded on the bag job."], [10, "Recovers in a Port Gellhorn motel."], [12, "Starts a robbery spree with Lucia."], [15, "Owes Boobie a favor and does a drug deal."]]},
+    {"id": "lucia", "x": 604, "y": 350, "n": "Lucia Caminos", "r": "Protagonist", "main": true, "a": 0, "wiki": "Lucia Caminos", "f": [[0, "In prison."], [4, "Released early on an ankle tag."], [8, "Escapes the hospital with Jason."], [10, "Handles things in Port Gellhorn while Jason heals."], [12, "Robs places with Jason."]]},
+    {"id": "mendez", "x": 862, "y": 360, "n": "Capt. Mendez", "r": "Dirty cop", "a": 9, "wiki": "Mendez GTA VI", "f": [[9, "Dirty cop who publicly blames the pair for the attack."]]},
+    {"id": "kenton", "x": 106, "y": 535, "n": "Kenton", "r": "Treasure hunter", "a": 3, "wiki": "Kenton GTA VI", "f": [[3, "Treasure hunter. Jason finds treasure and agrees to work with him."]]},
+    {"id": "masked", "x": 862, "y": 535, "n": "Masked men", "r": "After the bag", "grp": true, "masked": true, "a": 8, "f": [[8, "Attack Lucia at the house and burn it. Also waiting at the hospital."], [13, "Find the pair at the motel."], [13, "Identity still unknown."]]},
+    {"id": "vicki", "x": 106, "y": 695, "n": "Vicki", "r": "Dancer", "a": 10, "wiki": "Vicki GTA VI", "f": [[10, "Dancer at Delights Cabaret. Introduces Lucia to Dunk."], [11, "Points Lucia to Moses the mechanic."], [12, "Figures out the pair are behind the robberies and pitches hitting Delights."]]},
+    {"id": "dunk", "x": 334, "y": 695, "n": "Dunk", "r": "Dealer", "a": 10, "wiki": "Dunk GTA VI", "f": [[10, "Local dealer. Helps Lucia get painkillers and stays a contact."]]},
+    {"id": "moses", "x": 634, "y": 695, "n": "Moses", "r": "Mechanic", "a": 11, "wiki": "Moses Watkins", "f": [[11, "Moses Watkins, a mechanic who buys untraceable cars."]]},
+    {"id": "dre", "x": 862, "y": 695, "n": "Dre'Quan", "r": "School friend", "a": 12, "wiki": "Dre'Quan Priest", "f": [[12, "Jason's high school friend in Vice City, the pair's safe haven."], [14, "Runs a record label out of the Jack of Hearts club."], [15, "Backs Jason up on the drug deal."]]},
+    {"id": "tyrone", "x": 634, "y": 850, "n": "Tyrone", "r": "Dealer", "a": 15, "wiki": "Tyrone GTA VI", "f": [[15, "Local dealer Jason picks up the coke from."]]},
+    {"id": "boobie", "x": 862, "y": 850, "n": "Boobie Ike", "r": "Dre'Quan's boss", "a": 14, "wiki": "Boobie Ike", "f": [[14, "Boss of the Jack of Hearts club. Lends the pair an apartment."], [15, "Calls in a favor for the apartment."]]}
+  ],
+  "links": [
+    ["jason", "lucia", 0], ["jason", "brian", 1], ["jason", "cal", 1], ["jason", "donnie", 1], ["king", "donnie", 1],
+    ["jason", "kenton", 3], ["brian", "lori", 4], ["lucia", "kat", 4], ["kat", "mattia", 4], ["mattia", "bag", 5],
+    ["lucia", "bag", 7], ["bag", "masked", 8], ["bag", "mendez", 9], ["lucia", "vicki", 10], ["vicki", "dunk", 10],
+    ["lucia", "moses", 11], ["jason", "dre", 12], ["dre", "boobie", 14], ["dre", "tyrone", 15], ["jason", "tyrone", 15], ["cal", "bag", 15]
+  ]
+}
