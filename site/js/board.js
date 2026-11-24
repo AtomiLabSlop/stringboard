@@ -6,7 +6,7 @@ const GAME = new URLSearchParams(location.search).get('game') || 'gta6';
 const VW = 1100, VH = 1000;
 const COL = { red: '#c0262d', yellow: '#f2c230', green: '#3c9a4a', blue: '#2f6fc0', white: '#f4f2ee', black: '#1c1c1c' };
 const CARD_BG = { white: '#ffffff', cream: '#f3ead7', tan: '#c9a67a', slate: '#3d3f44', black: '#141414' };
-const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'authentic', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', penSize: 'fine', lamp: false };
+const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'authentic', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', penSize: 'fine', cardBg: null, lamp: false };
 
 let IMGS = {};
 let S, st, view, scale = 1, mode = null, selNote = null, openCard = null, undoNow = null;
@@ -100,7 +100,7 @@ function renderCards() {
     d.style.setProperty('--fs', 13.5 * s.fontSize * s.cardSize + 'px');
     d.style.left = p.x + 'px'; d.style.top = p.y + 'px'; d.style.zIndex = cardZ(c.id);
     d.style.rotate = (hash(c.id) * s.tilt).toFixed(2) + 'deg';
-    const bg = cu.bg ? CARD_BG[cu.bg] : null;
+    const bgKey = cu.bg || (!c.note && s.cardBg), bg = bgKey ? CARD_BG[bgKey] : null;
     if (bg) { const dark = lum(bg) < .35; d.style.setProperty('--bgc', bg); d.style.setProperty('--fg', dark ? '#f4efe4' : '#231a12'); d.style.setProperty('--fg2', dark ? '#cbbfa9' : '#5a4a3a'); }
     else ['--bgc', '--fg', '--fg2'].forEach(k => d.style.removeProperty(k));
     d.classList.toggle('dead', !!c.dead && view >= c.dead);
@@ -389,6 +389,18 @@ function syncSettings() {
   $('#sCardRound').checked = s.cardRounded;
   $('#sRound').checked = s.rounded; $('#sRound').disabled = s.shape === 'circle';
   ['shape', 'style', 'font', 'bg', 'frame'].forEach(k => { $('#g-' + k).value = s[k]; });
+  const cb = $('#swCardBg'); cb.innerHTML = '';
+  Object.entries({ default: null, ...CARD_BG }).forEach(([k, v]) => {
+    const b = document.createElement('button'); b.type = 'button';
+    b.style.setProperty('--c', v || '#f6f1e6'); b.title = k === 'default' ? 'Default' : k;
+    b.setAttribute('aria-label', 'All cards colour ' + b.title); b.setAttribute('aria-pressed', (s.cardBg || 'default') === k);
+    b.onclick = () => {
+      st.set.cardBg = k === 'default' ? null : k;
+      Object.values(st.cards).forEach(cu => { delete cu.bg; });
+      save(); applySettings(); syncSettings(); if (openCard) openCardPanel(openCard);
+    };
+    cb.append(b);
+  });
   swatches($('#swStr'), 'strColor', 'String'); swatches($('#swPin'), 'pinColor', 'Pin'); swatches($('#swPen'), 'penColor', 'Marker');
 }
 [['#sCard', 'cardSize'], ['#sImg', 'imgSize'], ['#sFont', 'fontSize'], ['#sTilt', 'tilt'], ['#sTen', 'tension']].forEach(([sel, k]) =>
