@@ -97,7 +97,13 @@
 .lamp .shade{display:none;position:absolute;left:50%;top:-6px;width:120px;height:46px;transform:translateX(-50%);background:linear-gradient(#3a3a3a,#141414);border-radius:60px 60px 8px 8px/50px 50px 8px 8px;box-shadow:0 6px 12px rgba(0,0,0,.6)}
 .lamp .shade::after{content:"";position:absolute;left:38px;right:38px;bottom:-8px;height:14px;border-radius:50%;background:radial-gradient(#fff8e6,#ffd38a 60%,rgba(255,200,120,0));filter:blur(.5px)}
 body.lamp-on{background-color:#050403}
-body.lamp-on .top,body.lamp-on body.lamp-on .frame{filter:sepia(.12) brightness(.9)}
+body.lamp-on .top,body.lamp-on .tray{filter:brightness(.88)}
+/* lamp also lights the frame: darker edges, warm glow at the top centre (overlays sit under the board) */
+.board{z-index:1}.fprint{z-index:2}
+.frame::before,.frame::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .12s ease-out;z-index:0}
+.frame::before{background:radial-gradient(ellipse 70% 140% at 50% 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,.45) 70%,rgba(0,0,0,.7));mix-blend-mode:multiply}
+.frame::after{background:radial-gradient(ellipse 40% 60% at 50% 0%,rgba(255,210,150,.55),rgba(255,190,120,.15) 50%,transparent 75%);mix-blend-mode:screen}
+.lamp-on .frame::before,.lamp-on .frame::after{opacity:1}
 .lamp-on .card{filter:brightness(1.04)}
 /* panels */
 .panel{position:absolute;right:8px;top:8px;bottom:8px;width:min(340px,calc(100% - 16px));overflow:auto;z-index:8;padding:14px 16px 18px;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.45);color:var(--ink);font-size:15px}

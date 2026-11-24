@@ -63,7 +63,8 @@ function buildCards() {
     d.className = 'card' + (c.main ? ' main' : '') + (c.note ? ' note-card' : '');
     d.dataset.id = c.id; d.tabIndex = 0; d.setAttribute('role', 'button');
     d.innerHTML = `<div class="pht">${sil(c)}<img alt="" referrerpolicy="no-referrer" draggable="false"><i class="xx"></i></div><div class="nm"></div><div class="rl"></div><svg class="cink" aria-hidden="true"></svg>`;
-    d.querySelector('img').addEventListener('error', e => { e.target.parentNode.classList.remove('has'); });
+    d.querySelector('img').addEventListener('error', e => { e.target.dataset.failed = e.target.getAttribute('src') || ''; e.target.parentNode.classList.remove('has'); });
+    d.querySelector('img').addEventListener('load', e => { delete e.target.dataset.failed; });
     cardsEl.append(d); els[c.id] = d;
     dragify(d, () => st.pos[c.id] || { x: c.x, y: c.y }, p => { st.pos[c.id] = p; }, () => openCardPanel(c.id));
     d.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCardPanel(c.id); } });
@@ -107,7 +108,7 @@ function renderCards() {
     d.querySelector('.rl').textContent = cu.r || roleAt(c, view);
     const ph = d.querySelector('.pht'), img = ph.querySelector('img');
     const src = cu.img || (IMGS[c.id] && IMGS[c.id].url);
-    if (src) { if (img.getAttribute('src') !== src) img.src = src; ph.classList.add('has'); }
+    if (src) { if (img.getAttribute('src') !== src) { delete img.dataset.failed; img.src = src; } ph.classList.toggle('has', img.dataset.failed !== src); }
     else { img.removeAttribute('src'); ph.classList.remove('has'); }
     d.setAttribute('aria-label', (cu.n || c.n) + ', ' + d.querySelector('.rl').textContent);
   });
