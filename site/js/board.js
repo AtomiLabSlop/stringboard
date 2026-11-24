@@ -213,20 +213,59 @@ $$('input[name=img]').forEach(r => r.addEventListener('change', () => {
   if (r.value === 'file') $('#cpFile').click();
   if (r.value === 'url') $('#cpUrl').focus();
 }));
-$('#cpFile').addEventListener('change', e => {
-  const f = e.target.files[0], id = openCard; if (!f || !id) return;
+/* Image helpers: file -> small jpeg data URL, or an http(s) link. Images stay in this browser only. */
+function setCardImageFromFile(id, f) {
+  if (!f || !f.type.startsWith('image/')) { toast('That is not an image file.'); return; }
   const im = new Image();
   im.onload = () => {
     const k = Math.min(1, 360 / Math.max(im.width, im.height)), cv = document.createElement('canvas');
     cv.width = im.width * k; cv.height = im.height * k; cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
-    custom(id).img = cv.toDataURL('image/jpeg', .82); URL.revokeObjectURL(im.src); e.target.value = ''; save(); renderCards();
+    custom(id).img = cv.toDataURL('image/jpeg', .82); URL.revokeObjectURL(im.src); save(); renderCards();
+    if (openCard === id) openCardPanel(id);
   };
+  im.onerror = () => toast('Could not read that image.');
   im.src = URL.createObjectURL(f);
+}
+function setCardImageFromUrl(id, u) {
+  u = (u || '').trim().split(/\s+/)[0];
+  if (!/^https?:\/\//i.test(u)) return false;
+  custom(id).img = u; save(); renderCards(); if (openCard === id) openCardPanel(id); return true;
+}
+$('#cpFile').addEventListener('change', e => { if (openCard) setCardImageFromFile(openCard, e.target.files[0]); e.target.value = ''; });
+$('#cpUrlGo').addEventListener('click', () => { if (!setCardImageFromUrl(openCard, $('#cpUrl').value)) toast('Paste a link that starts with https://'); });
+
+/* Drop an image file or image link onto a card */
+let hoverCard = null;
+cardsEl.addEventListener('pointerover', e => { const c = e.target.closest('.card'); hoverCard = c && !c.classList.contains('note-card') ? c.dataset.id : null; });
+cardsEl.addEventListener('pointerleave', () => { hoverCard = null; });
+cardsEl.addEventListener('dragover', e => {
+  const c = e.target.closest('.card'); if (!c || c.classList.contains('note-card')) return;
+  e.preventDefault(); e.dataTransfer.dropEffect = 'copy';
+  $$('.card.dropping').forEach(x => x !== c && x.classList.remove('dropping')); c.classList.add('dropping');
 });
-$('#cpUrlGo').addEventListener('click', () => {
-  const u = $('#cpUrl').value.trim();
-  if (!/^https?:\/\//i.test(u)) { toast('Paste a link that starts with https://'); return; }
-  custom(openCard).img = u; save(); renderCards();
+cardsEl.addEventListener('dragleave', e => { const c = e.target.closest('.card'); if (c && !c.contains(e.relatedTarget)) c.classList.remove('dropping'); });
+cardsEl.addEventListener('drop', e => {
+  const c = e.target.closest('.card'); if (!c || c.classList.contains('note-card')) return;
+  e.preventDefault(); c.classList.remove('dropping');
+  const id = c.dataset.id, f = [...e.dataTransfer.files].find(x => x.type.startsWith('image/'));
+  if (f) { setCardImageFromFile(id, f); return; }
+  const u = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
+  const html = e.dataTransfer.getData('text/html'), m = html && html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  if (!setCardImageFromUrl(id, m ? m[1] : u)) toast('Drop an image file or an image link.');
+});
+
+/* Paste an image or a link while a card is open, hovered or focused */
+document.addEventListener('paste', e => {
+  const t = e.target;
+  if (t.closest && t.closest('input,textarea,[contenteditable=true]')) return;
+  const focusCard = document.activeElement && document.activeElement.closest && document.activeElement.closest('.card');
+  const id = openCard || hoverCard || (focusCard && focusCard.dataset.id);
+  if (!id || byId(id).note) return;
+  const items = [...(e.clipboardData && e.clipboardData.items || [])];
+  const img = items.find(i => i.kind === 'file' && i.type.startsWith('image/'));
+  if (img) { e.preventDefault(); setCardImageFromFile(id, img.getAsFile()); toast('Image added to ' + (custom(id).n || byId(id).n) + '.'); return; }
+  const txt = e.clipboardData.getData('text/plain');
+  if (setCardImageFromUrl(id, txt)) { e.preventDefault(); toast('Image added to ' + (custom(id).n || byId(id).n) + '.'); }
 });
 $('#cpN').addEventListener('input', e => { const c = byId(openCard); custom(openCard).n = e.target.value && e.target.value !== c.n ? e.target.value : undefined; $('#cpName').textContent = e.target.value || c.n; save(); renderCards(); });
 $('#cpR').addEventListener('input', e => { const c = byId(openCard); custom(openCard).r = e.target.value && e.target.value !== roleAt(c, view) ? e.target.value : undefined; save(); renderCards(); });

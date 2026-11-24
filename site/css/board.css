@@ -66,6 +66,8 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .card{--cw:130px;--bgc:#f6f1e6;--fg:#231a12;--fg2:#6b5847;position:absolute;width:var(--cw);padding:calc(var(--cw)*.075) calc(var(--cw)*.075) calc(var(--cw)*.085);background:var(--bgc);color:var(--fg);cursor:grab;user-select:none;touch-action:none;transition:box-shadow .2s;text-align:center}
 .card.main{--cw:160px}
 .card.drag{cursor:grabbing;z-index:5}
+.card.dropping{outline:3px dashed #f2c230;outline-offset:4px}
+.tip{font-size:13px;color:var(--muted);margin:6px 0 0}
 .card .pht{position:relative;width:100%;height:var(--phh);background:#3b3631;overflow:hidden}
 .card .pht img,.card .pht svg{pointer-events:none;-webkit-user-drag:none;user-select:none}
 .card .pht img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
