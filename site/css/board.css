@@ -42,7 +42,7 @@
 .tip{font-size:13px;color:var(--muted);margin:6px 0 0}
 .card .pht{position:relative;width:100%;height:var(--phh);background:#3b3631;overflow:hidden}
 .card .pht img,.card .pht svg{pointer-events:none;-webkit-user-drag:none;user-select:none}
-.card .pht img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.card .pht img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;display:none}
 .card .pht.has img{display:block}
 .card .pht.has svg{display:none}
 .card .pht svg{position:absolute;inset:0;width:100%;height:100%}
