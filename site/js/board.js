@@ -6,7 +6,7 @@ const GAME = new URLSearchParams(location.search).get('game') || 'gta6';
 const VW = 1100, VH = 1000;
 const COL = { red: '#c0262d', yellow: '#f2c230', green: '#3c9a4a', blue: '#2f6fc0', white: '#f4f2ee', black: '#1c1c1c' };
 const CARD_BG = { white: '#ffffff', cream: '#f3ead7', tan: '#c9a67a', slate: '#3d3f44', black: '#141414' };
-const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'photo', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', penSize: 'fine', lamp: false };
+const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'authentic', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', penSize: 'fine', lamp: false };
 
 let IMGS = {};
 let S, st, view, scale = 1, mode = null, selNote = null, openCard = null, undoNow = null;
@@ -158,11 +158,38 @@ $('#capMore').addEventListener('click', () => {
 });
 
 /* ---------- scaling: board keeps a fixed virtual space so cards stay put relative to the map ---------- */
+/* zoom + pan (not part of the saved board) */
+let zoom = 1; const pan = { x: 0, y: 0 }; const ZMIN = 0.5, ZMAX = 3;
 function layout() {
   const r = board.getBoundingClientRect();
-  scale = Math.min(r.width / VW, r.height / VH);
-  stage.style.transform = `translate(${(r.width - VW * scale) / 2}px,${(r.height - VH * scale) / 2}px) scale(${scale})`;
+  scale = Math.min(r.width / VW, r.height / VH) * zoom;
+  stage.style.transform = `translate(${(r.width - VW * scale) / 2 + pan.x}px,${(r.height - VH * scale) / 2 + pan.y}px) scale(${scale})`;
+  $('#zPct').textContent = Math.round(zoom * 100) + '%';
+  board.classList.toggle('zoomed', zoom > 1);
 }
+function zoomTo(z, cx, cy) {
+  const r = board.getBoundingClientRect();
+  z = Math.min(ZMAX, Math.max(ZMIN, z));
+  if (cx == null) { cx = r.left + r.width / 2; cy = r.top + r.height / 2; }
+  const v = toVirtual({ clientX: cx, clientY: cy });
+  const base = Math.min(r.width / VW, r.height / VH), s2 = base * z;
+  pan.x = (cx - r.left) - v.x * s2 - (r.width - VW * s2) / 2;
+  pan.y = (cy - r.top) - v.y * s2 - (r.height - VH * s2) / 2;
+  if (z === 1) { pan.x = 0; pan.y = 0; }
+  zoom = z; layout(); if (openCard) placeCardPanel(openCard); hideNoteBar();
+}
+$('#zIn').addEventListener('click', () => zoomTo(zoom * 1.25));
+$('#zOut').addEventListener('click', () => zoomTo(zoom / 1.25));
+$('#zPct').addEventListener('click', () => { pan.x = pan.y = 0; zoomTo(1); });
+board.addEventListener('wheel', e => { if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); zoomTo(zoom * (e.deltaY < 0 ? 1.1 : 1 / 1.1), e.clientX, e.clientY); }, { passive: false });
+/* drag the empty board to pan */
+board.addEventListener('pointerdown', e => {
+  if (mode || e.button > 0 || e.target.closest('.card,.note,.panel,#noteBar,.zoom')) return;
+  const sx = e.clientX, sy = e.clientY, p0 = { ...pan }; let moved = false;
+  const mv = ev => { const dx = ev.clientX - sx, dy = ev.clientY - sy; if (!moved && Math.hypot(dx, dy) < 4) return; moved = true; board.classList.add('panning'); pan.x = p0.x + dx; pan.y = p0.y + dy; layout(); };
+  const up = () => { board.removeEventListener('pointermove', mv); board.removeEventListener('pointerup', up); board.removeEventListener('pointercancel', up); board.classList.remove('panning'); if (moved && openCard) placeCardPanel(openCard); };
+  board.setPointerCapture(e.pointerId); board.addEventListener('pointermove', mv); board.addEventListener('pointerup', up); board.addEventListener('pointercancel', up);
+});
 const ro = new ResizeObserver(() => { layout(); fitCaption(); if (openCard) placeCardPanel(openCard); });
 function toVirtual(e) { const r = stage.getBoundingClientRect(); return { x: (e.clientX - r.left) / scale, y: (e.clientY - r.top) / scale }; }
 
@@ -561,7 +588,7 @@ document.addEventListener('keydown', e => {
   SB.loadImages(GAME).then(m => { IMGS = m; if (S) renderCards(); });
   try { S = await SB.load(GAME); } catch (e) { document.body.innerHTML = '<p style="padding:40px">Could not load the story data. <a href="index.html">Back</a></p>'; return; }
   st.now = Math.min(st.now, S.steps.length - 1);
-  st.set = Object.assign({}, DEF, st.set || {}); st.pos = st.pos || {}; st.cards = st.cards || {}; st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || []; st.order = st.order || [];
+  st.set = Object.assign({}, DEF, st.set || {}); if (st.set.style === 'photo') st.set.style = 'authentic'; st.pos = st.pos || {}; st.cards = st.cards || {}; st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || []; st.order = st.order || [];
   view = st.now;
   buildCards(); syncSettings(); applySettings(); renderTimeline();
   hist.last = JSON.stringify(st); updHistBtns();

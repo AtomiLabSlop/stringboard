@@ -60,11 +60,22 @@
 
 .st-circle .card .pht{width:var(--phh);margin:0 auto;border-radius:50%}
 .st-flat .card{box-shadow:0 1px 2px rgba(0,0,0,.25)}
-.st-authentic .card{box-shadow:0 8px 14px rgba(0,0,0,.32),0 1px 3px rgba(0,0,0,.3);border-radius:2px 5px 3px 6px/5px 2px 6px 3px;background-image:linear-gradient(112deg,transparent 38%,rgba(0,0,0,.06) 39%,rgba(255,255,255,.25) 40%,transparent 42%),linear-gradient(28deg,transparent 60%,rgba(0,0,0,.05) 61%,rgba(255,255,255,.2) 62%,transparent 64%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .2 0 0 0 .12 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E")}
-.st-photo .card{box-shadow:0 12px 18px rgba(0,0,0,.38),0 2px 3px rgba(0,0,0,.25);animation:float 6s ease-in-out infinite}
-.st-photo .card:nth-child(3n){animation-delay:-2s}.st-photo .card:nth-child(3n+1){animation-delay:-4s}
-.st-photo .card.drag{animation:none;box-shadow:0 22px 30px rgba(0,0,0,.45)}
-@keyframes float{50%{translate:0 -3px}}
+.st-authentic .card{
+  /* instant-photo look: bright paper, soft top-to-bottom light, fine paper grain, deeper bottom margin */
+  --bgc:#f7f6f2;
+  padding-bottom:calc(var(--cw)*.16);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .32 0 0 0 0 .28 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0) 30%,rgba(0,0,0,.035) 75%,rgba(0,0,0,.07)),
+    var(--bgc);
+  box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.18),0 6px 10px -4px rgba(0,0,0,.28)}
+.st-authentic .card .pht{box-shadow:inset 0 0 0 1px rgba(0,0,0,.35),inset 0 2px 6px rgba(0,0,0,.35)}
+.st-authentic .card .pht::after{content:"";position:absolute;inset:0;background:linear-gradient(155deg,rgba(255,255,255,.14),transparent 40%);pointer-events:none;z-index:1}
+/* lifted corners: soft shadow blobs just below the bottom corners (drawn outside the card so they never cover it) */
+.st-authentic .card::before,.st-authentic .card::after{content:"";position:absolute;bottom:-9px;width:46%;height:12px;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,rgba(0,0,0,.42),transparent 70%)}
+.st-authentic .card::before{left:-1%;transform:rotate(-3deg)}
+.st-authentic .card::after{right:-1%;transform:rotate(3deg)}
+.st-authentic .card.drag{box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 18px 26px rgba(0,0,0,.4)}
 .font-mono .card,.font-mono .note .txt,.f-mono{font-family:"Special Elite","Courier New",monospace}
 .font-sans .card,.font-sans .note .txt,.f-sans{font-family:Inter,system-ui,sans-serif}
 .font-hand .card,.font-hand .note .txt,.f-hand{font-family:Caveat,"Comic Sans MS",cursive}
@@ -217,3 +228,9 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .pensizes::after{content:"";position:absolute;left:64px;bottom:-7px;width:12px;height:12px;background:var(--panel);border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
 .pensizes .ln{display:inline-block;width:18px;height:var(--w);border-radius:4px;background:currentColor;vertical-align:middle;margin-right:8px}
 @keyframes popup{from{opacity:0;transform:translateY(6px)}}
+
+/* zoom control: board top-right */
+.zoom{position:absolute;top:10px;right:10px;z-index:7;display:flex;align-items:center;gap:2px;padding:2px 4px;box-shadow:0 4px 12px rgba(0,0,0,.35);font-size:17px}
+.zpct{min-width:48px;height:32px;border:0;background:none;color:var(--ink);font:600 12px var(--sl-font-sans);cursor:pointer;border-radius:6px}
+.zpct:hover{background:var(--sl-color-neutral-100)}
+.board.zoomed{cursor:grab}.board.panning{cursor:grabbing}
