@@ -10,15 +10,16 @@
 </head><body>
 <div class="app" id="app">
 <header class="top card-surface">
-  <a class="home" href="index.html">Home</a>
+  <a class="home" href="index.html"><sl-icon name="house" aria-hidden="true"></sl-icon><span>Home</span></a>
   <div class="tl">
     <div class="tlrow"><span>Start</span><sl-range id="tl" min="0" step="1" tooltip="none" label="Story timeline"></sl-range><span>Now</span></div>
-    <div class="cap" id="cap"><span class="captxt" id="capTxt"><b id="capT"></b> <span id="capD"></span></span><sl-button class="more" id="capMore" size="small" pill hidden aria-expanded="false">…</sl-button></div>
+    <div class="cap" id="cap"><span class="captxt" id="capTxt"><b id="capT"></b> <span id="capD"></span></span><sl-button class="more" id="capMore" size="small" pill hidden aria-expanded="false" aria-label="Show full description">…</sl-button></div>
   </div>
-  <sl-button id="updBtn" outline>Update progress</sl-button>
   <div class="hw">
+    <sl-button id="updBtn" outline><sl-icon slot="prefix" name="flag"></sl-icon>Update progress</sl-button>
+    <sl-divider vertical></sl-divider>
     <sl-icon-button id="infoBtn" name="gear" label="Settings and help" aria-expanded="false"></sl-icon-button>
-    <span class="lampwrap"><sl-icon name="lightbulb" class="bulb" aria-hidden="true"></sl-icon><sl-switch id="lampBtn" aria-label="Desk lamp"></sl-switch></span>
+    <span class="lampwrap"><sl-icon name="lightbulb" class="bulb" aria-hidden="true"></sl-icon><sl-switch id="lampBtn" size="small" aria-label="Desk lamp"></sl-switch></span>
   </div>
 </header>
 

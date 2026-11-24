@@ -17,6 +17,7 @@ TYPE: Inter for UI (via --sl-font-sans), Saira Condensed only for the frame prin
 html,body{height:100%}
 body{margin:0;color:var(--ink);font:16px/1.5 var(--sl-font-sans);background:var(--sl-color-neutral-0);overflow-x:clip}
 :not(:defined){visibility:hidden}
+[hidden]{display:none!important}
 .card-surface{background:var(--panel);border:1px solid var(--line);border-radius:var(--sl-border-radius-large)}
 .help{font-size:var(--sl-font-size-small);color:var(--muted);margin:6px 0 0}
 .status{font-size:var(--sl-font-size-small);margin:8px 0 0;min-height:21px}
