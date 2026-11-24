@@ -16,7 +16,7 @@ main{min-height:100%;display:flex;flex-direction:column;align-items:center;justi
 .reveal{padding:14px 16px;border:1px solid var(--sl-color-warning-200);border-radius:var(--sl-border-radius-medium);background:color-mix(in srgb,var(--sl-color-warning-50),transparent 40%)}
 .reveal p{margin:4px 0 0 28px;font-size:var(--sl-font-size-small);color:var(--muted)}
 .hidden{display:none!important}
-.mlnote{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:var(--sl-border-radius-medium);background:var(--sl-color-neutral-50);font-size:var(--sl-font-size-small);color:var(--muted)}
+.mlnote{margin-top:12px;display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:var(--sl-border-radius-medium);background:var(--sl-color-neutral-50);font-size:var(--sl-font-size-small);color:var(--muted)}
 .mlnote sl-icon{font-size:20px;color:var(--sl-color-primary-600);flex:none;margin-top:2px}
 .mlnote b{color:var(--ink);font-weight:600}.mlnote p{margin:2px 0 0}
 #mlProg{margin-top:10px}#mlProg sl-progress-bar{--height:8px}
@@ -41,21 +41,20 @@ footer{font-size:13px;color:var(--muted);text-align:center;max-width:620px}
     <div id="lastWrap" class="hidden">
       <sl-textarea id="last" label="What did you do last? (optional)" placeholder="e.g. Did my first drug deal with Jason's friend" rows="3" resize="auto"
         help-text="Describe your latest mission or a character you just met, in any words. We use it to move the board a bit further into the chapter, without showing anything you haven't seen."></sl-textarea>
+      <div class="mlnote hidden" id="mlNote">
+        <sl-icon name="cpu" aria-hidden="true"></sl-icon>
+        <div>
+          <b>Smart progress matching</b>
+          <p id="mlText"></p>
+          <div id="mlProg" class="hidden"><sl-progress-bar id="mlBar" value="0" label="Downloading language model"></sl-progress-bar><p class="help" id="mlBarText"></p></div>
+        </div>
+      </div>
       <p class="status" id="status" aria-live="polite"></p>
     </div>
 
     <div class="reveal">
       <sl-checkbox id="all"><b>Reveal the whole story</b></sl-checkbox>
       <p>Shows every event we have data for. Contains major spoilers.</p>
-    </div>
-  </div>
-
-  <div class="mlnote hidden" id="mlNote">
-    <sl-icon name="cpu" aria-hidden="true"></sl-icon>
-    <div>
-      <b>Smart progress matching</b>
-      <p id="mlText"></p>
-      <div id="mlProg" class="hidden"><sl-progress-bar id="mlBar" value="0" label="Downloading language model"></sl-progress-bar><p class="help" id="mlBarText"></p></div>
     </div>
   </div>
 
