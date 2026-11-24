@@ -101,9 +101,10 @@ function update(){
   if(!all.checked)recog();
 }
 game.addEventListener('sl-change',async()=>{
-  S=null;update();
+  S=null;SB.applyBackground(null);update();
   if(!game.value)return;
   try{S=await SB.load(game.value)}catch(e){status.textContent='Could not load story data.'}
+  SB.applyBackground(S);
   const st=SB.getState(game.value),c=$('#cont');
   if(st.now!=null&&S){c.innerHTML='';const a=document.createElement('a');a.href='board.html?game='+game.value;a.textContent='Continue your saved board';c.append('Played before? ',a,'.');c.classList.remove('hidden')}else c.classList.add('hidden');
   if(S&&S.matcher){const m=S.matcher,cached=await SB.modelCached(m.model);
@@ -112,7 +113,7 @@ game.addEventListener('sl-change',async()=>{
 });
 ch.addEventListener('sl-input',update);last.addEventListener('sl-input',update);all.addEventListener('sl-change',update);
 ch.addEventListener('keydown',e=>{if(e.key==='Enter')start.click()});
-$('#reset').addEventListener('click',()=>{game.value='';ch.value='';last.value='';all.checked=false;S=null;$('#cont').classList.add('hidden');update();game.focus()});
+$('#reset').addEventListener('click',()=>{SB.applyBackground(null);game.value='';ch.value='';last.value='';all.checked=false;S=null;$('#cont').classList.add('hidden');update();game.focus()});
 function go(now,reveal){
   const g=game.value,st=SB.getState(g);
   st.now=now;st.reveal=!!reveal;st.chapter=reveal?SB.maxChapter(S):Math.min(chNum(),SB.maxChapter(S));

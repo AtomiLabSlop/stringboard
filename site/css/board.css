@@ -60,7 +60,7 @@
 
 .st-circle .card .pht{width:var(--phh);margin:0 auto;border-radius:50%}
 .st-flat .card{box-shadow:0 1px 2px rgba(0,0,0,.25)}
-.st-authentic .card{
+.st-authentic .card:not(.note-card){
   /* instant-photo look: bright paper, soft top-to-bottom light, fine paper grain, deeper bottom margin */
   --bgc:#f7f6f2;
   padding-bottom:calc(var(--cw)*.16);
@@ -232,3 +232,6 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .board.zoomed{cursor:grab}.board.panning{cursor:grabbing}
 
 .zoom sl-divider{--spacing:2px;height:20px}
+/* top and bottom bars line up with the board frame */
+.top,.tray{margin-inline:10px}
+@media (max-width:860px){.top,.tray{margin-inline:5px}}

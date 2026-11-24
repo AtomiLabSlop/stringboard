@@ -25,3 +25,5 @@ body{margin:0;color:var(--ink);font:16px/1.5 var(--sl-font-sans);background:var(
 .row{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap}
 sl-dialog.warn::part(title){color:var(--sl-color-warning-600);font-size:var(--sl-font-size-x-large);font-weight:700}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+body.has-bg{background:var(--game-bg) center/cover no-repeat fixed,var(--sl-color-neutral-0)}

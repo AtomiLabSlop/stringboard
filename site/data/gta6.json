@@ -2,6 +2,7 @@
   "id": "gta6",
   "title": "Grand Theft Auto VI",
   "wiki": "https://gta.fandom.com",
+  "background": "assets/bg-gta6.jpg",
   "matcher": { "model": "Xenova/all-MiniLM-L6-v2", "sizeMB": 23, "language": "English" },
   "steps": [
     {"ch": 1, "title": "Prologue", "text": "Lucia is in prison, discussing early release. Jason lives in the Leonida Keys.", "kw": ["prologue", "prison", "counselor", "vankila", "prologi"]},

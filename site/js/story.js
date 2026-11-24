@@ -82,8 +82,14 @@ window.SB = (() => {
     return bestSim >= 0.4 ? { i: best, how: 'model' } : { i: -1, how: 'none' };
   }
   const fmtMB = b => (b / 1e6).toFixed(1);
+  /* per-game page background behind the UI */
+  function applyBackground(S) {
+    const b = S && S.background && /^[\w./-]+$/.test(S.background) ? S.background : null;
+    document.body.classList.toggle('has-bg', !!b);
+    if (b) document.body.style.setProperty('--game-bg', `url("${new URL(b, location.href).href}")`); else document.body.style.removeProperty('--game-bg');
+  }
   const KEY = g => 'stringboard:' + g + ':v1';
   function getState(g) { try { return JSON.parse(localStorage.getItem(KEY(g))) || {}; } catch (e) { return {}; } }
   function setState(g, st) { try { localStorage.setItem(KEY(g), JSON.stringify(st)); return true; } catch (e) { return false; } }
-  return { norm, load, loadImages, smartMatch, modelCached, fmtMB, maxChapter, chapterStart, chapterEnd, match, getState, setState };
+  return { norm, load, applyBackground, loadImages, smartMatch, modelCached, fmtMB, maxChapter, chapterStart, chapterEnd, match, getState, setState };
 })();

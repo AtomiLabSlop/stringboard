@@ -616,6 +616,7 @@ document.addEventListener('keydown', e => {
   if (st.now == null) { location.replace('index.html'); return; }
   SB.loadImages(GAME).then(m => { IMGS = m; if (S) renderCards(); });
   try { S = await SB.load(GAME); } catch (e) { document.body.innerHTML = '<p style="padding:40px">Could not load the story data. <a href="index.html">Back</a></p>'; return; }
+  SB.applyBackground(S);
   st.now = Math.min(st.now, S.steps.length - 1);
   st.set = Object.assign({}, DEF, st.set || {}); if (st.set.style === 'photo') st.set.style = 'authentic'; st.pos = st.pos || {}; st.cards = st.cards || {}; st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || []; st.order = st.order || [];
   view = st.now;
