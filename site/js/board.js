@@ -112,7 +112,21 @@ function renderTimeline() {
   const s = S.steps[view];
   $('#capT').textContent = (view === st.now ? 'Now · ' : '') + 'Chapter ' + s.ch + ' · ' + s.title + '.';
   $('#capD').textContent = s.text;
+  requestAnimationFrame(fitCaption);
 }
+/* Show a "…" button only when the description doesn't fit on one line. */
+function fitCaption() {
+  const cap = $('#cap'), txt = $('#capTxt'), btn = $('#capMore');
+  if (cap.classList.contains('open')) { btn.hidden = false; return; }
+  btn.hidden = txt.scrollWidth <= txt.clientWidth + 1;
+}
+$('#capMore').addEventListener('click', () => {
+  const cap = $('#cap'), open = !cap.classList.contains('open');
+  cap.classList.toggle('open', open);
+  const b = $('#capMore'); b.setAttribute('aria-expanded', open); b.textContent = open ? 'Less' : '…';
+  b.setAttribute('aria-label', open ? 'Show less' : 'Show full description');
+  if (!open) fitCaption();
+});
 
 /* ---------- scaling: board keeps a fixed virtual space so cards stay put relative to the map ---------- */
 function layout() {
@@ -120,7 +134,7 @@ function layout() {
   scale = Math.min(r.width / VW, r.height / VH);
   stage.style.transform = `translate(${(r.width - VW * scale) / 2}px,${(r.height - VH * scale) / 2}px) scale(${scale})`;
 }
-const ro = new ResizeObserver(() => { layout(); if (openCard) placeCardPanel(openCard); });
+const ro = new ResizeObserver(() => { layout(); fitCaption(); if (openCard) placeCardPanel(openCard); });
 function toVirtual(e) { const r = stage.getBoundingClientRect(); return { x: (e.clientX - r.left) / scale, y: (e.clientY - r.top) / scale }; }
 
 /* ---------- dragging (cards + notes) ---------- */
