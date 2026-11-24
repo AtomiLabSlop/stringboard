@@ -266,6 +266,15 @@ $('#infoBtn').addEventListener('click', () => {
   const p = $('#info'), open = p.hidden; closePanel('cardPanel'); p.hidden = !open; $('#infoBtn').setAttribute('aria-expanded', open);
 });
 $('#lampBtn').addEventListener('click', () => { st.set.lamp = !st.set.lamp; save(); applySettings(); });
+$('#resetStyles').addEventListener('click', () => {
+  const oldSet = st.set, oldBg = {};
+  Object.entries(st.cards).forEach(([id, cu]) => { if (cu.bg) { oldBg[id] = cu.bg; delete cu.bg; } });
+  st.set = Object.assign({}, DEF, { penColor: oldSet.penColor });
+  save(); syncSettings(); applySettings();
+  toast('Cards and board are back to default styles.', 'Undo', () => {
+    st.set = oldSet; Object.entries(oldBg).forEach(([id, bg]) => custom(id).bg = bg); save(); syncSettings(); applySettings();
+  });
+});
 $('#resetLayout').addEventListener('click', () => { st.pos = {}; save(); renderCards(); toast('Cards are back in their original places.'); });
 $('#clearInk').addEventListener('click', () => { const old = st.ink; st.ink = []; save(); renderInk(); toast('Drawings cleared.', 'Undo', () => { st.ink = old; save(); renderInk(); }); });
 

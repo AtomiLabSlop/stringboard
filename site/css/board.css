@@ -2,7 +2,8 @@
 .app{height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:6px;padding:6px}
 .top{display:flex;align-items:center;gap:12px;padding:6px 10px;flex-wrap:wrap}
 .top::before,.tray::before,.top::after,.tray::after{display:none}
-.mini img{height:30px;width:auto;display:block}
+.home{font:700 15px "Saira Condensed",sans-serif;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:8px 4px}
+.home:hover{color:var(--ink)}
 .tl{flex:1 1 320px;min-width:220px}
 .tlrow{display:flex;align-items:center;gap:10px;font:700 14px "Saira Condensed",sans-serif;text-transform:uppercase;letter-spacing:.05em;color:var(--metal)}
 .tlrow input{flex:1;height:28px;accent-color:var(--red)}
@@ -14,6 +15,7 @@
 .more[aria-expanded=true]{background:var(--metal);color:#231a12;border-color:var(--metal)}
 .cap b{color:var(--ink);font-weight:600}
 .btn.small{min-height:40px;font-size:16px;padding:0 16px}
+.btn.wide{width:100%;margin-top:10px}
 .upd{min-height:38px;font-size:15px;padding:0 14px}
 .hw{display:flex;align-items:center;gap:14px;margin-left:auto}
 /* flat icon button + lamp toggle */
@@ -27,13 +29,19 @@
 .switch[aria-checked=true] .lever{transform:translateX(28px);background:#ffd27a;box-shadow:0 0 10px 2px rgba(255,200,110,.6)}
 .switch .screw{display:none}
 /* frame + board */
-.frameWrap{position:relative;min-height:0;display:flex}
-.frame{position:relative;flex:1;display:flex;padding:12px;border-radius:6px}
+.frameWrap{position:relative;min-height:0;display:flex;padding:20px}
+.frame{position:relative;flex:1;display:flex;padding:30px 22px 22px;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.45)}
 .frame.f-black{background:#181818}
 .frame.f-white{background:#eeece8}
 .frame.f-lightwood{background:repeating-linear-gradient(90deg,rgba(120,80,40,.08) 0 2px,transparent 2px 11px),#c9a06a}
 .frame.f-darkwood{background:repeating-linear-gradient(90deg,rgba(0,0,0,.1) 0 2px,transparent 2px 11px),#4e3220}
-.flogo{position:absolute;left:50%;top:0;transform:translate(-50%,-30%);height:34px;width:auto;z-index:5;pointer-events:none}
+.fprint{position:absolute;left:0;right:0;top:0;height:30px;display:flex;align-items:center;justify-content:center;gap:.5em;pointer-events:none;font:600 12px/1 "Saira Condensed",sans-serif;letter-spacing:.32em;text-transform:uppercase;white-space:nowrap;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='40'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='1 1 1 .55 1 1 .2 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='160' height='40' filter='url(%23n)'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='40'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='1 1 1 .55 1 1 .2 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='160' height='40' filter='url(%23n)'/%3E%3C/svg%3E")}
+.fprint b{font-weight:800;font-size:13px;letter-spacing:.28em}
+.f-darkwood .fprint{color:rgba(236,214,178,.62);text-shadow:0 -1px 0 rgba(0,0,0,.45)}
+.f-lightwood .fprint{color:rgba(70,40,15,.62);text-shadow:0 1px 0 rgba(255,235,200,.35)}
+.f-black .fprint{color:rgba(220,214,204,.5);text-shadow:0 -1px 0 rgba(0,0,0,.6)}
+.f-white .fprint{color:rgba(40,36,32,.55);text-shadow:0 1px 0 rgba(255,255,255,.8)}
 .board{position:relative;flex:1;overflow:hidden;border-radius:2px;box-shadow:inset 0 1px 4px rgba(0,0,0,.35);touch-action:none}
 .board.bg-gloss{background:radial-gradient(120% 80% at 20% 0%,rgba(255,255,255,.9),rgba(255,255,255,0) 50%),linear-gradient(160deg,#f5f4f0,#dcdad3)}
 .board.bg-cork{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E"),#c9a26a}
@@ -155,4 +163,4 @@ body.lamp-on .frame{filter:brightness(.82) sepia(.15)}
 .toast.on{opacity:1;pointer-events:auto}
 .toast button{background:none;border:1px solid var(--metal);color:#f2c230;border-radius:5px;padding:6px 10px;cursor:pointer;font:inherit}
 .status{font-size:14px;margin:8px 0 0;min-height:21px}.status.ok{color:#8fd18a}.status.no{color:#e6b95c}
-@media (max-width:700px){.mini{display:none}.marker{width:96px}.frame{padding:8px}.flogo{height:26px}.upd{flex:1}}
+@media (max-width:700px){.marker{width:96px}.frameWrap{padding:10px}.frame{padding:24px 10px 10px}.fprint{height:24px;font-size:10px}.fprint b{font-size:11px}.upd{flex:1}}
