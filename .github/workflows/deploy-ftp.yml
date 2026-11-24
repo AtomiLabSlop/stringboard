@@ -29,4 +29,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
           local-dir: ./deploy/
-          server-dir: ${{ vars.FTP_SERVER_DIR || 'public_html/stringboard/' }}
+          server-dir: ${{ vars.FTP_SERVER_DIR || 'httpdocs/stringboard/' }}
