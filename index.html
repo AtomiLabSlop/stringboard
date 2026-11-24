@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GTA VI character board</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#3a2a1a;color:#f4efe4;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:16px 10px 28px}
+h1{font-size:20px;font-weight:600;margin:4px 6px 12px}
+svg{display:block;width:100%;height:auto;border-radius:8px}
+p{font-size:13px;color:#d9ccb8;margin:10px 6px 0}
+.tl{margin:14px 6px 0;background:#2a1e12;border-radius:10px;padding:14px 14px 12px}
+.tl .row{display:flex;justify-content:space-between;font-size:13px;color:#d9ccb8}
+.tl b{display:block;font-size:17px;color:#fff;margin:2px 0}
+.tl small{display:block;font-size:14px;color:#e6dccb;min-height:42px}
+input[type=range]{width:100%;height:44px;accent-color:#d63a3a;margin:4px 0 0}
+.card{margin:14px 6px 0;background:#f4efe4;color:#2a2018;border-radius:10px;padding:14px;display:none}
+.card.on{display:block}
+.card h2{margin:0;font-size:19px}.card .role{color:#a32d2d;font-size:14px;margin:2px 0 8px}
+.card ul{margin:0;padding-left:18px}.card li{margin:4px 0;font-size:15px}
+.card .bt{display:flex;gap:8px;margin-top:12px}
+.card button{flex:1;min-height:44px;border:0;border-radius:8px;font:inherit;font-size:15px;background:#3b3631;color:#fff}
+.card button.sec{background:#d9cfbf;color:#2a2018}
+
+</style></head><body><div class="wrap">
+<h1>GTA VI – character board</h1>
+<svg id="b" viewBox="0 0 680 960"></svg>
+<div class="tl"><div class="row"><span>Start</span><span>Now</span></div>
+<input id="s" type="range" min="0" step="1" aria-label="Timeline">
+<b id="st"></b><small id="sd"></small></div>
+<div class="card" id="card"><h2 id="cn"></h2><div class="role" id="cr"></div><ul id="cf"></ul>
+<div class="bt"><button id="cimg" class="sec">Change image</button><button id="cx">Close</button></div></div>
+<p>Tap a character to see what is known about them up to the selected point. The right end of the slider is always where you are in the game. Add your own screenshots via Change image; they stay in your browser only.</p>
+<input id="f" type="file" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0">
+</div>
+<script>
+{
+const IMG={};
+const T=[
+['Chapter 1 · Prologi','Lucia is in prison, discussing early release. Jason lives in the Leonida Keys.'],
+['Chapter 1 · Gone Fishing','A smuggling run goes wrong and Jason rescues Donnie from the Kingfishers. Lucia says she is getting out early.'],
+['Chapter 1 · Jobs for Brian','Jason collects rent and runs jobs with Cal for Brian Heder.'],
+['Chapter 1 · Island Dreams','Jason finds treasure on a dive and agrees to work with Kenton.'],
+['Chapter 1 · Coming Home','Lucia is released. At the Rusty Anchor they meet Kat and her boyfriend Mattia.'],
+['Chapter 1 · Day Release','Mattia gets Lucia\'s ankle tag removed and offers a well-paid job: fetching a bag.'],
+['Chapter 1 · Swamped','The sit-down with the Kingfishers is a setup. Donnie dies and Brian quits smuggling.'],
+['Chapter 1 · Tourist Trap','Disguised as Mattia and Kat, the pair grab the bag. Dirty cops attack and Jason is badly hurt.'],
+['Chapter 1 · Discharge Time','Masked men burn the house. The pair fight out of the hospital and flee west.'],
+['Chapter 2 · What\'s in the Bag?','A Port Gellhorn motel. Captain Mendez blames them on the news. The bag holds a statue and a hard drive.'],
+['Chapter 2 · Girls\' Trip & Slam Dunk','Lucia meets dancer Vicki and dealer Dunk and gets painkillers for Jason.'],
+['Chapter 2 · Moses','Mechanic Moses Watkins buys the cars Lucia steals.'],
+['Chapter 2 · Robbery spree','The pair rob their way across rural Leonida and hit Delights Cabaret with Vicki. The goal: Vice City and Dre\'Quan.'],
+['Chapter 2 · Checking Out','The masked men find the motel. The pair escape to Vice City.'],
+['Chapter 3 · Welcome to Vice City','Dre\'Quan welcomes them. His boss Boobie Ike lends them an apartment.'],
+['Chapter 3 · Dealer\'s Choice','As a favor to Boobie, Jason does a drug deal with Dre\'Quan, picking up the product from Tyrone. Cal fails to crack the hard drive.']];
+const NOW=T.length-1;
+const C=[
+{id:'brian',x:24,y:28,n:'Brian Heder',r:'Jason\'s boss',a:1,f:[[1,'Crooked landlord and smuggler in the Keys; Jason\'s employer.'],[2,'Has Jason collect rent and run jobs.'],[6,'Quits smuggling after Donnie\'s death.']]},
+{id:'cal',x:176,y:28,n:'Cal',r:'Jason\'s friend',a:1,f:[[1,'Jason\'s friend and job partner in the Keys.'],[7,'Takes the wounded Jason to hospital.'],[15,'Tries and fails to crack the bag\'s hard drive in Vice City.']]},
+{id:'mattia',x:376,y:28,n:'Mattia',r:'Gave the job',a:4,f:[[4,'Kat\'s rich boyfriend.'],[5,'Gets Lucia\'s ankle tag removed and offers a job fetching a bag from a locker.'],[7,'The pair grab the bag disguised as Mattia and Kat, and it goes badly wrong.']]},
+{id:'kat',x:528,y:28,n:'Kat',r:'Ex-cellmate',a:4,f:[[4,'Lucia\'s former cellmate. Brings Mattia into the picture.'],[5,'On the yacht trip where the bag job is offered.']]},
+{id:'lori',x:24,y:178,n:'Lori Heder',r:'Brian\'s partner',a:4,f:[[4,'Brian\'s partner.'],[6,'Taken hostage in the Kingfishers setup; Jason rescues her.']]},
+{id:'donnie',x:176,y:178,n:'Donnie',r:'Smuggler',a:1,dead:6,f:[[1,'Jason\'s smuggling buddy. Jason rescues him from the Kingfishers.'],[6,'Killed in the Kingfishers setup. Brian stages it to look like he skipped town.']]},
+{id:'laukku',x:452,y:188,n:'The bag',r:'Contents unknown',note:1,a:5,r2:[[9,'Statue + hard drive'],[15,'Cal couldn\'t crack it']],f:[[5,'Mattia\'s job: fetch the bag from a locker.'],[7,'Grabbed, and dirty cops attack right away.'],[8,'Masked men hunt for it and burn the house.'],[9,'Contains an old statue and a hard drive.'],[13,'The masked men track it to the motel.'],[15,'Cal can\'t crack the hard drive.']]},
+{id:'king',x:24,y:340,n:'Kingfishers',r:'Gang',grp:1,a:1,f:[[1,'Pelican Valley gang Jason rescues Donnie from.'],[6,'The sit-down is a setup and Donnie dies.']]},
+{id:'jason',x:180,y:330,n:'Jason Duval',r:'Protagonist',main:1,a:0,f:[[0,'Lives in the Keys doing small jobs.'],[2,'Works for Brian Heder.'],[7,'Badly wounded on the bag job.'],[10,'Recovers in a Port Gellhorn motel.'],[12,'Starts a robbery spree with Lucia.'],[15,'Owes Boobie a favor and does a drug deal.']]},
+{id:'lucia',x:356,y:330,n:'Lucia Caminos',r:'Protagonist',main:1,a:0,f:[[0,'In prison.'],[4,'Released early on an ankle tag.'],[8,'Escapes the hospital with Jason.'],[10,'Handles things in Port Gellhorn while Jason heals.'],[12,'Robs places with Jason.']]},
+{id:'mendez',x:528,y:340,n:'Kapt. Mendez',r:'Dirty cop',a:9,f:[[9,'Dirty cop who publicly blames the pair for the attack.']]},
+{id:'kenton',x:24,y:520,n:'Kenton',r:'Treasure hunter',a:3,f:[[3,'Treasure hunter. Jason finds treasure and agrees to work with him.']]},
+{id:'masked',x:528,y:520,n:'Masked men',r:'After the bag',grp:1,pink:1,a:8,f:[[8,'Attack Lucia at the house and burn it. Also waiting at the hospital.'],[13,'Find the pair at the motel.'],[13,'Identity still unknown.']]},
+{id:'vicki',x:24,y:670,n:'Vicki',r:'Dancer',a:10,f:[[10,'Dancer at Delights Cabaret. Introduces Lucia to Dunk.'],[11,'Points Lucia to Moses the mechanic.'],[12,'Figures out the pair are behind the robberies and pitches hitting Delights.']]},
+{id:'dunk',x:176,y:670,n:'Dunk',r:'Dealer',a:10,f:[[10,'Local dealer. Helps Lucia get painkillers and stays a contact.']]},
+{id:'moses',x:376,y:670,n:'Moses',r:'Mechanic',a:11,f:[[11,'Moses Watkins, a mechanic who buys untraceable cars.']]},
+{id:'dre',x:528,y:670,n:'Dre\'Quan',r:'School friend',a:12,f:[[12,'Jason\'s high school friend in Vice City, the pair\'s safe haven.'],[14,'Runs a record label out of the Jack of Hearts club.'],[15,'Backs Jason up on the drug deal.']]},
+{id:'tyrone',x:376,y:820,n:'Tyrone',r:'Dealer',a:15,f:[[15,'Local dealer Jason picks up the coke from.']]},
+{id:'boobie',x:528,y:820,n:'Boobie Ike',r:'Dre\'Quan\'s boss',a:14,f:[[14,'Boss of the Jack of Hearts club. Lends the pair an apartment.'],[15,'Calls in a favor for the apartment.']]}];
+const L=[['jason','lucia',0],['jason','brian',1],['jason','cal',1],['jason','donnie',1],['king','donnie',1],['jason','kenton',3],['brian','lori',4],['lucia','kat',4],['kat','mattia',4],['mattia','laukku',5],['lucia','laukku',7],['cal','laukku',15],['laukku','masked',8],['laukku','mendez',9],['lucia','vicki',10],['vicki','dunk',10],['lucia','moses',11],['jason','dre',12],['dre','boobie',14],['dre','tyrone',15],['jason','tyrone',15]];
+const NS='http://www.w3.org/2000/svg',S=document.getElementById('b'),F=document.getElementById('f'),R=document.getElementById('s');
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function txt(p,x,y,s,size,w,fill){const t=el('text',{x,y,'text-anchor':'middle','dominant-baseline':'central','font-size':size,'font-weight':w,fill},p);t.textContent=s;return t}
+el('rect',{width:680,height:960,rx:6,fill:'#6b4a2b'},S);el('rect',{x:8,y:8,width:664,height:944,rx:3,fill:'#b8895c'},S);
+const CL=el('g',{},S),SL=el('g',{'pointer-events':'none'},S),PL=el('g',{'pointer-events':'none'},S);
+const P={},G={},slots={},pins={},lines=[];let sel=null,step=NOW;
+function setImg(id,url){const s=slots[id];if(!s)return;const o=s.sl.querySelector('image');if(o)o.remove();el('image',{width:s.pw,height:s.ph,preserveAspectRatio:'xMidYMid slice',href:url},s.sl)}
+C.forEach(c=>{
+ const w=c.main?160:c.note?150:130,h=c.main?170:c.note?80:130;
+ const g=el('g',{transform:`translate(${c.x},${c.y})`,style:'cursor:pointer;transition:opacity .3s'},CL);G[c.id]=g;
+ if(c.main)el('rect',{x:-6,y:-6,width:w+12,height:h+12,rx:3,fill:'#f7d84a'},g);
+ c.sel=el('rect',{x:-4,y:-4,width:w+8,height:h+8,rx:4,fill:'none',stroke:'#ffffff','stroke-width':3,display:'none'},g);
+ const fill=c.note?'#f2d96a':c.pink?'#f2c4cf':c.main?'#ffffff':'#f4efe4';
+ c.bg=el('rect',{width:w,height:h,rx:2,fill,stroke:c.main?'#c0262d':'#8a7560','stroke-width':c.main?2:0.5},g);
+ P[c.id]=[c.x+w/2,c.main?c.y-2:c.y+6];
+ g.addEventListener('click',()=>{sel=c.id;render()});
+ if(c.note){txt(g,w/2,20,c.n,14,600,'#3f3200');c.rt=txt(g,w/2,42,c.r,12,400,'#5c4a00');c.rt2=txt(g,w/2,60,'',12,400,'#5c4a00');return}
+ const pw=w-20,ph=c.main?110:80,k=ph/56,cx=pw/2;
+ const sl=el('svg',{x:10,y:10,width:pw,height:ph,viewBox:`0 0 ${pw} ${ph}`},g);
+ el('rect',{width:pw,height:ph,fill:'#3b3631'},sl);
+ const sil=c.pink?'#5f5953':'#8f877c';
+ if(c.grp&&!c.pink){[[-25,8],[25,8],[0,10]].forEach(([dx,r])=>{const by=ph-26;el('circle',{cx:cx+dx,cy:by-r-4,r,fill:sil},sl);el('path',{d:`M${cx+dx-r*2} ${ph} Q${cx+dx-r*2} ${by} ${cx+dx} ${by} Q${cx+dx+r*2} ${by} ${cx+dx+r*2} ${ph} Z`,fill:sil},sl)})}
+ else{el('circle',{cx,cy:22*k,r:11*k,fill:sil},sl);el('path',{d:`M${cx-24*k} ${ph} Q${cx-24*k} ${ph-20*k} ${cx} ${ph-20*k} Q${cx+24*k} ${ph-20*k} ${cx+24*k} ${ph} Z`,fill:sil},sl);if(c.pink)txt(sl,cx,22*k,'?',16,600,'#f4efe4')}
+ slots[c.id]={sl,pw,ph};if(IMG[c.id])setImg(c.id,IMG[c.id]);
+ if(c.dead){c.x1=el('g',{display:'none'},g);el('line',{x1:10,y1:10,x2:10+pw,y2:10+ph,stroke:'#d63a3a','stroke-width':3},c.x1);el('line',{x1:10+pw,y1:10,x2:10,y2:10+ph,stroke:'#d63a3a','stroke-width':3},c.x1)}
+ txt(g,w/2,c.main?140:105,c.n,14,600,c.pink?'#4b1528':'#2a2018');
+ c.rt=txt(g,w/2,c.main?158:121,c.r,12,400,c.main?'#a32d2d':c.pink?'#72243e':'#5a4a3a');
+});
+L.forEach(([a,b,s])=>lines.push({s,e:el('line',{x1:P[a][0],y1:P[a][1],x2:P[b][0],y2:P[b][1],stroke:'#c0262d','stroke-width':a=='jason'&&b=='lucia'?3.5:1.8,'stroke-linecap':'round',opacity:0.88,style:'transition:opacity .3s'},SL),a,b}));
+Object.entries(P).forEach(([id,[x,y]])=>{pins[id]=el('circle',{cx:x,cy:y,r:id=='jason'||id=='lucia'?7:5,fill:'#d63a3a',stroke:'#7a1515','stroke-width':0.5},PL)});
+const byId=Object.fromEntries(C.map(c=>[c.id,c]));
+function render(){
+ C.forEach(c=>{const v=c.a<=step;G[c.id].setAttribute('display',v?'inline':'none');pins[c.id].setAttribute('display',v?'inline':'none');
+  c.sel.setAttribute('display',sel==c.id?'inline':'none');
+  if(c.dead){const d=step>=c.dead;c.x1.setAttribute('display',d?'inline':'none');c.rt.textContent=d?'Dead':c.r;c.rt.setAttribute('fill',d?'#a32d2d':'#5a4a3a');c.bg.setAttribute('fill',d?'#dcd3c5':'#f4efe4')}
+  if(c.r2){let a=c.r,b='';c.r2.forEach(([s,t])=>{if(s<=step){if(s==9)a=t;else b=t}});c.rt.textContent=a;c.rt2.textContent=b}});
+ lines.forEach(l=>{const v=l.s<=step&&byId[l.a].a<=step&&byId[l.b].a<=step;l.e.setAttribute('display',v?'inline':'none')});
+ document.getElementById('st').textContent=step==NOW?'Now · '+T[step][0]:T[step][0];
+ document.getElementById('sd').textContent=T[step][1];
+ const card=document.getElementById('card');
+ if(sel&&byId[sel].a<=step){const c=byId[sel];card.classList.add('on');document.getElementById('cn').textContent=c.n;
+  document.getElementById('cr').textContent=c.dead&&step>=c.dead?'Dead':c.rt.textContent;
+  const ul=document.getElementById('cf');ul.innerHTML='';c.f.filter(([s])=>s<=step).forEach(([,t])=>{const li=document.createElement('li');li.textContent=t;ul.appendChild(li)});
+  document.getElementById('cimg').style.display=c.note?'none':'block'}
+ else{card.classList.remove('on')}
+}
+R.max=NOW;R.value=NOW;R.addEventListener('input',()=>{step=+R.value;render()});
+document.getElementById('cx').addEventListener('click',()=>{sel=null;render()});
+document.getElementById('cimg').addEventListener('click',()=>F.click());
+try{Object.keys(slots).forEach(id=>{const v=localStorage.getItem('gta6board-'+id);if(v)setImg(id,v)})}catch(e){}
+F.addEventListener('change',()=>{const file=F.files[0];if(!file||!sel)return;const id=sel;const im=new Image();im.onload=()=>{const cv=document.createElement('canvas');const sc=Math.min(1,320/im.width);cv.width=im.width*sc;cv.height=im.height*sc;cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);const url=cv.toDataURL('image/jpeg',0.8);setImg(id,url);try{localStorage.setItem('gta6board-'+id,url)}catch(e){}URL.revokeObjectURL(im.src);F.value=''};im.src=URL.createObjectURL(file)});
+render();
+}
+</script></body></html>
