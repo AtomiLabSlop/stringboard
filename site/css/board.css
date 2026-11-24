@@ -5,7 +5,7 @@
 .cap.open .cap b{color:var(--ink);font-weight:600}
 /* frame + board */
 .frameWrap{position:relative;min-height:0;display:flex;padding:10px}
-.frame{position:relative;flex:1;display:flex;padding:30px 22px 22px;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.frame{position:relative;flex:1;display:flex;padding:30px 11px 11px;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.45)}
 .frame.f-black{background:#181818}
 .frame.f-white{background:#eeece8}
 .frame.f-lightwood{background:repeating-linear-gradient(90deg,rgba(120,80,40,.08) 0 2px,transparent 2px 11px),#c9a06a}
@@ -123,11 +123,11 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .urlrow[hidden],#cpImgWrap[hidden]{display:none}
 
 /* top bar: home | timeline | actions, everything centred on one axis */
-.top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"home tl act";align-items:center;column-gap:24px;row-gap:10px;padding:10px 16px}
+.top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"home tl act";align-items:center;column-gap:24px;row-gap:10px;padding:16px 18px}
 .home{grid-area:home;display:inline-flex;align-items:center;gap:8px;font:600 14px var(--sl-font-sans);color:var(--muted);text-decoration:none;min-height:36px;padding:0 4px}
 .home sl-icon{font-size:18px}
 .home:hover{color:var(--ink)}
-.tl{grid-area:tl;display:grid;gap:6px}
+.tl{grid-area:tl;display:grid;gap:10px}
 .tlrow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;font:600 11px/1 var(--sl-font-sans);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
 #tl{--track-height:4px;--thumb-size:16px;--track-color-active:var(--sl-color-primary-600)}
 #tl::part(form-control){display:block}
@@ -147,7 +147,7 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 @media (max-width:860px){
   .top{grid-template-columns:auto 1fr;grid-template-areas:"home act" "tl tl";padding:8px 12px}
   .hw{justify-self:end}
-  .frameWrap{padding:5px}.frame{padding:24px 10px 10px}.fprint{height:24px;font-size:10px}.fprint b{font-size:11px}
+  .frameWrap{padding:5px}.frame{padding:24px 5px 5px}.fprint{height:24px;font-size:10px}.fprint b{font-size:11px}
   }
 @media (max-width:480px){.hw{gap:8px}.hw>sl-button{--sl-input-height-medium:34px}.home span{display:none}}
 
