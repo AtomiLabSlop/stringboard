@@ -120,7 +120,7 @@ function layout() {
   scale = Math.min(r.width / VW, r.height / VH);
   stage.style.transform = `translate(${(r.width - VW * scale) / 2}px,${(r.height - VH * scale) / 2}px) scale(${scale})`;
 }
-const ro = new ResizeObserver(layout);
+const ro = new ResizeObserver(() => { layout(); if (openCard) placeCardPanel(openCard); });
 function toVirtual(e) { const r = stage.getBoundingClientRect(); return { x: (e.clientX - r.left) / scale, y: (e.clientY - r.top) / scale }; }
 
 /* ---------- dragging (cards + notes) ---------- */
@@ -141,7 +141,7 @@ function dragify(el, get, set, onClick) {
     const up = () => {
       el.removeEventListener('pointermove', mv); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up);
       el.classList.remove('drag');
-      if (moved) save(); else onClick && onClick(e);
+      if (moved) { save(); if (openCard && el.dataset.id === openCard) placeCardPanel(openCard); } else onClick && onClick(e);
     };
     el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
   });
@@ -169,6 +169,25 @@ function openCardPanel(id) {
   $('#cpUrlRow').hidden = kind !== 'url'; $('#cpUrl').value = kind === 'url' ? cu.img : '';
   $('#cpN').value = cu.n || c.n; $('#cpR').value = cu.r || roleAt(c, view);
   $('#cardPanel').hidden = false;
+  placeCardPanel(id);
+}
+/* Put the card panel on whichever side of the board has room, so it never covers the card itself. */
+function placeCardPanel(id) {
+  const p = $('#cardPanel'), d = els[id];
+  if (!d || d.hidden) { closePanel('cardPanel'); return; }
+  const br = board.getBoundingClientRect(), cr = d.getBoundingClientRect(), m = 8, W = Math.min(340, br.width - 2 * m);
+  const sp = { right: br.right - cr.right, left: cr.left - br.left, bottom: br.bottom - cr.bottom, top: cr.top - br.top };
+  Object.assign(p.style, { left: 'auto', right: 'auto', top: 'auto', bottom: 'auto', width: 'auto', height: 'auto' });
+  let side = sp.right >= W + 2 * m ? 'right' : sp.left >= W + 2 * m ? 'left' : null;
+  if (!side) side = Object.entries({ right: sp.right * br.height, left: sp.left * br.height, bottom: sp.bottom * br.width, top: sp.top * br.width }).sort((a, b) => b[1] - a[1])[0][0];
+  if (side === 'right' || side === 'left') {
+    const w = Math.min(W, sp[side] - 2 * m);
+    Object.assign(p.style, { [side]: m + 'px', top: m + 'px', bottom: m + 'px', width: Math.max(w, 160) + 'px' });
+  } else {
+    Object.assign(p.style, { left: m + 'px', right: m + 'px' });
+    if (side === 'bottom') Object.assign(p.style, { top: (cr.bottom - br.top + m) + 'px', bottom: m + 'px' });
+    else Object.assign(p.style, { top: m + 'px', bottom: (br.bottom - cr.top + m) + 'px' });
+  }
 }
 $$('input[name=img]').forEach(r => r.addEventListener('change', () => {
   const id = openCard; if (!id) return;
@@ -198,6 +217,11 @@ $('#cpReset').addEventListener('click', () => { delete st.cards[openCard]; delet
 
 function closePanel(id) { $('#' + id).hidden = true; if (id === 'info') $('#infoBtn').setAttribute('aria-expanded', 'false'); if (id === 'cardPanel') openCard = null; }
 $$('[data-close]').forEach(b => b.addEventListener('click', () => closePanel(b.dataset.close)));
+document.addEventListener('pointerdown', e => {
+  const t = e.target;
+  if (!$('#info').hidden && !t.closest('#info,#infoBtn')) closePanel('info');
+  if (!$('#cardPanel').hidden && !t.closest('#cardPanel,.card,#toast')) closePanel('cardPanel');
+}, true);
 
 /* ---------- settings panel ---------- */
 function swatches(el, key, labelPrefix) {
