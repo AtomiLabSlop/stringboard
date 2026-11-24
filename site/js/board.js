@@ -513,10 +513,17 @@ function smoothD(pts, k) {
   const L = P[P.length - 1]; return d + ` L${L[0].toFixed(1)} ${L[1].toFixed(1)}`;
 }
 const PEN_W = { fine: 1, medium: 2, wide: 4 };
+/* Marker strokes. Fine = bullet tip with round ends. Medium/Wide = chisel tip: even width, square ends,
+   a faint lighter streak down the middle and slightly rough edges, like a dry-erase marker. */
 function strokeSvg(s, k, w) {
-  const sw = w * (PEN_W[s.w] || 1), col = COL[s.c], a = s.p[0], b = s.p[s.p.length - 1];
-  /* explicit round end caps so every browser draws soft ends, grouped so overlaps don't darken */
-  return `<g opacity=".86"><path d="${smoothD(s.p, k)}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/>` +
+  const mult = PEN_W[s.w] || 1, sw = w * mult, col = COL[s.c];
+  if (mult >= 2) {
+    const d = smoothD(s.p, k);
+    return `<g opacity=".88" filter="url(#inkRough)"><path d="${d}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="butt" stroke-linejoin="round"/>` +
+      `<path d="${d}" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="${sw * .35}" stroke-linecap="butt" stroke-linejoin="round"/></g>`;
+  }
+  const a = s.p[0], b = s.p[s.p.length - 1];
+  return `<g opacity=".88" filter="url(#inkRough)"><path d="${smoothD(s.p, k)}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/>` +
     `<circle cx="${a[0] * k}" cy="${a[1] * k}" r="${sw / 2}" fill="${col}"/><circle cx="${b[0] * k}" cy="${b[1] * k}" r="${sw / 2}" fill="${col}"/></g>`;
 }
 function renderInk() { ink.innerHTML = st.ink.map(s => strokeSvg(s, 1, 4)).join(''); }
