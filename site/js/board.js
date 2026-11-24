@@ -489,8 +489,20 @@ $$('#penSizes sl-button').forEach(b => b.addEventListener('click', () => { st.se
 $('#eraser').addEventListener('click', () => setMode('erase'));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (mode) setMode(mode); closePanel('info'); closePanel('cardPanel'); hideNoteBar(); } });
 /* Smooth, sketchy marker lines: points are eased while drawing and joined with curves. */
+/* Chaikin corner-cutting: rounds off the jitter of hand-drawn input */
+function chaikin(P, n) {
+  for (let it = 0; it < n && P.length > 2; it++) {
+    const Q = [P[0]];
+    for (let i = 0; i < P.length - 1; i++) {
+      const [x0, y0] = P[i], [x1, y1] = P[i + 1];
+      Q.push([x0 * .75 + x1 * .25, y0 * .75 + y1 * .25], [x0 * .25 + x1 * .75, y0 * .25 + y1 * .75]);
+    }
+    Q.push(P[P.length - 1]); P = Q;
+  }
+  return P;
+}
 function smoothD(pts, k) {
-  const P = pts.map(p => [p[0] * k, p[1] * k]);
+  const P = chaikin(pts.map(p => [p[0] * k, p[1] * k]), 2);
   if (P.length < 3) return 'M' + P.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L');
   let d = `M${P[0][0].toFixed(1)} ${P[0][1].toFixed(1)}`;
   for (let i = 1; i < P.length - 1; i++) {
@@ -500,7 +512,12 @@ function smoothD(pts, k) {
   const L = P[P.length - 1]; return d + ` L${L[0].toFixed(1)} ${L[1].toFixed(1)}`;
 }
 const PEN_W = { fine: 1, medium: 2, wide: 4 };
-const strokeSvg = (s, k, w) => `<path d="${smoothD(s.p, k)}" fill="none" stroke="${COL[s.c]}" stroke-width="${w * (PEN_W[s.w] || 1)}" stroke-linecap="round" stroke-linejoin="round" opacity=".86"/>`;
+function strokeSvg(s, k, w) {
+  const sw = w * (PEN_W[s.w] || 1), col = COL[s.c], a = s.p[0], b = s.p[s.p.length - 1];
+  /* explicit round end caps so every browser draws soft ends, grouped so overlaps don't darken */
+  return `<g opacity=".86"><path d="${smoothD(s.p, k)}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/>` +
+    `<circle cx="${a[0] * k}" cy="${a[1] * k}" r="${sw / 2}" fill="${col}"/><circle cx="${b[0] * k}" cy="${b[1] * k}" r="${sw / 2}" fill="${col}"/></g>`;
+}
 function renderInk() { ink.innerHTML = st.ink.map(s => strokeSvg(s, 1, 4)).join(''); }
 function renderCardInk(id) {
   const d = els[id]; if (!d) return;
@@ -532,9 +549,9 @@ board.addEventListener('pointerdown', e => {
   const mv = ev => {
     const raw = toLocal(ev);
     if (!cur) { erase(raw); return; }
-    sm = [sm[0] + (raw[0] - sm[0]) * .35, sm[1] + (raw[1] - sm[1]) * .35];
+    sm = [sm[0] + (raw[0] - sm[0]) * .28, sm[1] + (raw[1] - sm[1]) * .28];
     const last = cur.p[cur.p.length - 1];
-    if (Math.hypot(sm[0] - last[0], sm[1] - last[1]) < 1.5 * unit) return;
+    if (Math.hypot(sm[0] - last[0], sm[1] - last[1]) < (1.5 + (PEN_W[cur.w] || 1)) * unit) return;
     cur.p.push(sm.map(rnd)); redraw();
   };
   const up = ev => {
