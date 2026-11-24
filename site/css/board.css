@@ -35,7 +35,7 @@
 #cards,#notes{position:absolute;inset:0}
 .ink{z-index:0}.strings{z-index:500}#notes{z-index:900}.pins{z-index:1000;pointer-events:none}
 #notes{pointer-events:none}.note{pointer-events:auto}
-.card{--cw:130px;--bgc:#f6f1e6;--fg:#231a12;--fg2:#6b5847;position:absolute;width:var(--cw);padding:calc(var(--cw)*.075) calc(var(--cw)*.075) calc(var(--cw)*.085);background:var(--bgc);color:var(--fg);cursor:grab;user-select:none;touch-action:none;transition:box-shadow .2s;text-align:center}
+.card{--cw:130px;--bgc:#f6f1e6;--fg:#231a12;--fg2:#6b5847;position:absolute;width:var(--cw);padding:calc(var(--cw)*.15) calc(var(--cw)*.075) calc(var(--cw)*.085);background:var(--bgc);color:var(--fg);cursor:grab;user-select:none;touch-action:none;transition:box-shadow .2s;text-align:center}
 .card.main{--cw:160px}
 .card.drag{cursor:grabbing}
 .card.dropping{outline:3px dashed #f2c230;outline-offset:4px}
