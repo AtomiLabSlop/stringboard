@@ -169,6 +169,13 @@
 
 <footer class="tray card-surface">
   <div class="ledge">
+    <div class="pensizes card-surface" id="penSizes" hidden>
+      <sl-button-group label="Marker size">
+        <sl-button size="small" data-v="fine"><span class="ln" style="--w:2px"></span>Fine</sl-button>
+        <sl-button size="small" data-v="medium"><span class="ln" style="--w:4px"></span>Medium</sl-button>
+        <sl-button size="small" data-v="wide"><span class="ln" style="--w:8px"></span>Wide</sl-button>
+      </sl-button-group>
+    </div>
     <button class="marker" id="pen" type="button" aria-label="Marker" aria-pressed="false">
       <svg viewBox="0 0 176 36" aria-hidden="true">
         <defs>

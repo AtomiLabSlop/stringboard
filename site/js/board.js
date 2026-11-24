@@ -6,7 +6,7 @@ const GAME = new URLSearchParams(location.search).get('game') || 'gta6';
 const VW = 1100, VH = 1000;
 const COL = { red: '#c0262d', yellow: '#f2c230', green: '#3c9a4a', blue: '#2f6fc0', white: '#f4f2ee', black: '#1c1c1c' };
 const CARD_BG = { white: '#ffffff', cream: '#f3ead7', tan: '#c9a67a', slate: '#3d3f44', black: '#141414' };
-const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'photo', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', lamp: false };
+const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'photo', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', penSize: 'fine', lamp: false };
 
 let IMGS = {};
 let S, st, view, scale = 1, mode = null, selNote = null, openCard = null, undoNow = null;
@@ -412,9 +412,12 @@ function setMode(m) {
   mode = mode === m ? null : m;
   $('#pen').setAttribute('aria-pressed', mode === 'pen'); $('#eraser').setAttribute('aria-pressed', mode === 'erase');
   board.classList.toggle('drawing', mode === 'pen'); board.classList.toggle('erasing', mode === 'erase');
+  $('#penSizes').hidden = mode !== 'pen'; syncPenSize();
   if (mode) hideNoteBar();
 }
 $('#pen').addEventListener('click', () => setMode('pen'));
+function syncPenSize() { $$('#penSizes sl-button').forEach(b => b.variant = b.dataset.v === st.set.penSize ? 'primary' : 'default'); }
+$$('#penSizes sl-button').forEach(b => b.addEventListener('click', () => { st.set.penSize = b.dataset.v; save(); syncPenSize(); }));
 $('#eraser').addEventListener('click', () => setMode('erase'));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (mode) setMode(mode); closePanel('info'); closePanel('cardPanel'); hideNoteBar(); } });
 /* Smooth, sketchy marker lines: points are eased while drawing and joined with curves. */
@@ -428,7 +431,8 @@ function smoothD(pts, k) {
   }
   const L = P[P.length - 1]; return d + ` L${L[0].toFixed(1)} ${L[1].toFixed(1)}`;
 }
-const strokeSvg = (s, k, w) => `<path d="${smoothD(s.p, k)}" fill="none" stroke="${COL[s.c]}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" opacity=".86"/>`;
+const PEN_W = { fine: 1, medium: 2, wide: 4 };
+const strokeSvg = (s, k, w) => `<path d="${smoothD(s.p, k)}" fill="none" stroke="${COL[s.c]}" stroke-width="${w * (PEN_W[s.w] || 1)}" stroke-linecap="round" stroke-linejoin="round" opacity=".86"/>`;
 function renderInk() { ink.innerHTML = st.ink.map(s => strokeSvg(s, 1, 4)).join(''); }
 function renderCardInk(id) {
   const d = els[id]; if (!d) return;
@@ -451,7 +455,7 @@ board.addEventListener('pointerdown', e => {
   const rnd = v => cid ? Math.round(v * 1000) / 1000 : Math.round(v * 10) / 10;
   const redraw = () => cid ? renderCardInk(cid) : renderInk();
   let cur = null, sm = toLocal(e);
-  if (mode === 'pen') { cur = { c: st.set.penColor, p: [sm.map(rnd)] }; list.push(cur); }
+  if (mode === 'pen') { cur = { c: st.set.penColor, w: st.set.penSize, p: [sm.map(rnd)] }; list.push(cur); }
   const erase = pt => {
     const keep = list.filter(s => !s.p.some(q => Math.hypot(q[0] - pt[0], q[1] - pt[1]) < 14 * unit));
     if (keep.length !== list.length) { list.splice(0, list.length, ...keep); redraw(); }
