@@ -39,3 +39,13 @@ MIT – see `LICENSE`.
 Every push to `main` uploads the `site/` folder to https://atomilab.fi/stringboard/ via FTP (`.github/workflows/deploy-ftp.yml`).
 Required repository secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`.
 Optional repository variables: `FTP_SERVER_DIR` (default `httpdocs/stringboard/`), `FTP_PROTOCOL` (default `ftps`; set to `ftp` if the host does not support FTPS).
+
+---
+
+### Support me
+
+If you find my open-source projects useful, you can support the time and care that goes into maintaining and improving them by buying me a coffee. It’s entirely optional, but always appreciated :)
+
+<br>
+
+<a href="https://www.buymeacoffee.com/atomilabslop"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" width="200"></a>
