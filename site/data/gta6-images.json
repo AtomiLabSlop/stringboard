@@ -1,0 +1,81 @@
+{
+  "_help": "Default card images for this game. Put a direct https link to an image you have the right to use in 'url' (png, jpg, webp or svg). Leave it empty to show the silhouette. 'credit' is optional and is shown in the card panel. The ids match the 'chars' in gta6.json.",
+  "images": {
+    "brian": {
+      "url": "",
+      "credit": ""
+    },
+    "cal": {
+      "url": "",
+      "credit": ""
+    },
+    "mattia": {
+      "url": "",
+      "credit": ""
+    },
+    "kat": {
+      "url": "",
+      "credit": ""
+    },
+    "lori": {
+      "url": "",
+      "credit": ""
+    },
+    "donnie": {
+      "url": "",
+      "credit": ""
+    },
+    "bag": {
+      "url": "",
+      "credit": ""
+    },
+    "king": {
+      "url": "",
+      "credit": ""
+    },
+    "jason": {
+      "url": "",
+      "credit": ""
+    },
+    "lucia": {
+      "url": "",
+      "credit": ""
+    },
+    "mendez": {
+      "url": "",
+      "credit": ""
+    },
+    "kenton": {
+      "url": "",
+      "credit": ""
+    },
+    "masked": {
+      "url": "",
+      "credit": ""
+    },
+    "vicki": {
+      "url": "",
+      "credit": ""
+    },
+    "dunk": {
+      "url": "",
+      "credit": ""
+    },
+    "moses": {
+      "url": "",
+      "credit": ""
+    },
+    "dre": {
+      "url": "",
+      "credit": ""
+    },
+    "tyrone": {
+      "url": "",
+      "credit": ""
+    },
+    "boobie": {
+      "url": "",
+      "credit": ""
+    }
+  }
+}

@@ -25,6 +25,8 @@ Story data lives in `site/data/<game>.json`:
 - `chars` – cards: position in a 1100×1000 board space (`x`, `y`), name `n`, role `r`, the step they appear `a`, optional role changes `rs` and facts `f: [[step, text], …]`.
 - `links` – strings between cards: `[from, to, step]`.
 
+Default card images live in `site/data/<game>-images.json` (`{ "images": { "<card id>": { "url": "https://…", "credit": "…" } } }`). Only use images you have the right to use; empty urls show a silhouette. Users can still override any card image in their own browser.
+
 Write summaries in your own words and only up to the point they cover.
 
 ## Disclaimer

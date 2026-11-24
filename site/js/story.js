@@ -6,6 +6,19 @@ window.SB = (() => {
     if (!cache[game]) cache[game] = fetch('data/' + encodeURIComponent(game) + '.json').then(r => { if (!r.ok) throw new Error('No data'); return r.json(); });
     return cache[game];
   }
+  /* Default card images: data/<game>-images.json → { images: { id: { url, credit } } }. Missing file = no defaults. */
+  async function loadImages(game) {
+    try {
+      const r = await fetch('data/' + encodeURIComponent(game) + '-images.json', { cache: 'no-cache' });
+      if (!r.ok) return {};
+      const d = await r.json(), out = {};
+      Object.entries((d && d.images) || {}).forEach(([id, v]) => {
+        const url = typeof v === 'string' ? v : v && v.url;
+        if (url && /^https:\/\//i.test(url.trim())) out[id] = { url: url.trim(), credit: (v && v.credit) || '' };
+      });
+      return out;
+    } catch (e) { return {}; }
+  }
   const maxChapter = S => S.steps[S.steps.length - 1].ch;
   function chapterStart(S, ch) {
     const i = S.steps.findIndex(s => s.ch >= ch);
@@ -34,5 +47,5 @@ window.SB = (() => {
   const KEY = g => 'stringboard:' + g + ':v1';
   function getState(g) { try { return JSON.parse(localStorage.getItem(KEY(g))) || {}; } catch (e) { return {}; } }
   function setState(g, st) { try { localStorage.setItem(KEY(g), JSON.stringify(st)); return true; } catch (e) { return false; } }
-  return { norm, load, maxChapter, chapterStart, chapterEnd, match, getState, setState };
+  return { norm, load, loadImages, maxChapter, chapterStart, chapterEnd, match, getState, setState };
 })();

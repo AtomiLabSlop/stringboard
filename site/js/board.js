@@ -8,6 +8,7 @@ const COL = { red: '#c0262d', yellow: '#f2c230', green: '#3c9a4a', blue: '#2f6fc
 const CARD_BG = { white: '#ffffff', cream: '#f3ead7', tan: '#c9a67a', slate: '#3d3f44', black: '#141414' };
 const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'photo', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', lamp: false };
 
+let IMGS = {};
 let S, st, view, scale = 1, mode = null, selNote = null, openCard = null, undoNow = null;
 const board = $('#board'), stage = $('#stage'), cardsEl = $('#cards'), notesEl = $('#notes'), strSvg = $('#strings'), ink = $('#ink'), pinSvg = $('#pins');
 const els = {};
@@ -82,7 +83,8 @@ function renderCards() {
     d.querySelector('.nm').textContent = cu.n || c.n;
     d.querySelector('.rl').textContent = cu.r || roleAt(c, view);
     const ph = d.querySelector('.pht'), img = ph.querySelector('img');
-    if (cu.img) { if (img.getAttribute('src') !== cu.img) img.src = cu.img; ph.classList.add('has'); }
+    const src = cu.img || (IMGS[c.id] && IMGS[c.id].url);
+    if (src) { if (img.getAttribute('src') !== src) img.src = src; ph.classList.add('has'); }
     else { img.removeAttribute('src'); ph.classList.remove('has'); }
     d.setAttribute('aria-label', (cu.n || c.n) + ', ' + d.querySelector('.rl').textContent);
   });
@@ -185,6 +187,7 @@ function openCardPanel(id) {
   });
   $('#cpLayer').value = cu.over ? 'over' : 'under';
   $('#cpImgWrap').hidden = !!c.note;
+  const def = IMGS[id]; $('#cpCredit').hidden = !(def && def.credit && !cu.img); $('#cpCredit').textContent = def && def.credit ? 'Default image: ' + def.credit : '';
   const kind = cu.img ? (cu.img.startsWith('data:') ? 'file' : 'url') : 'default';
   $$('#cpImg sl-button').forEach(b => b.variant = b.dataset.v === kind ? 'primary' : 'default');
   $('#cpUrlRow').hidden = kind !== 'url'; $('#cpUrl').value = kind === 'url' ? cu.img : '';
@@ -507,6 +510,7 @@ $$('.pad').forEach(pad => pad.addEventListener('pointerdown', e => {
   await Promise.race([Promise.all(['sl-range', 'sl-radio-group', 'sl-radio-button', 'sl-switch', 'sl-button', 'sl-input', 'sl-dialog'].map(t => customElements.whenDefined(t))), new Promise(r => setTimeout(r, 4000))]);
   st = SB.getState(GAME);
   if (st.now == null) { location.replace('index.html'); return; }
+  SB.loadImages(GAME).then(m => { IMGS = m; if (S) renderCards(); });
   try { S = await SB.load(GAME); } catch (e) { document.body.innerHTML = '<p style="padding:40px">Could not load the story data. <a href="index.html">Back</a></p>'; return; }
   st.now = Math.min(st.now, S.steps.length - 1);
   st.set = Object.assign({}, DEF, st.set || {}); st.pos = st.pos || {}; st.cards = st.cards || {}; st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || []; st.order = st.order || [];
