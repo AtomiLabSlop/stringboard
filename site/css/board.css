@@ -207,3 +207,7 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 #cardPanel .tip{margin:0}
 #cardPanel .urlrow{margin:0}
 .sw{padding:3px}
+
+#undoBtn,#redoBtn{font-size:19px}
+#undoBtn::part(base),#redoBtn::part(base){padding:8px}
+.hw{gap:10px}

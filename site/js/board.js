@@ -14,7 +14,30 @@ const board = $('#board'), stage = $('#stage'), cardsEl = $('#cards'), notesEl =
 const els = {};
 
 let saveT;
-function save() { clearTimeout(saveT); saveT = setTimeout(() => { if (!SB.setState(GAME, st)) toast('Could not save – browser storage is full.'); }, 250); }
+function save() {
+  clearTimeout(saveT); saveT = setTimeout(() => { if (!SB.setState(GAME, st)) toast('Could not save – browser storage is full.'); }, 250);
+  if (!hist.mute) { clearTimeout(hist.t); hist.t = setTimeout(commitHist, 600); }
+}
+/* ---------- undo / redo: snapshots of the board, last 10 actions. Rapid changes (sliders, typing) group into one step. ---------- */
+const HIST_MAX = 10;
+const hist = { u: [], r: [], last: null, t: null, mute: false };
+function commitHist() {
+  const cur = JSON.stringify(st);
+  if (hist.last === null) { hist.last = cur; return; }
+  if (cur === hist.last) return;
+  hist.u.push(hist.last); if (hist.u.length > HIST_MAX) hist.u.shift();
+  hist.r = []; hist.last = cur; updHistBtns();
+}
+function updHistBtns() { $('#undoBtn').disabled = !hist.u.length; $('#redoBtn').disabled = !hist.r.length; }
+function restore(json) {
+  hist.last = json; st = JSON.parse(json); view = st.now;
+  hist.mute = true; save(); hist.mute = false;
+  hideNoteBar(); syncSettings(); applySettings(); renderTimeline();
+  if (openCard) { if (els[openCard] && !els[openCard].hidden) openCardPanel(openCard); else closePanel('cardPanel'); }
+  updHistBtns();
+}
+function undo() { clearTimeout(hist.t); commitHist(); if (!hist.u.length) return; hist.r.push(hist.last); restore(hist.u.pop()); }
+function redo() { clearTimeout(hist.t); commitHist(); if (!hist.r.length) return; hist.u.push(hist.last); restore(hist.r.pop()); }
 function toast(msg, action, fn) {
   const t = $('#toast'); t.innerHTML = ''; t.append(msg);
   if (action) { const b = document.createElement('sl-button'); b.size = 'small'; b.variant = 'primary'; b.outline = true; b.textContent = action; b.onclick = () => { fn(); t.classList.remove('on'); }; t.append(b); }
@@ -506,6 +529,15 @@ $$('.pad').forEach(pad => pad.addEventListener('pointerdown', e => {
 }));
 
 /* ---------- start ---------- */
+$('#undoBtn').addEventListener('click', undo);
+$('#redoBtn').addEventListener('click', redo);
+document.addEventListener('keydown', e => {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+  const t = e.target; if (t.closest && t.closest('input,textarea,[contenteditable=true],sl-input,sl-textarea')) return;
+  const k = e.key.toLowerCase();
+  if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+  else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); redo(); }
+});
 (async () => {
   await Promise.race([Promise.all(['sl-range', 'sl-radio-group', 'sl-radio-button', 'sl-switch', 'sl-button', 'sl-input', 'sl-dialog'].map(t => customElements.whenDefined(t))), new Promise(r => setTimeout(r, 4000))]);
   st = SB.getState(GAME);
@@ -516,6 +548,7 @@ $$('.pad').forEach(pad => pad.addEventListener('pointerdown', e => {
   st.set = Object.assign({}, DEF, st.set || {}); st.pos = st.pos || {}; st.cards = st.cards || {}; st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || []; st.order = st.order || [];
   view = st.now;
   buildCards(); syncSettings(); applySettings(); renderTimeline();
+  hist.last = JSON.stringify(st); updHistBtns();
   ro.observe(board); layout();
   document.fonts && document.fonts.ready.then(renderStrings);
   save();
