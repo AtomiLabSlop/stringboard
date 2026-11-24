@@ -6,7 +6,7 @@ const GAME = new URLSearchParams(location.search).get('game') || 'gta6';
 const VW = 1100, VH = 1000;
 const COL = { red: '#c0262d', yellow: '#f2c230', green: '#3c9a4a', blue: '#2f6fc0', white: '#f4f2ee', black: '#1c1c1c' };
 const CARD_BG = { white: '#ffffff', cream: '#f3ead7', tan: '#c9a67a', slate: '#3d3f44', black: '#141414' };
-const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, style: 'photo', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', lamp: false };
+const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'photo', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', lamp: false };
 
 let S, st, view, scale = 1, mode = null, selNote = null, openCard = null, undoNow = null;
 const board = $('#board'), stage = $('#stage'), cardsEl = $('#cards'), notesEl = $('#notes'), strSvg = $('#strings'), ink = $('#ink');
@@ -52,7 +52,7 @@ function roleAt(c, v) { let r = c.r; (c.rs || []).forEach(([s, t]) => { if (s <=
 /* ---------- render ---------- */
 function applySettings() {
   const s = st.set;
-  stage.className = 'stage st-' + s.style + ' font-' + s.font + (s.shape === 'circle' ? ' st-circle' : '') + (s.rounded && s.shape !== 'circle' ? ' st-rounded' : '');
+  stage.className = 'stage st-' + s.style + ' font-' + s.font + (s.shape === 'circle' ? ' st-circle' : '') + (s.rounded && s.shape !== 'circle' ? ' st-rounded' : '') + (s.cardRounded ? ' st-cardround' : '');
   board.className = 'board bg-' + s.bg;
   $('#frame').className = 'frame f-' + s.frame;
   document.body.classList.toggle('lamp-on', s.lamp);
@@ -252,6 +252,7 @@ function swatches(el, key, labelPrefix) {
 function syncSettings() {
   const s = st.set;
   $('#sCard').value = s.cardSize; $('#sImg').value = s.imgSize; $('#sFont').value = s.fontSize; $('#sTilt').value = s.tilt; $('#sTen').value = s.tension;
+  $('#sCardRound').checked = s.cardRounded;
   $('#sRound').checked = s.rounded; $('#sRound').disabled = s.shape === 'circle'; $('#sRound').closest('label').classList.toggle('dis', s.shape === 'circle');
   ['shape', 'style', 'font', 'bg', 'frame'].forEach(k => $$(`input[name=${k}]`).forEach(r => r.checked = r.value === s[k]));
   swatches($('#swStr'), 'strColor', 'String'); swatches($('#swPin'), 'pinColor', 'Pin'); swatches($('#swPen'), 'penColor', 'Marker');
@@ -259,6 +260,7 @@ function syncSettings() {
 [['#sCard', 'cardSize'], ['#sImg', 'imgSize'], ['#sFont', 'fontSize'], ['#sTilt', 'tilt'], ['#sTen', 'tension']].forEach(([sel, k]) =>
   $(sel).addEventListener('input', e => { st.set[k] = +e.target.value; save(); applySettings(); }));
 $('#sRound').addEventListener('change', e => { st.set.rounded = e.target.checked; save(); applySettings(); });
+$('#sCardRound').addEventListener('change', e => { st.set.cardRounded = e.target.checked; save(); applySettings(); });
 ['shape', 'style', 'font', 'bg', 'frame'].forEach(k => $$(`input[name=${k}]`).forEach(r => r.addEventListener('change', () => { st.set[k] = r.value; save(); applySettings(); syncSettings(); })));
 $('#infoBtn').addEventListener('click', () => {
   const p = $('#info'), open = p.hidden; closePanel('cardPanel'); p.hidden = !open; $('#infoBtn').setAttribute('aria-expanded', open);
