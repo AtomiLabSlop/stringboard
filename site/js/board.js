@@ -318,6 +318,38 @@ $('#resetStyles').addEventListener('click', () => {
 $('#resetLayout').addEventListener('click', () => { st.pos = {}; save(); renderCards(); toast('Cards are back in their original places.'); });
 $('#clearInk').addEventListener('click', () => { const old = st.ink, oldC = st.cardInk; st.ink = []; st.cardInk = {}; save(); renderInk(); renderCards(); toast('Drawings cleared.', 'Undo', () => { st.ink = old; st.cardInk = oldC; save(); renderInk(); renderCards(); }); });
 
+/* ---------- save to file / open saved file ---------- */
+$('#exportBtn').addEventListener('click', () => {
+  const data = { app: 'stringboard', version: 1, game: GAME, saved: new Date().toISOString(), state: st };
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `stringboard-${GAME}-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast('Board saved to a file. Open it on any browser with "Open saved file".');
+});
+let pendingImport = null;
+function applyImport(state) {
+  const prev = st;
+  st = state; st.set = Object.assign({}, DEF, st.set || {}); st.pos = st.pos || {}; st.cards = st.cards || {};
+  st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || [];
+  st.now = Math.max(0, Math.min(+st.now || 0, S.steps.length - 1)); view = st.now;
+  save(); closePanel('info'); syncSettings(); applySettings(); renderTimeline();
+  toast('Saved board opened.', 'Undo', () => { st = prev; view = st.now; save(); syncSettings(); applySettings(); renderTimeline(); });
+}
+$('#importBtn').addEventListener('click', () => $('#importFile').click());
+$('#importFile').addEventListener('change', e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  f.text().then(txt => {
+    let d; try { d = JSON.parse(txt); } catch (err) { toast("That file isn't a Stringboard save."); return; }
+    if (!d || d.app !== 'stringboard' || !d.state || typeof d.state.now !== 'number') { toast("That file isn't a Stringboard save."); return; }
+    if (d.game !== GAME) { toast('That save is for another game.'); return; }
+    if (d.state.now > st.now) { pendingImport = d.state; $('#impWarn').classList.add('on'); $('#impNo').focus(); return; }
+    applyImport(d.state);
+  });
+});
+$('#impNo').addEventListener('click', () => { pendingImport = null; $('#impWarn').classList.remove('on'); });
+$('#impYes').addEventListener('click', () => { $('#impWarn').classList.remove('on'); if (pendingImport) applyImport(pendingImport); pendingImport = null; });
+
 /* ---------- timeline + progress update ---------- */
 $('#tl').addEventListener('input', e => { view = +e.target.value; renderTimeline(); renderCards(); if (openCard) openCardPanel(openCard); });
 $('#updBtn').addEventListener('click', () => { $('#uCh').value = S.steps[st.now].ch; $('#uTxt').value = ''; $('#uMsg').textContent = ''; $('#uMsg').className = 'status'; $('#upd').classList.add('on'); $('#uTxt').focus(); });

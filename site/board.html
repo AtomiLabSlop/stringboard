@@ -79,6 +79,13 @@
           <button class="btn secondary small" id="clearInk" type="button">Clear drawings</button>
         </div>
         <button class="btn secondary small wide" id="resetStyles" type="button">Reset all styles</button>
+        <h3>Save</h3>
+        <p class="tip" style="margin-top:0">Your board is saved in this browser automatically. To keep a copy or move it to another browser or device, save it to a file and open it there.</p>
+        <div class="row" style="margin-top:8px">
+          <button class="btn secondary small" id="exportBtn" type="button">Save to file</button>
+          <button class="btn secondary small" id="importBtn" type="button">Open saved file</button>
+        </div>
+        <input type="file" id="importFile" accept=".json,application/json" hidden>
         <p class="fine">Fan-made, not affiliated with any publisher. Plot summaries written by AtomiLabSlop. <a href="https://github.com/AtomiLabSlop/stringboard" target="_blank" rel="noopener">GitHub</a></p>
       </aside>
 
@@ -130,6 +137,11 @@
 <p class="help">We match your words against the story up to the chapter you entered, and never show anything you didn't describe.</p></div>
 <p class="status" id="uMsg" aria-live="polite"></p>
 <div class="row" style="margin-top:18px"><button class="btn secondary" id="uCancel" type="button">Cancel</button><button class="btn primary" id="uGo" type="button">Update board</button></div>
+</div></div>
+<div class="modal" id="impWarn" role="dialog" aria-modal="true" aria-labelledby="impT">
+<div class="plate warn" style="padding:26px"><h2 id="impT">Spoiler warning</h2>
+<p>This saved board goes further in the story than yours. Opening it shows events you may not have reached yet.</p>
+<div class="row" style="margin-top:18px"><button class="btn secondary" id="impNo" type="button">Cancel</button><button class="btn primary" id="impYes" type="button">Open anyway</button></div>
 </div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
