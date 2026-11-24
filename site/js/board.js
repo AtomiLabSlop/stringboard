@@ -38,7 +38,7 @@ function buildCards() {
     const d = document.createElement('div');
     d.className = 'card' + (c.main ? ' main' : '') + (c.note ? ' note-card' : '');
     d.dataset.id = c.id; d.tabIndex = 0; d.setAttribute('role', 'button');
-    d.innerHTML = `<div class="pht">${sil(c)}<img alt="" referrerpolicy="no-referrer"><i class="xx"></i></div><div class="nm"></div><div class="rl"></div>`;
+    d.innerHTML = `<div class="pht">${sil(c)}<img alt="" referrerpolicy="no-referrer" draggable="false"><i class="xx"></i></div><div class="nm"></div><div class="rl"></div>`;
     d.querySelector('img').addEventListener('error', e => { e.target.parentNode.classList.remove('has'); });
     cardsEl.append(d); els[c.id] = d;
     dragify(d, () => st.pos[c.id] || { x: c.x, y: c.y }, p => { st.pos[c.id] = p; }, () => openCardPanel(c.id));
@@ -128,6 +128,7 @@ function dragify(el, get, set, onClick) {
   el.addEventListener('pointerdown', e => {
     if (mode || e.button > 0) return;
     if (e.target.closest('.txt') && document.activeElement === e.target.closest('.txt')) return;
+    if (!e.target.closest('.txt')) e.preventDefault();
     const start = toVirtual(e), p0 = { ...get() }; let moved = false;
     el.setPointerCapture(e.pointerId);
     const mv = ev => {
@@ -138,9 +139,10 @@ function dragify(el, get, set, onClick) {
       set(np); el.style.left = np.x + 'px'; el.style.top = np.y + 'px';
       renderStrings();
     };
-    const up = () => {
+    const up = ev => {
       el.removeEventListener('pointermove', mv); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up);
       el.classList.remove('drag');
+      if (ev.type === 'pointercancel' && !moved) return;
       if (moved) { save(); if (openCard && el.dataset.id === openCard) placeCardPanel(openCard); } else onClick && onClick(e);
     };
     el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
