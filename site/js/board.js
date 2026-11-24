@@ -232,6 +232,7 @@ function setCardImageFromUrl(id, u) {
   custom(id).img = u; save(); renderCards(); if (openCard === id) openCardPanel(id); return true;
 }
 $('#cpFile').addEventListener('change', e => { if (openCard) setCardImageFromFile(openCard, e.target.files[0]); e.target.value = ''; });
+$('#cpUrl').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('#cpUrlGo').click(); } });
 $('#cpUrlGo').addEventListener('click', () => { if (!setCardImageFromUrl(openCard, $('#cpUrl').value)) toast('Paste a link that starts with https://'); });
 
 /* Drop an image file or image link onto a card */
@@ -271,7 +272,12 @@ $('#cpN').addEventListener('sl-input', e => { const c = byId(openCard); custom(o
 $('#cpR').addEventListener('sl-input', e => { const c = byId(openCard); custom(openCard).r = e.target.value && e.target.value !== roleAt(c, view) ? e.target.value : undefined; save(); renderCards(); });
 $('#cpReset').addEventListener('click', () => { delete st.cards[openCard]; delete st.pos[openCard]; save(); renderCards(); openCardPanel(openCard); });
 
-function closePanel(id) { $('#' + id).hidden = true; if (id === 'info') $('#infoBtn').setAttribute('aria-expanded', 'false'); if (id === 'cardPanel') openCard = null; }
+function applyPendingUrl() {
+  if (!openCard || $('#cpUrlRow').hidden) return;
+  const v = String($('#cpUrl').value || '').trim(), cur = (st.cards[openCard] || {}).img;
+  if (v && v !== cur && !setCardImageFromUrl(openCard, v)) toast('Paste a link that starts with https://');
+}
+function closePanel(id) { if (id === 'cardPanel') applyPendingUrl(); $('#' + id).hidden = true; if (id === 'info') $('#infoBtn').setAttribute('aria-expanded', 'false'); if (id === 'cardPanel') openCard = null; }
 $$('[data-close]').forEach(b => b.addEventListener('click', () => closePanel(b.dataset.close)));
 document.addEventListener('pointerdown', e => {
   const t = e.target;

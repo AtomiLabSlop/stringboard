@@ -90,15 +90,19 @@
 .note.sel{outline:2px dashed rgba(0,0,0,.35);outline-offset:3px}
 .note .txt:empty::before{content:"Write here…";opacity:.45}
 /* lamp */
-.lamp{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .5s;z-index:6}
-.lamp-on .lamp{opacity:1}
-.lamp .glow{position:absolute;inset:0;background:radial-gradient(ellipse 75% 85% at 50% 32%,rgba(255,214,160,.18) 0%,rgba(255,190,120,.08) 45%,rgba(0,0,0,.14) 72%,rgba(0,0,0,.38) 100%);mix-blend-mode:multiply}
-.lamp::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 48% 52% at 50% 32%,rgba(255,214,150,.22),transparent 72%);mix-blend-mode:soft-light}
+.board{isolation:isolate}
+.map{z-index:-1}
+/* lamp: strong light/dark contrast on the board itself (under the cards), only a faint warm tint over the cards so text stays readable */
+.lampbg,.lamp{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .12s ease-out}
+.lampbg{z-index:0;background:radial-gradient(ellipse 60% 70% at 50% 34%,rgba(255,228,180,.38) 0%,rgba(255,200,130,.12) 38%,rgba(0,0,0,.18) 60%,rgba(0,0,0,.62) 100%);mix-blend-mode:hard-light}
+.lamp{z-index:6;background:radial-gradient(ellipse 70% 80% at 50% 34%,rgba(255,210,150,.10),rgba(255,190,120,.06) 60%,rgba(0,0,0,.08));mix-blend-mode:soft-light}
+.lamp-on .lampbg,.lamp-on .lamp{opacity:1}
 .lamp .shade{display:none;position:absolute;left:50%;top:-6px;width:120px;height:46px;transform:translateX(-50%);background:linear-gradient(#3a3a3a,#141414);border-radius:60px 60px 8px 8px/50px 50px 8px 8px;box-shadow:0 6px 12px rgba(0,0,0,.6)}
 .lamp .shade::after{content:"";position:absolute;left:38px;right:38px;bottom:-8px;height:14px;border-radius:50%;background:radial-gradient(#fff8e6,#ffd38a 60%,rgba(255,200,120,0));filter:blur(.5px)}
 body.lamp-on{background-color:#050403}
 body.lamp-on .top,body.lamp-on .tray{filter:brightness(.88)}
-body.lamp-on .frame{filter:sepia(.12)}
+body.lamp-on .frame{filter:sepia(.12) brightness(.9)}
+.lamp-on .card{filter:brightness(1.04)}
 /* panels */
 .panel{position:absolute;right:8px;top:8px;bottom:8px;width:min(340px,calc(100% - 16px));overflow:auto;z-index:8;padding:14px 16px 18px;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.45);color:var(--ink);font-size:15px}
 .panel[hidden]{display:none}
