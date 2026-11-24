@@ -1,35 +1,26 @@
 /*
 VOICE: calm, focused detective-desk; the board is the star, the UI stays out of the way.
-IDEA: a dark workspace around one pinned-up board.
+IDEA: a dark workspace around one pinned-up board. UI controls come from Shoelace (MIT).
 PICTURE: the logo on landing, the board on the board page.
-COLOUR: near-black ground #141210, beige #d9cbb0 for labels, signal red #c62a23 for the one action.
-TYPE: Saira Condensed for labels, Inter for body.
+COLOUR: Shoelace dark theme, primary mapped to its red scale; warm board colours stay custom.
+TYPE: Inter for UI (via --sl-font-sans), Saira Condensed only for the frame print.
 */
-:root{--ink:#efe6d4;--muted:#bfae92;--metal:#d9cbb0;--metal-d:#9d8e73;--red:#c62a23;--red-d:#8f1b16;--plate:#1b1714;--plate2:#25201b;--line:#5a4c3d;color-scheme:dark}
+:root,:host{
+  --sl-font-sans:Inter,system-ui,sans-serif;
+  --sl-color-primary-50:var(--sl-color-red-50);--sl-color-primary-100:var(--sl-color-red-100);--sl-color-primary-200:var(--sl-color-red-200);
+  --sl-color-primary-300:var(--sl-color-red-300);--sl-color-primary-400:var(--sl-color-red-400);--sl-color-primary-500:var(--sl-color-red-500);
+  --sl-color-primary-600:var(--sl-color-red-600);--sl-color-primary-700:var(--sl-color-red-700);--sl-color-primary-800:var(--sl-color-red-800);
+  --sl-color-primary-900:var(--sl-color-red-900);--sl-color-primary-950:var(--sl-color-red-950);
+  --ink:var(--sl-color-neutral-900);--muted:var(--sl-color-neutral-600);--panel:var(--sl-panel-background-color);--line:var(--sl-panel-border-color);
+}
 *{box-sizing:border-box;min-width:0}
 html,body{height:100%}
-body{margin:0;color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;background:#141210;overflow-x:clip}
-.label,h1,h2,h3,button,.btn{font-family:"Saira Condensed","Barlow Condensed",sans-serif}
-.btn{appearance:none;border:0;min-height:44px;padding:0 22px;border-radius:8px;font-size:18px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,color .15s,border-color .15s}
-.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid #f2c230;outline-offset:2px}
-
-.btn.primary{background:var(--red);color:#fff6ea}
-.btn.primary:hover{background:#d8352d}
-.btn.primary:disabled{background:#3a332c;color:#8d7f6c;cursor:not-allowed}
-.btn.secondary{background:transparent;color:var(--ink);border:1.5px solid #6d5f4c}
-.btn.secondary:hover{border-color:var(--metal)}
-.plate{position:relative;background:#1d1a17;border:1px solid #3a332b;border-radius:12px}
-.screw{display:none}
-.field label,.flabel{display:block;font-family:"Saira Condensed",sans-serif;font-weight:700;font-size:17px;letter-spacing:.05em;text-transform:uppercase;color:var(--metal);margin-bottom:6px}
-.help{font-size:14px;color:var(--muted);margin:6px 0 0}
-input[type=text],input[type=number],input[type=url],select,textarea{width:100%;min-height:48px;font:16px/1.4 Inter,system-ui,sans-serif;color:#1f1812;background:#f3ece0;border:1.5px solid #8d7d62;border-radius:8px;padding:10px 12px}
-input:disabled,textarea:disabled,select:disabled{opacity:.45}
-textarea{resize:vertical;min-height:88px}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
-.modal.on{display:flex}
-.modal .plate{max-width:520px;width:100%;padding:30px 26px 34px}
-.warn{border-color:#f2c230;border-width:2px}
-.warn h2{color:#f2c230;font-size:34px;line-height:1.05;margin:6px 0 10px}
+body{margin:0;color:var(--ink);font:16px/1.5 var(--sl-font-sans);background:var(--sl-color-neutral-0);overflow-x:clip}
+:not(:defined){visibility:hidden}
+.card-surface{background:var(--panel);border:1px solid var(--line);border-radius:var(--sl-border-radius-large)}
+.help{font-size:var(--sl-font-size-small);color:var(--muted);margin:6px 0 0}
+.status{font-size:var(--sl-font-size-small);margin:8px 0 0;min-height:21px}
+.status.ok{color:var(--sl-color-success-600)}.status.no{color:var(--sl-color-warning-600)}
 .row{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+sl-dialog.warn::part(title){color:var(--sl-color-warning-600);font-size:var(--sl-font-size-x-large);font-weight:700}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

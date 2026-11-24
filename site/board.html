@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en" class="sl-theme-dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Stringboard – board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;800&family=Inter:wght@400;500;600&family=Special+Elite&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Inter:wght@400;500;600;700&family=Special+Elite&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/dark.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
 <link rel="stylesheet" href="css/common.css">
 <link rel="stylesheet" href="css/board.css">
 </head><body>
 <div class="app" id="app">
-<header class="top plate">
+<header class="top card-surface">
   <a class="home" href="index.html">Home</a>
   <div class="tl">
-    <div class="tlrow"><span>Start</span><input id="tl" type="range" min="0" step="1" aria-label="Story timeline"><span>Now</span></div>
-    <div class="cap" id="cap"><span class="captxt" id="capTxt"><b id="capT"></b> <span id="capD"></span></span><button class="more" id="capMore" type="button" hidden aria-expanded="false" aria-controls="capTxt" aria-label="Show full description">…</button></div>
+    <div class="tlrow"><span>Start</span><sl-range id="tl" min="0" step="1" tooltip="none" label="Story timeline"></sl-range><span>Now</span></div>
+    <div class="cap" id="cap"><span class="captxt" id="capTxt"><b id="capT"></b> <span id="capD"></span></span><sl-button class="more" id="capMore" size="small" pill hidden aria-expanded="false">…</sl-button></div>
   </div>
-  <button class="btn secondary upd" id="updBtn" type="button">Update progress</button>
+  <sl-button id="updBtn" outline>Update progress</sl-button>
   <div class="hw">
-    <button class="pushbtn" id="infoBtn" type="button" aria-label="Settings and help" aria-expanded="false"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M19.03 10.43 L21.52 10.76 L21.52 13.24 L19.03 13.57 L18.08 15.86 L19.61 17.85 L17.85 19.61 L15.86 18.08 L13.57 19.03 L13.24 21.52 L10.76 21.52 L10.43 19.03 L8.14 18.08 L6.15 19.61 L4.39 17.85 L5.92 15.86 L4.97 13.57 L2.48 13.24 L2.48 10.76 L4.97 10.43 L5.92 8.14 L4.39 6.15 L6.15 4.39 L8.14 5.92 L10.43 4.97 L10.76 2.48 L13.24 2.48 L13.57 4.97 L15.86 5.92 L17.85 4.39 L19.61 6.15 L18.08 8.14 Z"/><circle cx="12" cy="12" r="3"/></svg></button>
-    <span class="lampwrap"><svg class="bulb" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17h6M10 20h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V17h5.2v-1.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg><button class="switch" id="lampBtn" type="button" role="switch" aria-checked="false" aria-label="Desk lamp"><i class="lever"></i><i class="screw s1"></i><i class="screw s2"></i></button></span>
+    <sl-icon-button id="infoBtn" name="gear" label="Settings and help" aria-expanded="false"></sl-icon-button>
+    <span class="lampwrap"><sl-icon name="lightbulb" class="bulb" aria-hidden="true"></sl-icon><sl-switch id="lampBtn" aria-label="Desk lamp"></sl-switch></span>
   </div>
 </header>
 
@@ -26,98 +28,96 @@
     <div class="board" id="board">
       <div class="stage" id="stage">
         <img class="map" id="map" src="assets/map.jpg" alt="" draggable="false">
+        <svg class="ink" id="ink" viewBox="0 0 1100 1000"></svg>
         <div id="cards"></div>
         <svg class="strings" id="strings" viewBox="0 0 1100 1000"></svg>
         <div id="notes"></div>
-        <svg class="ink" id="ink" viewBox="0 0 1100 1000"></svg>
       </div>
-      <div class="lamp" aria-hidden="true"><i class="shade"></i><i class="glow"></i></div>
+      <div class="lamp" aria-hidden="true"><i class="glow"></i></div>
 
       <aside class="panel" id="info" hidden>
-        <div class="ph"><h2>How it works</h2><button class="x" data-close="info" aria-label="Close">×</button></div>
+        <div class="ph"><h2>Settings</h2><sl-icon-button name="x-lg" label="Close" data-close="info"></sl-icon-button></div>
         <ul class="howto">
-          <li>The timeline slider only goes up to where you are. Slide left to rewind the story.</li>
+          <li>The timeline only goes up to where you are. Slide left to rewind the story.</li>
           <li>Drag cards and notes anywhere. Click a card for what you know, colours, image and text.</li>
           <li>Pick up the marker to draw, the eraser to wipe. Drag a sticky note from its pad.</li>
-          <li>Everything is saved in this browser only.</li>
         </ul>
+        <sl-divider></sl-divider>
         <h3>Cards</h3>
-        <label class="sl">Card size <input type="range" id="sCard" min="0.7" max="1.4" step="0.05"></label>
-        <label class="sl">Image size <input type="range" id="sImg" min="0.6" max="1.5" step="0.05"></label>
-        <div class="grp" role="radiogroup" aria-label="Image frame"><span>Image frame</span>
-          <label><input type="radio" name="shape" value="rect"> Rectangle</label>
-          <label><input type="radio" name="shape" value="circle"> Circle</label>
-          <label class="tog"><input type="checkbox" id="sRound"> Rounded corners</label></div>
-        <div class="grp" role="radiogroup" aria-label="Card style"><span>Card style</span>
-          <label><input type="radio" name="style" value="flat"> Flat</label>
-          <label><input type="radio" name="style" value="authentic"> Authentic</label>
-          <label><input type="radio" name="style" value="photo"> Photo</label>
-          <label class="tog"><input type="checkbox" id="sCardRound"> Rounded corners</label></div>
-        <div class="grp" role="radiogroup" aria-label="Font"><span>Font</span>
-          <label><input type="radio" name="font" value="mono"> <span class="f-mono">Typewriter</span></label>
-          <label><input type="radio" name="font" value="sans"> <span class="f-sans">Sans serif</span></label>
-          <label><input type="radio" name="font" value="hand"> <span class="f-hand">Handwritten</span></label></div>
-        <label class="sl">Font size <input type="range" id="sFont" min="0.8" max="1.5" step="0.05"></label>
-        <label class="sl">Random tilt <input type="range" id="sTilt" min="0" max="10" step="0.5"></label>
+        <sl-range id="sCard" label="Card size" min="0.7" max="1.4" step="0.05" tooltip="none"></sl-range>
+        <sl-range id="sImg" label="Image size" min="0.6" max="1.5" step="0.05" tooltip="none"></sl-range>
+        <sl-radio-group id="g-shape" label="Image frame" size="small">
+          <sl-radio-button value="rect">Rectangle</sl-radio-button><sl-radio-button value="circle">Circle</sl-radio-button>
+        </sl-radio-group>
+        <sl-switch id="sRound" size="small">Rounded image corners</sl-switch>
+        <sl-radio-group id="g-style" label="Card style" size="small">
+          <sl-radio-button value="flat">Flat</sl-radio-button><sl-radio-button value="authentic">Authentic</sl-radio-button><sl-radio-button value="photo">Photo</sl-radio-button>
+        </sl-radio-group>
+        <sl-switch id="sCardRound" size="small">Rounded card corners</sl-switch>
+        <sl-radio-group id="g-font" label="Font" size="small">
+          <sl-radio-button value="mono"><span class="f-mono">Typewriter</span></sl-radio-button><sl-radio-button value="sans"><span class="f-sans">Sans serif</span></sl-radio-button><sl-radio-button value="hand"><span class="f-hand">Handwritten</span></sl-radio-button>
+        </sl-radio-group>
+        <sl-range id="sFont" label="Font size" min="0.8" max="1.5" step="0.05" tooltip="none"></sl-range>
+        <sl-range id="sTilt" label="Random tilt" min="0" max="10" step="0.5" tooltip="none"></sl-range>
+        <sl-divider></sl-divider>
         <h3>Board</h3>
-        <div class="grp" role="radiogroup" aria-label="Background"><span>Background</span>
-          <label><input type="radio" name="bg" value="gloss"> Light gloss</label>
-          <label><input type="radio" name="bg" value="cork"> Light cork</label>
-          <label><input type="radio" name="bg" value="darkcork"> Dark cork</label>
-          <label><input type="radio" name="bg" value="leather"> Grey leather</label>
-          <label><input type="radio" name="bg" value="map"> Map</label></div>
-        <div class="grp" role="radiogroup" aria-label="Frame"><span>Frame</span>
-          <label><input type="radio" name="frame" value="black"> Black</label>
-          <label><input type="radio" name="frame" value="white"> White</label>
-          <label><input type="radio" name="frame" value="lightwood"> Light wood</label>
-          <label><input type="radio" name="frame" value="darkwood"> Dark wood</label></div>
-        <div class="grp"><span>String colour</span><div class="sw" id="swStr"></div></div>
-        <label class="sl">String slack <input type="range" id="sTen" min="0" max="1" step="0.05"></label>
-        <div class="grp"><span>Pin colour</span><div class="sw" id="swPin"></div></div>
-        <div class="row" style="margin-top:14px">
-          <button class="btn secondary small" id="resetLayout" type="button">Reset layout</button>
-          <button class="btn secondary small" id="clearInk" type="button">Clear drawings</button>
+        <sl-radio-group id="g-bg" label="Background" size="small">
+          <sl-radio-button value="gloss">Gloss</sl-radio-button><sl-radio-button value="cork">Cork</sl-radio-button><sl-radio-button value="darkcork">Dark cork</sl-radio-button><sl-radio-button value="leather">Leather</sl-radio-button><sl-radio-button value="map">Map</sl-radio-button>
+        </sl-radio-group>
+        <sl-radio-group id="g-frame" label="Frame" size="small">
+          <sl-radio-button value="black">Black</sl-radio-button><sl-radio-button value="white">White</sl-radio-button><sl-radio-button value="lightwood">Light wood</sl-radio-button><sl-radio-button value="darkwood">Dark wood</sl-radio-button>
+        </sl-radio-group>
+        <div class="field"><span class="flabel">String colour</span><div class="sw" id="swStr"></div></div>
+        <sl-range id="sTen" label="String slack" min="0" max="1" step="0.05" tooltip="none"></sl-range>
+        <div class="field"><span class="flabel">Pin colour</span><div class="sw" id="swPin"></div></div>
+        <div class="btns">
+          <sl-button id="resetLayout" size="small" outline>Reset layout</sl-button>
+          <sl-button id="clearInk" size="small" outline>Clear drawings</sl-button>
+          <sl-button id="resetStyles" size="small" outline>Reset all styles</sl-button>
         </div>
-        <button class="btn secondary small wide" id="resetStyles" type="button">Reset all styles</button>
+        <sl-divider></sl-divider>
         <h3>Save</h3>
-        <p class="tip" style="margin-top:0">Your board is saved in this browser automatically. To keep a copy or move it to another browser or device, save it to a file and open it there.</p>
-        <div class="row" style="margin-top:8px">
-          <button class="btn secondary small" id="exportBtn" type="button">Save to file</button>
-          <button class="btn secondary small" id="importBtn" type="button">Open saved file</button>
+        <p class="tip">Your board is saved in this browser automatically. To keep a copy or move it to another browser or device, save it to a file and open it there.</p>
+        <div class="btns">
+          <sl-button id="exportBtn" size="small" variant="primary"><sl-icon slot="prefix" name="download"></sl-icon>Save to file</sl-button>
+          <sl-button id="importBtn" size="small" outline><sl-icon slot="prefix" name="folder2-open"></sl-icon>Open saved file</sl-button>
         </div>
         <input type="file" id="importFile" accept=".json,application/json" hidden>
-        <p class="fine">Fan-made, not affiliated with any publisher. Plot summaries written by AtomiLabSlop. <a href="https://github.com/AtomiLabSlop/stringboard" target="_blank" rel="noopener">GitHub</a></p>
+        <p class="fine">Fan-made, not affiliated with any publisher. Plot summaries written by AtomiLabSlop. UI: <a href="https://shoelace.style" target="_blank" rel="noopener">Shoelace</a>. <a href="https://github.com/AtomiLabSlop/stringboard" target="_blank" rel="noopener">GitHub</a></p>
       </aside>
 
       <aside class="panel" id="cardPanel" hidden>
-        <div class="ph"><h2 id="cpName"></h2><button class="x" data-close="cardPanel" aria-label="Close">×</button></div>
+        <div class="ph"><h2 id="cpName"></h2><sl-icon-button name="x-lg" label="Close" data-close="cardPanel"></sl-icon-button></div>
         <h3>What you know so far</h3>
         <ul class="facts" id="cpFacts"></ul>
         <h3>Card colour</h3><div class="sw" id="cpBg"></div>
         <div id="cpImgWrap"><h3>Image</h3>
-          <div class="grp"><label><input type="radio" name="img" value="default"> Default</label>
-          <label><input type="radio" name="img" value="file"> From your computer</label>
-          <label><input type="radio" name="img" value="url"> From a link</label></div>
+          <sl-button-group label="Image source" id="cpImg">
+            <sl-button size="small" data-v="default">Default</sl-button>
+            <sl-button size="small" data-v="file"><sl-icon slot="prefix" name="upload"></sl-icon>Upload…</sl-button>
+            <sl-button size="small" data-v="url"><sl-icon slot="prefix" name="link-45deg"></sl-icon>From link</sl-button>
+          </sl-button-group>
           <input type="file" id="cpFile" accept="image/*" hidden>
+          <div class="urlrow" id="cpUrlRow" hidden><sl-input id="cpUrl" type="url" size="small" placeholder="https://…/image.jpg" label="Image link"></sl-input><sl-button id="cpUrlGo" size="small" variant="primary">Use</sl-button></div>
           <p class="tip">Faster: drop an image or image link onto the card, or copy an image or link and press Ctrl+V (⌘V on Mac) while pointing at the card.</p>
-          <div class="urlrow" id="cpUrlRow" hidden><input type="url" id="cpUrl" placeholder="https://…/image.jpg"><button class="btn secondary small" id="cpUrlGo" type="button">Use</button></div>
         </div>
         <h3>Text</h3>
-        <input type="text" id="cpN" aria-label="Name"><input type="text" id="cpR" aria-label="Description" style="margin-top:8px">
-        <div class="row" style="margin-top:14px"><button class="btn secondary small" id="cpReset" type="button">Reset card</button><button class="btn primary small" data-close="cardPanel" type="button">Done</button></div>
+        <sl-input id="cpN" size="small" label="Name"></sl-input>
+        <sl-input id="cpR" size="small" label="Description" style="margin-top:8px"></sl-input>
+        <div class="row" style="margin-top:16px"><sl-button id="cpReset" size="small" outline>Reset card</sl-button><sl-button size="small" variant="primary" data-close="cardPanel">Done</sl-button></div>
       </aside>
 
       <div class="notebar" id="noteBar" hidden>
-        <div class="seg" data-k="size"><button data-v="S">S</button><button data-v="M">M</button><button data-v="L">L</button></div>
-        <div class="seg" data-k="font"><button data-v="hand" class="f-hand">Aa</button><button data-v="sans" class="f-sans">Aa</button><button data-v="mono" class="f-mono">Aa</button></div>
-        <div class="seg" data-k="color"><button data-v="yellow" class="dot" style="--c:#fde96b" aria-label="Yellow"></button><button data-v="blue" class="dot" style="--c:#c3e2f4" aria-label="Light blue"></button></div>
-        <button class="del" id="noteDel" aria-label="Delete note">Delete</button>
+        <sl-button-group class="seg" data-k="size" label="Size"><sl-button size="small" data-v="S">S</sl-button><sl-button size="small" data-v="M">M</sl-button><sl-button size="small" data-v="L">L</sl-button></sl-button-group>
+        <sl-button-group class="seg" data-k="font" label="Font"><sl-button size="small" data-v="hand"><span class="f-hand">Aa</span></sl-button><sl-button size="small" data-v="sans"><span class="f-sans">Aa</span></sl-button><sl-button size="small" data-v="mono"><span class="f-mono">Aa</span></sl-button></sl-button-group>
+        <sl-button-group class="seg" data-k="color" label="Colour"><sl-button size="small" data-v="yellow" aria-label="Yellow"><span class="dot" style="--c:#fde96b"></span></sl-button><sl-button size="small" data-v="blue" aria-label="Light blue"><span class="dot" style="--c:#c3e2f4"></span></sl-button></sl-button-group>
+        <sl-icon-button id="noteDel" name="trash3" label="Delete note"></sl-icon-button>
       </div>
     </div>
   </div>
 </section>
 
-<footer class="tray plate">
+<footer class="tray card-surface">
   <div class="holder">
     <button class="marker" id="pen" type="button" aria-label="Marker" aria-pressed="false"><i class="cap"></i><i class="body"></i><i class="tip"></i></button>
     <div class="sw pens" id="swPen"></div>
@@ -130,19 +130,20 @@
 </footer>
 </div>
 
-<div class="modal" id="upd" role="dialog" aria-modal="true" aria-labelledby="updT">
-<div class="plate"><h2 id="updT" style="margin:4px 0 14px;font-style:italic;font-size:28px">Update progress</h2>
-<div class="field"><label for="uCh">Current chapter</label><input id="uCh" type="text" inputmode="numeric" placeholder="Enter chapter number, e.g. 1"></div>
-<div class="field" style="margin-top:16px"><label for="uTxt">What happened since?</label><textarea id="uTxt" placeholder="A mission you finished, a new character you met…"></textarea>
-<p class="help">We match your words against the story up to the chapter you entered, and never show anything you didn't describe.</p></div>
-<p class="status" id="uMsg" aria-live="polite"></p>
-<div class="row" style="margin-top:18px"><button class="btn secondary" id="uCancel" type="button">Cancel</button><button class="btn primary" id="uGo" type="button">Update board</button></div>
-</div></div>
-<div class="modal" id="impWarn" role="dialog" aria-modal="true" aria-labelledby="impT">
-<div class="plate warn" style="padding:26px"><h2 id="impT">Spoiler warning</h2>
-<p>This saved board goes further in the story than yours. Opening it shows events you may not have reached yet.</p>
-<div class="row" style="margin-top:18px"><button class="btn secondary" id="impNo" type="button">Cancel</button><button class="btn primary" id="impYes" type="button">Open anyway</button></div>
-</div></div>
+<sl-dialog id="upd" label="Update progress">
+  <sl-input id="uCh" label="Current chapter" inputmode="numeric" placeholder="Enter chapter number, e.g. 1"></sl-input>
+  <sl-textarea id="uTxt" label="What happened since?" placeholder="A mission you finished, a new character you met…" rows="3" resize="auto" autofocus style="margin-top:16px"
+    help-text="We match your words against the story up to the chapter you entered, and never show anything you didn't describe."></sl-textarea>
+  <p class="status" id="uMsg" aria-live="polite"></p>
+  <sl-button slot="footer" id="uCancel" outline>Cancel</sl-button>
+  <sl-button slot="footer" id="uGo" variant="primary">Update board</sl-button>
+</sl-dialog>
+
+<sl-dialog id="impWarn" class="warn" label="Spoiler warning">
+  <p style="margin:0">This saved board goes further in the story than yours. Opening it shows events you may not have reached yet.</p>
+  <sl-button slot="footer" id="impNo" outline>Cancel</sl-button>
+  <sl-button slot="footer" id="impYes" variant="primary">Open anyway</sl-button>
+</sl-dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="js/story.js"></script>

@@ -16,7 +16,7 @@ let saveT;
 function save() { clearTimeout(saveT); saveT = setTimeout(() => { if (!SB.setState(GAME, st)) toast('Could not save – browser storage is full.'); }, 250); }
 function toast(msg, action, fn) {
   const t = $('#toast'); t.innerHTML = ''; t.append(msg);
-  if (action) { const b = document.createElement('button'); b.textContent = action; b.onclick = () => { fn(); t.classList.remove('on'); }; t.append(b); }
+  if (action) { const b = document.createElement('sl-button'); b.size = 'small'; b.variant = 'primary'; b.outline = true; b.textContent = action; b.onclick = () => { fn(); t.classList.remove('on'); }; t.append(b); }
   t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), action ? 7000 : 3500);
 }
 const lum = hex => { const n = parseInt(hex.slice(1), 16), c = [n >> 16, n >> 8 & 255, n & 255].map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; };
@@ -56,7 +56,7 @@ function applySettings() {
   board.className = 'board bg-' + s.bg;
   $('#frame').className = 'frame f-' + s.frame;
   document.body.classList.toggle('lamp-on', s.lamp);
-  $('#lampBtn').setAttribute('aria-checked', s.lamp);
+  $('#lampBtn').checked = s.lamp;
   $('#pen').style.setProperty('--pc', COL[s.penColor]);
   renderCards(); renderNotes(); renderInk();
 }
@@ -182,7 +182,7 @@ function openCardPanel(id) {
   });
   $('#cpImgWrap').hidden = !!c.note;
   const kind = cu.img ? (cu.img.startsWith('data:') ? 'file' : 'url') : 'default';
-  $$('input[name=img]').forEach(r => r.checked = r.value === kind);
+  $$('#cpImg sl-button').forEach(b => b.variant = b.dataset.v === kind ? 'primary' : 'default');
   $('#cpUrlRow').hidden = kind !== 'url'; $('#cpUrl').value = kind === 'url' ? cu.img : '';
   $('#cpN').value = cu.n || c.n; $('#cpR').value = cu.r || roleAt(c, view);
   $('#cardPanel').hidden = false;
@@ -206,12 +206,12 @@ function placeCardPanel(id) {
     else Object.assign(p.style, { top: m + 'px', bottom: (br.bottom - cr.top + m) + 'px' });
   }
 }
-$$('input[name=img]').forEach(r => r.addEventListener('change', () => {
-  const id = openCard; if (!id) return;
-  $('#cpUrlRow').hidden = r.value !== 'url';
-  if (r.value === 'default') { delete custom(id).img; save(); renderCards(); }
-  if (r.value === 'file') $('#cpFile').click();
-  if (r.value === 'url') $('#cpUrl').focus();
+$$('#cpImg sl-button').forEach(b => b.addEventListener('click', () => {
+  const id = openCard, v = b.dataset.v; if (!id) return;
+  $('#cpUrlRow').hidden = v !== 'url';
+  if (v === 'default') { delete custom(id).img; save(); renderCards(); openCardPanel(id); }
+  if (v === 'file') $('#cpFile').click();
+  if (v === 'url') { $$('#cpImg sl-button').forEach(x => x.variant = x === b ? 'primary' : 'default'); setTimeout(() => $('#cpUrl').focus(), 50); }
 }));
 /* Image helpers: file -> small jpeg data URL, or an http(s) link. Images stay in this browser only. */
 function setCardImageFromFile(id, f) {
@@ -267,8 +267,8 @@ document.addEventListener('paste', e => {
   const txt = e.clipboardData.getData('text/plain');
   if (setCardImageFromUrl(id, txt)) { e.preventDefault(); toast('Image added to ' + (custom(id).n || byId(id).n) + '.'); }
 });
-$('#cpN').addEventListener('input', e => { const c = byId(openCard); custom(openCard).n = e.target.value && e.target.value !== c.n ? e.target.value : undefined; $('#cpName').textContent = e.target.value || c.n; save(); renderCards(); });
-$('#cpR').addEventListener('input', e => { const c = byId(openCard); custom(openCard).r = e.target.value && e.target.value !== roleAt(c, view) ? e.target.value : undefined; save(); renderCards(); });
+$('#cpN').addEventListener('sl-input', e => { const c = byId(openCard); custom(openCard).n = e.target.value && e.target.value !== c.n ? e.target.value : undefined; $('#cpName').textContent = e.target.value || c.n; save(); renderCards(); });
+$('#cpR').addEventListener('sl-input', e => { const c = byId(openCard); custom(openCard).r = e.target.value && e.target.value !== roleAt(c, view) ? e.target.value : undefined; save(); renderCards(); });
 $('#cpReset').addEventListener('click', () => { delete st.cards[openCard]; delete st.pos[openCard]; save(); renderCards(); openCardPanel(openCard); });
 
 function closePanel(id) { $('#' + id).hidden = true; if (id === 'info') $('#infoBtn').setAttribute('aria-expanded', 'false'); if (id === 'cardPanel') openCard = null; }
@@ -293,19 +293,19 @@ function syncSettings() {
   const s = st.set;
   $('#sCard').value = s.cardSize; $('#sImg').value = s.imgSize; $('#sFont').value = s.fontSize; $('#sTilt').value = s.tilt; $('#sTen').value = s.tension;
   $('#sCardRound').checked = s.cardRounded;
-  $('#sRound').checked = s.rounded; $('#sRound').disabled = s.shape === 'circle'; $('#sRound').closest('label').classList.toggle('dis', s.shape === 'circle');
-  ['shape', 'style', 'font', 'bg', 'frame'].forEach(k => $$(`input[name=${k}]`).forEach(r => r.checked = r.value === s[k]));
+  $('#sRound').checked = s.rounded; $('#sRound').disabled = s.shape === 'circle';
+  ['shape', 'style', 'font', 'bg', 'frame'].forEach(k => { $('#g-' + k).value = s[k]; });
   swatches($('#swStr'), 'strColor', 'String'); swatches($('#swPin'), 'pinColor', 'Pin'); swatches($('#swPen'), 'penColor', 'Marker');
 }
 [['#sCard', 'cardSize'], ['#sImg', 'imgSize'], ['#sFont', 'fontSize'], ['#sTilt', 'tilt'], ['#sTen', 'tension']].forEach(([sel, k]) =>
-  $(sel).addEventListener('input', e => { st.set[k] = +e.target.value; save(); applySettings(); }));
-$('#sRound').addEventListener('change', e => { st.set.rounded = e.target.checked; save(); applySettings(); });
-$('#sCardRound').addEventListener('change', e => { st.set.cardRounded = e.target.checked; save(); applySettings(); });
-['shape', 'style', 'font', 'bg', 'frame'].forEach(k => $$(`input[name=${k}]`).forEach(r => r.addEventListener('change', () => { st.set[k] = r.value; save(); applySettings(); syncSettings(); })));
+  $(sel).addEventListener('sl-input', e => { st.set[k] = +e.target.value; save(); applySettings(); }));
+$('#sRound').addEventListener('sl-change', e => { st.set.rounded = e.target.checked; save(); applySettings(); });
+$('#sCardRound').addEventListener('sl-change', e => { st.set.cardRounded = e.target.checked; save(); applySettings(); });
+['shape', 'style', 'font', 'bg', 'frame'].forEach(k => $('#g-' + k).addEventListener('sl-change', e => { st.set[k] = e.target.value; save(); applySettings(); syncSettings(); }));
 $('#infoBtn').addEventListener('click', () => {
   const p = $('#info'), open = p.hidden; closePanel('cardPanel'); p.hidden = !open; $('#infoBtn').setAttribute('aria-expanded', open);
 });
-$('#lampBtn').addEventListener('click', () => { st.set.lamp = !st.set.lamp; save(); applySettings(); });
+$('#lampBtn').addEventListener('sl-change', e => { st.set.lamp = e.target.checked; save(); applySettings(); });
 $('#resetStyles').addEventListener('click', () => {
   const oldSet = st.set, oldBg = {};
   Object.entries(st.cards).forEach(([id, cu]) => { if (cu.bg) { oldBg[id] = cu.bg; delete cu.bg; } });
@@ -343,17 +343,17 @@ $('#importFile').addEventListener('change', e => {
     let d; try { d = JSON.parse(txt); } catch (err) { toast("That file isn't a Stringboard save."); return; }
     if (!d || d.app !== 'stringboard' || !d.state || typeof d.state.now !== 'number') { toast("That file isn't a Stringboard save."); return; }
     if (d.game !== GAME) { toast('That save is for another game.'); return; }
-    if (d.state.now > st.now) { pendingImport = d.state; $('#impWarn').classList.add('on'); $('#impNo').focus(); return; }
+    if (d.state.now > st.now) { pendingImport = d.state; $('#impWarn').show(); return; }
     applyImport(d.state);
   });
 });
-$('#impNo').addEventListener('click', () => { pendingImport = null; $('#impWarn').classList.remove('on'); });
-$('#impYes').addEventListener('click', () => { $('#impWarn').classList.remove('on'); if (pendingImport) applyImport(pendingImport); pendingImport = null; });
+$('#impNo').addEventListener('click', () => { pendingImport = null; $('#impWarn').hide(); });
+$('#impYes').addEventListener('click', () => { $('#impWarn').hide(); if (pendingImport) applyImport(pendingImport); pendingImport = null; });
 
 /* ---------- timeline + progress update ---------- */
-$('#tl').addEventListener('input', e => { view = +e.target.value; renderTimeline(); renderCards(); if (openCard) openCardPanel(openCard); });
-$('#updBtn').addEventListener('click', () => { $('#uCh').value = S.steps[st.now].ch; $('#uTxt').value = ''; $('#uMsg').textContent = ''; $('#uMsg').className = 'status'; $('#upd').classList.add('on'); $('#uTxt').focus(); });
-$('#uCancel').addEventListener('click', () => $('#upd').classList.remove('on'));
+$('#tl').addEventListener('sl-input', e => { view = +e.target.value; renderTimeline(); renderCards(); if (openCard) openCardPanel(openCard); });
+$('#updBtn').addEventListener('click', () => { $('#uCh').value = S.steps[st.now].ch; $('#uTxt').value = ''; $('#uMsg').textContent = ''; $('#uMsg').className = 'status'; $('#upd').show(); });
+$('#uCancel').addEventListener('click', () => $('#upd').hide());
 $('#uGo').addEventListener('click', () => {
   const msg = $('#uMsg'), v = $('#uCh').value.trim();
   if (!/^\d{1,3}$/.test(v) || +v < 1) { msg.textContent = 'Enter a chapter number, e.g. 3.'; msg.className = 'status no'; return; }
@@ -366,7 +366,7 @@ $('#uGo').addEventListener('click', () => {
     msg.className = 'status no'; return;
   }
   undoNow = st.now; st.now = next; view = next; save();
-  $('#upd').classList.remove('on'); renderTimeline(); renderCards();
+  $('#upd').hide(); renderTimeline(); renderCards();
   toast('Board updated. New things are pinned up.', 'Undo', () => { st.now = undoNow; view = undoNow; save(); renderTimeline(); renderCards(); });
 });
 
@@ -379,7 +379,7 @@ function setMode(m) {
 }
 $('#pen').addEventListener('click', () => setMode('pen'));
 $('#eraser').addEventListener('click', () => setMode('erase'));
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (mode) setMode(mode); closePanel('info'); closePanel('cardPanel'); $('#upd').classList.remove('on'); hideNoteBar(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (mode) setMode(mode); closePanel('info'); closePanel('cardPanel'); hideNoteBar(); } });
 /* Smooth, sketchy marker lines: points are eased while drawing and joined with curves. */
 function smoothD(pts, k) {
   const P = pts.map(p => [p[0] * k, p[1] * k]);
@@ -457,13 +457,13 @@ function selectNote(id, el) {
   selNote = id; $$('.note').forEach(x => x.classList.remove('sel')); el.classList.add('sel');
   const n = st.notes.find(x => x.id === id), bar = $('#noteBar'), br = board.getBoundingClientRect(), r = el.getBoundingClientRect();
   bar.hidden = false;
-  $$('#noteBar .seg').forEach(seg => [...seg.children].forEach(b => b.setAttribute('aria-pressed', n[seg.dataset.k] === b.dataset.v)));
+  $$('#noteBar .seg').forEach(seg => [...seg.children].forEach(b => b.variant = n[seg.dataset.k] === b.dataset.v ? 'primary' : 'default'));
   const left = Math.max(6, Math.min(br.width - bar.offsetWidth - 6, r.left - br.left));
   const top = r.top - br.top - bar.offsetHeight - 10;
   bar.style.left = left + 'px'; bar.style.top = (top < 6 ? r.bottom - br.top + 10 : top) + 'px';
 }
 function hideNoteBar() { $('#noteBar').hidden = true; selNote = null; $$('.note').forEach(x => x.classList.remove('sel')); }
-$$('#noteBar .seg button').forEach(b => b.addEventListener('click', () => {
+$$('#noteBar .seg sl-button').forEach(b => b.addEventListener('click', () => {
   const n = st.notes.find(x => x.id === selNote); if (!n) return;
   n[b.parentNode.dataset.k] = b.dataset.v; save(); const id = n.id; renderNotes();
   const el = [...notesEl.children][st.notes.indexOf(n)]; selectNote(id, el);
@@ -493,6 +493,7 @@ $$('.pad').forEach(pad => pad.addEventListener('pointerdown', e => {
 
 /* ---------- start ---------- */
 (async () => {
+  await Promise.race([Promise.all(['sl-range', 'sl-radio-group', 'sl-radio-button', 'sl-switch', 'sl-button', 'sl-input', 'sl-dialog'].map(t => customElements.whenDefined(t))), new Promise(r => setTimeout(r, 4000))]);
   st = SB.getState(GAME);
   if (st.now == null) { location.replace('index.html'); return; }
   try { S = await SB.load(GAME); } catch (e) { document.body.innerHTML = '<p style="padding:40px">Could not load the story data. <a href="index.html">Back</a></p>'; return; }

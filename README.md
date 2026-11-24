@@ -14,7 +14,7 @@ Live: https://atomilab.fi/stringboard/
 - **Your own images** – add your own screenshots to any card. They are stored only in your browser (localStorage).
 - **Progress matching** – free-text descriptions ("did my first drug deal") are matched to story steps with simple keyword matching in the browser. It only looks inside the chapter you entered and never shows unmatched steps.
 - **Board tools** – drag cards, strings stay pinned; marker and eraser; sticky notes (S/M/L, two colours, three fonts); desk lamp mode; settings for card size, image size and frame shape, card style, font, background (incl. map), frame, string and pin colours, string slack and random tilt.
-- **Plain web tech** – HTML, CSS and JavaScript. No build step, no dependencies.
+- **Plain web tech** – HTML, CSS and JavaScript, no build step. UI components from [Shoelace](https://shoelace.style) (MIT) via CDN.
 
 ## Current boards
 - GTA VI – up to the start of Chapter 3 (*Dealer's Choice*).
