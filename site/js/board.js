@@ -38,7 +38,7 @@ function buildCards() {
     const d = document.createElement('div');
     d.className = 'card' + (c.main ? ' main' : '') + (c.note ? ' note-card' : '');
     d.dataset.id = c.id; d.tabIndex = 0; d.setAttribute('role', 'button');
-    d.innerHTML = `<div class="pht">${sil(c)}<img alt="" referrerpolicy="no-referrer" draggable="false"><i class="xx"></i></div><div class="nm"></div><div class="rl"></div>`;
+    d.innerHTML = `<div class="pht">${sil(c)}<img alt="" referrerpolicy="no-referrer" draggable="false"><i class="xx"></i></div><div class="nm"></div><div class="rl"></div><svg class="cink" aria-hidden="true"></svg>`;
     d.querySelector('img').addEventListener('error', e => { e.target.parentNode.classList.remove('has'); });
     cardsEl.append(d); els[c.id] = d;
     dragify(d, () => st.pos[c.id] || { x: c.x, y: c.y }, p => { st.pos[c.id] = p; }, () => openCardPanel(c.id));
@@ -83,6 +83,7 @@ function renderCards() {
     else { img.removeAttribute('src'); ph.classList.remove('has'); }
     d.setAttribute('aria-label', (cu.n || c.n) + ', ' + d.querySelector('.rl').textContent);
   });
+  requestAnimationFrame(() => S.chars.forEach(c => renderCardInk(c.id)));
   requestAnimationFrame(renderStrings);
 }
 function pinOf(id) {
@@ -276,7 +277,7 @@ $('#resetStyles').addEventListener('click', () => {
   });
 });
 $('#resetLayout').addEventListener('click', () => { st.pos = {}; save(); renderCards(); toast('Cards are back in their original places.'); });
-$('#clearInk').addEventListener('click', () => { const old = st.ink; st.ink = []; save(); renderInk(); toast('Drawings cleared.', 'Undo', () => { st.ink = old; save(); renderInk(); }); });
+$('#clearInk').addEventListener('click', () => { const old = st.ink, oldC = st.cardInk; st.ink = []; st.cardInk = {}; save(); renderInk(); renderCards(); toast('Drawings cleared.', 'Undo', () => { st.ink = old; st.cardInk = oldC; save(); renderInk(); renderCards(); }); });
 
 /* ---------- timeline + progress update ---------- */
 $('#tl').addEventListener('input', e => { view = +e.target.value; renderTimeline(); renderCards(); if (openCard) openCardPanel(openCard); });
@@ -308,17 +309,62 @@ function setMode(m) {
 $('#pen').addEventListener('click', () => setMode('pen'));
 $('#eraser').addEventListener('click', () => setMode('erase'));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (mode) setMode(mode); closePanel('info'); closePanel('cardPanel'); $('#upd').classList.remove('on'); hideNoteBar(); } });
-function strokePath(s) { return s.p.map((pt, i) => (i ? 'L' : 'M') + pt[0] + ' ' + pt[1]).join(''); }
-function renderInk() { ink.innerHTML = st.ink.map(s => `<path d="${strokePath(s)}" fill="none" stroke="${COL[s.c]}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>`).join(''); }
+/* Smooth, sketchy marker lines: points are eased while drawing and joined with curves. */
+function smoothD(pts, k) {
+  const P = pts.map(p => [p[0] * k, p[1] * k]);
+  if (P.length < 3) return 'M' + P.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L');
+  let d = `M${P[0][0].toFixed(1)} ${P[0][1].toFixed(1)}`;
+  for (let i = 1; i < P.length - 1; i++) {
+    const mx = (P[i][0] + P[i + 1][0]) / 2, my = (P[i][1] + P[i + 1][1]) / 2;
+    d += ` Q${P[i][0].toFixed(1)} ${P[i][1].toFixed(1)} ${mx.toFixed(1)} ${my.toFixed(1)}`;
+  }
+  const L = P[P.length - 1]; return d + ` L${L[0].toFixed(1)} ${L[1].toFixed(1)}`;
+}
+const strokeSvg = (s, k, w) => `<path d="${smoothD(s.p, k)}" fill="none" stroke="${COL[s.c]}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" opacity=".86"/>`;
+function renderInk() { ink.innerHTML = st.ink.map(s => strokeSvg(s, 1, 4)).join(''); }
+function renderCardInk(id) {
+  const d = els[id]; if (!d) return;
+  const w = d.offsetWidth; d.querySelector('.cink').innerHTML = (st.cardInk[id] || []).map(s => strokeSvg(s, w, 2.6)).join('');
+}
+/* Ink belongs to what you start on: board ink stays under the cards, card ink stays inside its card and moves with it. */
 board.addEventListener('pointerdown', e => {
-  if (!mode || e.target.closest('.panel,#noteBar')) return; e.preventDefault(); e.stopPropagation(); board.setPointerCapture(e.pointerId);
-  let cur = null;
-  const at = ev => { const v = toVirtual(ev); return [Math.round(v.x * 10) / 10, Math.round(v.y * 10) / 10]; };
-  if (mode === 'pen') { cur = { c: st.set.penColor, p: [at(e)] }; st.ink.push(cur); }
-  const erase = pt => { const before = st.ink.length; st.ink = st.ink.filter(s => !s.p.some(q => Math.hypot(q[0] - pt[0], q[1] - pt[1]) < 14)); if (st.ink.length !== before) renderInk(); };
-  if (mode === 'erase') erase(at(e));
-  const mv = ev => { const pt = at(ev); if (cur) { cur.p.push(pt); renderInk(); } else erase(pt); };
-  const up = () => { board.removeEventListener('pointermove', mv); board.removeEventListener('pointerup', up); board.removeEventListener('pointercancel', up); if (cur && cur.p.length < 2) cur.p.push([cur.p[0][0] + .5, cur.p[0][1] + .5]); renderInk(); save(); };
+  if (!mode || e.target.closest('.panel,#noteBar')) return;
+  e.preventDefault(); e.stopPropagation(); board.setPointerCapture(e.pointerId);
+  const cardEl = e.target.closest('.card'), cid = cardEl ? cardEl.dataset.id : null;
+  const toLocal = ev => {
+    const v = toVirtual(ev);
+    if (!cid) return [v.x, v.y];
+    const c = byId(cid), p = st.pos[cid] || { x: c.x, y: c.y }, w = cardEl.offsetWidth, h = cardEl.offsetHeight;
+    const a = -hash(cid) * st.set.tilt * Math.PI / 180, dx = v.x - (p.x + w / 2), dy = v.y - (p.y + h / 2);
+    return [(dx * Math.cos(a) - dy * Math.sin(a) + w / 2) / w, (dx * Math.sin(a) + dy * Math.cos(a) + h / 2) / w];
+  };
+  const list = cid ? (st.cardInk[cid] = st.cardInk[cid] || []) : st.ink;
+  const unit = cid ? 1 / cardEl.offsetWidth : 1;           // one virtual pixel in this stroke's units
+  const rnd = v => cid ? Math.round(v * 1000) / 1000 : Math.round(v * 10) / 10;
+  const redraw = () => cid ? renderCardInk(cid) : renderInk();
+  let cur = null, sm = toLocal(e);
+  if (mode === 'pen') { cur = { c: st.set.penColor, p: [sm.map(rnd)] }; list.push(cur); }
+  const erase = pt => {
+    const keep = list.filter(s => !s.p.some(q => Math.hypot(q[0] - pt[0], q[1] - pt[1]) < 14 * unit));
+    if (keep.length !== list.length) { list.splice(0, list.length, ...keep); redraw(); }
+  };
+  if (mode === 'erase') erase(sm);
+  const mv = ev => {
+    const raw = toLocal(ev);
+    if (!cur) { erase(raw); return; }
+    sm = [sm[0] + (raw[0] - sm[0]) * .35, sm[1] + (raw[1] - sm[1]) * .35];
+    const last = cur.p[cur.p.length - 1];
+    if (Math.hypot(sm[0] - last[0], sm[1] - last[1]) < 1.5 * unit) return;
+    cur.p.push(sm.map(rnd)); redraw();
+  };
+  const up = ev => {
+    board.removeEventListener('pointermove', mv); board.removeEventListener('pointerup', up); board.removeEventListener('pointercancel', up);
+    if (cur) {
+      const raw = toLocal(ev); cur.p.push([sm[0] + (raw[0] - sm[0]) * .6, sm[1] + (raw[1] - sm[1]) * .6].map(rnd));
+      if (cur.p.length < 2) cur.p.push([cur.p[0][0] + unit / 2, cur.p[0][1] + unit / 2]);
+    }
+    redraw(); save();
+  };
   board.addEventListener('pointermove', mv); board.addEventListener('pointerup', up); board.addEventListener('pointercancel', up);
 }, true);
 
@@ -380,7 +426,7 @@ $$('.pad').forEach(pad => pad.addEventListener('pointerdown', e => {
   if (st.now == null) { location.replace('index.html'); return; }
   try { S = await SB.load(GAME); } catch (e) { document.body.innerHTML = '<p style="padding:40px">Could not load the story data. <a href="index.html">Back</a></p>'; return; }
   st.now = Math.min(st.now, S.steps.length - 1);
-  st.set = Object.assign({}, DEF, st.set || {}); st.pos = st.pos || {}; st.cards = st.cards || {}; st.ink = st.ink || []; st.notes = st.notes || [];
+  st.set = Object.assign({}, DEF, st.set || {}); st.pos = st.pos || {}; st.cards = st.cards || {}; st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || [];
   view = st.now;
   buildCards(); syncSettings(); applySettings(); renderTimeline();
   ro.observe(board); layout();

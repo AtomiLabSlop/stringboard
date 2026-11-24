@@ -61,7 +61,7 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .board.erasing,.board.erasing *{cursor:cell!important}
 /* cards */
 #cards,#notes{position:absolute;inset:0}
-#cards{z-index:1}.strings{z-index:2}#notes{z-index:3}.ink{z-index:4}
+.ink{z-index:0}#cards{z-index:1}.strings{z-index:2}#notes{z-index:3}
 #notes{pointer-events:none}.note{pointer-events:auto}
 .card{--cw:130px;--bgc:#f6f1e6;--fg:#231a12;--fg2:#6b5847;position:absolute;width:var(--cw);padding:calc(var(--cw)*.075) calc(var(--cw)*.075) calc(var(--cw)*.085);background:var(--bgc);color:var(--fg);cursor:grab;user-select:none;touch-action:none;transition:box-shadow .2s;text-align:center}
 .card.main{--cw:160px}
@@ -73,6 +73,7 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .card .pht.has svg{display:none}
 .card .pht svg{position:absolute;inset:0;width:100%;height:100%}
 .card .xx{position:absolute;inset:0;display:none}
+.card .cink{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none}
 .card.dead .xx{display:block;background:linear-gradient(to top right,transparent calc(50% - 2px),#d63a3a calc(50% - 2px) calc(50% + 2px),transparent calc(50% + 2px)),linear-gradient(to top left,transparent calc(50% - 2px),#d63a3a calc(50% - 2px) calc(50% + 2px),transparent calc(50% + 2px))}
 .card .nm{margin-top:7px;font-weight:700;font-size:var(--fs);line-height:1.15}
 .card .rl{font-size:calc(var(--fs)*.86);line-height:1.2;color:var(--fg2);margin-top:2px}
