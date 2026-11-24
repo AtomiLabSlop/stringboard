@@ -199,3 +199,11 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .panel sl-radio-group::part(button-group__base){flex-wrap:wrap}
 
 .nolabel::part(form-control-label){position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* card panel rhythm */
+#cardPanel{--sl-input-label-font-size-small:13px;padding:16px 18px 20px}
+#cardPanel .ph{margin-bottom:14px}
+#cardPanel .facts{margin:0;padding-left:18px;line-height:1.5}#cardPanel .facts li{margin:0 0 6px}
+#cardPanel .tip{margin:0}
+#cardPanel .urlrow{margin:0}
+.sw{padding:3px}
