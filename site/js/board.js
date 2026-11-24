@@ -160,9 +160,29 @@ $('#capMore').addEventListener('click', () => {
 /* ---------- scaling: board keeps a fixed virtual space so cards stay put relative to the map ---------- */
 /* zoom + pan (not part of the saved board) */
 let zoom = 1; const pan = { x: 0, y: 0 }; const ZMIN = 0.5, ZMAX = 3;
+/* visible cards in board space: bounding box + centre point */
+function cardsBox() {
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity, sx = 0, sy = 0, n = 0;
+  (S ? S.chars : []).forEach(c => {
+    const d = els[c.id]; if (!d || d.hidden) return;
+    const p = st.pos[c.id] || { x: c.x, y: c.y }, w = d.offsetWidth, h = d.offsetHeight;
+    x0 = Math.min(x0, p.x); y0 = Math.min(y0, p.y); x1 = Math.max(x1, p.x + w); y1 = Math.max(y1, p.y + h);
+    sx += p.x + w / 2; sy += p.y + h / 2; n++;
+  });
+  return n ? { x0, y0, x1, y1, cx: sx / n, cy: sy / n } : null;
+}
+/* never let panning push the centre of all cards out of view */
+function clampPan(r) {
+  const b = cardsBox(); if (!b) return;
+  const tx = (r.width - VW * scale) / 2, ty = (r.height - VH * scale) / 2;
+  const sx = tx + pan.x + b.cx * scale, sy = ty + pan.y + b.cy * scale;
+  if (sx < 0) pan.x -= sx; if (sx > r.width) pan.x -= sx - r.width;
+  if (sy < 0) pan.y -= sy; if (sy > r.height) pan.y -= sy - r.height;
+}
 function layout() {
   const r = board.getBoundingClientRect();
   scale = Math.min(r.width / VW, r.height / VH) * zoom;
+  clampPan(r);
   stage.style.transform = `translate(${(r.width - VW * scale) / 2 + pan.x}px,${(r.height - VH * scale) / 2 + pan.y}px) scale(${scale})`;
   $('#zPct').textContent = Math.round(zoom * 100) + '%';
   board.classList.toggle('zoomed', zoom > 1);
@@ -180,6 +200,15 @@ function zoomTo(z, cx, cy) {
 }
 $('#zIn').addEventListener('click', () => zoomTo(zoom * 1.25));
 $('#zOut').addEventListener('click', () => zoomTo(zoom / 1.25));
+$('#zFit').addEventListener('click', () => {
+  const b = cardsBox(); if (!b) return;
+  const r = board.getBoundingClientRect(), base = Math.min(r.width / VW, r.height / VH), M = 10;
+  const s = Math.min((r.width - 2 * M) / (b.x1 - b.x0), (r.height - 2 * M) / (b.y1 - b.y0));
+  zoom = Math.min(ZMAX, Math.max(ZMIN, s / base)); const s2 = base * zoom;
+  pan.x = r.width / 2 - ((b.x0 + b.x1) / 2) * s2 - (r.width - VW * s2) / 2;
+  pan.y = r.height / 2 - ((b.y0 + b.y1) / 2) * s2 - (r.height - VH * s2) / 2;
+  layout(); if (openCard) placeCardPanel(openCard); hideNoteBar();
+});
 $('#zPct').addEventListener('click', () => { pan.x = pan.y = 0; zoomTo(1); });
 board.addEventListener('wheel', e => { if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); zoomTo(zoom * (e.deltaY < 0 ? 1.1 : 1 / 1.1), e.clientX, e.clientY); }, { passive: false });
 /* drag the empty board to pan */

@@ -230,3 +230,5 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .zpct{min-width:48px;height:32px;border:0;background:none;color:var(--ink);font:600 12px var(--sl-font-sans);cursor:pointer;border-radius:6px}
 .zpct:hover{background:var(--sl-color-neutral-100)}
 .board.zoomed{cursor:grab}.board.panning{cursor:grabbing}
+
+.zoom sl-divider{--spacing:2px;height:20px}
