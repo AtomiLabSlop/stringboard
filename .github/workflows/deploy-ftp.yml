@@ -16,6 +16,9 @@ jobs:
       - name: Get latest code
         uses: actions/checkout@v6
 
+      - name: Stamp asset versions (cache busting)
+        run: sed -i "s/__V__/${GITHUB_SHA::7}/g" site/*.html
+
       - name: Upload via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:

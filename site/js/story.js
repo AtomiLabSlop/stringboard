@@ -3,7 +3,7 @@ window.SB = (() => {
   const norm = s => (s || '').toLowerCase().replace(/[’`´]/g, "'").normalize('NFD').replace(/[̀-ͯ]/g, '');
   const cache = {};
   async function load(game) {
-    if (!cache[game]) cache[game] = fetch('data/' + encodeURIComponent(game) + '.json').then(r => { if (!r.ok) throw new Error('No data'); return r.json(); });
+    if (!cache[game]) cache[game] = fetch('data/' + encodeURIComponent(game) + '.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('No data'); return r.json(); });
     return cache[game];
   }
   /* Default card images: data/<game>-images.json → { images: { id: { url, credit } } }. Missing file = no defaults. */
