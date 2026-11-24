@@ -34,6 +34,7 @@
         <div id="cards"></div>
         <svg class="strings" id="strings" viewBox="0 0 1100 1000"></svg>
         <div id="notes"></div>
+        <svg class="pins" id="pins" viewBox="0 0 1100 1000" aria-hidden="true"></svg>
       </div>
       <div class="lamp" aria-hidden="true"></div>
 
@@ -119,6 +120,10 @@
         <h3>What you know so far</h3>
         <ul class="facts" id="cpFacts"></ul>
         <h3>Card colour</h3><div class="sw" id="cpBg"></div>
+        <h3>Layer</h3>
+        <sl-radio-group id="cpLayer" size="small" label="Card position" class="nolabel">
+          <sl-radio-button value="under">Under strings</sl-radio-button><sl-radio-button value="over">Over strings</sl-radio-button>
+        </sl-radio-group>
         <div id="cpImgWrap"><h3>Image</h3>
           <sl-button-group label="Image source" id="cpImg">
             <sl-button size="small" data-v="default">Default</sl-button>

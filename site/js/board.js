@@ -9,7 +9,7 @@ const CARD_BG = { white: '#ffffff', cream: '#f3ead7', tan: '#c9a67a', slate: '#3
 const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'photo', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', lamp: false };
 
 let S, st, view, scale = 1, mode = null, selNote = null, openCard = null, undoNow = null;
-const board = $('#board'), stage = $('#stage'), cardsEl = $('#cards'), notesEl = $('#notes'), strSvg = $('#strings'), ink = $('#ink');
+const board = $('#board'), stage = $('#stage'), cardsEl = $('#cards'), notesEl = $('#notes'), strSvg = $('#strings'), ink = $('#ink'), pinSvg = $('#pins');
 const els = {};
 
 let saveT;
@@ -47,6 +47,9 @@ function buildCards() {
 }
 const byId = id => S.chars.find(c => c.id === id);
 const custom = id => (st.cards[id] = st.cards[id] || {});
+/* Stacking: cards under strings 10+, strings 500, cards over strings 600+, notes 900, pins 1000. Last moved card is highest in its layer. */
+function cardZ(id) { const i = st.order.indexOf(id); return ((st.cards[id] || {}).over ? 600 : 10) + (i < 0 ? 0 : i + 1); }
+function bringToFront(id) { st.order = st.order.filter(x => x !== id).concat(id); S.chars.forEach(c => { els[c.id].style.zIndex = cardZ(c.id); }); }
 function roleAt(c, v) { let r = c.r; (c.rs || []).forEach(([s, t]) => { if (s <= v) r = t; }); return r; }
 
 /* ---------- render ---------- */
@@ -70,7 +73,7 @@ function renderCards() {
     d.style.setProperty('--cw', w + 'px');
     d.style.setProperty('--phh', (c.main ? 104 : 80) * s.imgSize * s.cardSize + 'px');
     d.style.setProperty('--fs', 13.5 * s.fontSize * s.cardSize + 'px');
-    d.style.left = p.x + 'px'; d.style.top = p.y + 'px';
+    d.style.left = p.x + 'px'; d.style.top = p.y + 'px'; d.style.zIndex = cardZ(c.id);
     d.style.rotate = (hash(c.id) * s.tilt).toFixed(2) + 'deg';
     const bg = cu.bg ? CARD_BG[cu.bg] : null;
     if (bg) { const dark = lum(bg) < .35; d.style.setProperty('--bgc', bg); d.style.setProperty('--fg', dark ? '#f4efe4' : '#231a12'); d.style.setProperty('--fg2', dark ? '#cbbfa9' : '#5a4a3a'); }
@@ -104,9 +107,9 @@ function renderStrings() {
     pins.add(a); pins.add(b);
   });
   S.chars.forEach(c => { if (c.a <= view) pins.add(c.id); });
-  const pc = COL[s.pinColor];
-  pins.forEach(id => { const [x, y] = pinOf(id); out += `<circle cx="${x + 1.5}" cy="${y + 2.5}" r="6" fill="rgba(0,0,0,.35)"/><circle cx="${x}" cy="${y}" r="6.5" fill="${pc}" stroke="rgba(0,0,0,.45)" stroke-width="1"/><circle cx="${x - 2}" cy="${y - 2}" r="2" fill="rgba(255,255,255,.65)"/>`; });
-  strSvg.innerHTML = out;
+  const pc = COL[s.pinColor]; let pout = '';
+  pins.forEach(id => { const [x, y] = pinOf(id); pout += `<circle cx="${x + 1.5}" cy="${y + 2.5}" r="6" fill="rgba(0,0,0,.35)"/><circle cx="${x}" cy="${y}" r="6.5" fill="${pc}" stroke="rgba(0,0,0,.45)" stroke-width="1"/><circle cx="${x - 2}" cy="${y - 2}" r="2" fill="rgba(255,255,255,.65)"/>`; });
+  strSvg.innerHTML = out; pinSvg.innerHTML = pout;
 }
 function renderTimeline() {
   const tl = $('#tl'); tl.max = st.now; tl.value = view;
@@ -149,7 +152,7 @@ function dragify(el, get, set, onClick) {
     const mv = ev => {
       const v = toVirtual(ev), dx = v.x - start.x, dy = v.y - start.y;
       if (!moved && Math.hypot(dx, dy) * scale < 5) return;
-      if (!moved) { moved = true; el.classList.add('drag'); hideNoteBar(); }
+      if (!moved) { moved = true; el.classList.add('drag'); hideNoteBar(); if (el.classList.contains('card')) bringToFront(el.dataset.id); }
       const np = { x: Math.round(Math.min(VW - 40, Math.max(-60, p0.x + dx))), y: Math.round(Math.min(VH - 30, Math.max(-20, p0.y + dy))) };
       set(np); el.style.left = np.x + 'px'; el.style.top = np.y + 'px';
       renderStrings();
@@ -180,6 +183,7 @@ function openCardPanel(id) {
     b.onclick = () => { custom(id).bg = k === 'default' ? undefined : k; save(); renderCards(); openCardPanel(id); };
     $('#cpBg').append(b);
   });
+  $('#cpLayer').value = cu.over ? 'over' : 'under';
   $('#cpImgWrap').hidden = !!c.note;
   const kind = cu.img ? (cu.img.startsWith('data:') ? 'file' : 'url') : 'default';
   $$('#cpImg sl-button').forEach(b => b.variant = b.dataset.v === kind ? 'primary' : 'default');
@@ -270,6 +274,7 @@ document.addEventListener('paste', e => {
 });
 $('#cpN').addEventListener('sl-input', e => { const c = byId(openCard); custom(openCard).n = e.target.value && e.target.value !== c.n ? e.target.value : undefined; $('#cpName').textContent = e.target.value || c.n; save(); renderCards(); });
 $('#cpR').addEventListener('sl-input', e => { const c = byId(openCard); custom(openCard).r = e.target.value && e.target.value !== roleAt(c, view) ? e.target.value : undefined; save(); renderCards(); });
+$('#cpLayer').addEventListener('sl-change', e => { if (!openCard) return; custom(openCard).over = e.target.value === 'over' || undefined; bringToFront(openCard); save(); renderCards(); });
 $('#cpReset').addEventListener('click', () => { delete st.cards[openCard]; delete st.pos[openCard]; save(); renderCards(); openCardPanel(openCard); });
 
 function applyPendingUrl() {
@@ -337,7 +342,7 @@ let pendingImport = null;
 function applyImport(state) {
   const prev = st;
   st = state; st.set = Object.assign({}, DEF, st.set || {}); st.pos = st.pos || {}; st.cards = st.cards || {};
-  st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || [];
+  st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || []; st.order = st.order || [];
   st.now = Math.max(0, Math.min(+st.now || 0, S.steps.length - 1)); view = st.now;
   save(); closePanel('info'); syncSettings(); applySettings(); renderTimeline();
   toast('Saved board opened.', 'Undo', () => { st = prev; view = st.now; save(); syncSettings(); applySettings(); renderTimeline(); });
@@ -504,7 +509,7 @@ $$('.pad').forEach(pad => pad.addEventListener('pointerdown', e => {
   if (st.now == null) { location.replace('index.html'); return; }
   try { S = await SB.load(GAME); } catch (e) { document.body.innerHTML = '<p style="padding:40px">Could not load the story data. <a href="index.html">Back</a></p>'; return; }
   st.now = Math.min(st.now, S.steps.length - 1);
-  st.set = Object.assign({}, DEF, st.set || {}); st.pos = st.pos || {}; st.cards = st.cards || {}; st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || [];
+  st.set = Object.assign({}, DEF, st.set || {}); st.pos = st.pos || {}; st.cards = st.cards || {}; st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || []; st.order = st.order || [];
   view = st.now;
   buildCards(); syncSettings(); applySettings(); renderTimeline();
   ro.observe(board); layout();
