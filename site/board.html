@@ -215,6 +215,7 @@
   <sl-input id="uCh" label="Current chapter" inputmode="numeric" placeholder="Enter chapter number, e.g. 1"></sl-input>
   <sl-textarea id="uTxt" label="What happened since?" placeholder="A mission you finished, a new character you met…" rows="3" resize="auto" autofocus style="margin-top:16px"
     help-text="We match your words against the story up to the chapter you entered, and never show anything you didn't describe."></sl-textarea>
+  <div id="uProg" hidden style="margin-top:12px"><sl-progress-bar id="uBar" value="0" label="Downloading language model" style="--height:8px"></sl-progress-bar><p class="help" id="uBarText"></p></div>
   <p class="status" id="uMsg" aria-live="polite"></p>
   <sl-button slot="footer" id="uCancel" outline>Cancel</sl-button>
   <sl-button slot="footer" id="uGo" variant="primary">Update board</sl-button>

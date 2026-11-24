@@ -44,8 +44,46 @@ window.SB = (() => {
     }
     return bestScore > 0 ? best : -1;
   }
+  /* ---------- smart matching: a small sentence-embedding model running in the browser (Transformers.js) ----------
+     Only steps in (from, to] are ever compared, so nothing past the player's chapter is looked at. */
+  const TF_URL = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2';
+  let extractorP = null; const listeners = new Set();
+  function getExtractor(model, onProgress) {
+    if (onProgress) listeners.add(onProgress);
+    if (!extractorP) {
+      const files = {};
+      extractorP = import(TF_URL).then(({ pipeline }) => pipeline('feature-extraction', model, {
+        dtype: 'q8',
+        progress_callback: p => {
+          if (p.status === 'progress' && p.total) {
+            files[p.file] = [p.loaded, p.total];
+            const v = Object.values(files), L = v.reduce((a, f) => a + f[0], 0), T = v.reduce((a, f) => a + f[1], 0);
+            listeners.forEach(fn => fn(L, T));
+          }
+        }
+      })).catch(e => { extractorP = null; throw e; });
+    }
+    return extractorP.finally(() => onProgress && listeners.delete(onProgress));
+  }
+  async function modelCached(model) {
+    try { const c = await caches.open('transformers-cache'); return (await c.keys()).some(r => r.url.includes(model)); } catch (e) { return false; }
+  }
+  /* Keywords first; if they find nothing, ask the language model. Returns { i, how }. */
+  async function smartMatch(S, text, from, to, onProgress) {
+    const kw = match(S, text, from, to);
+    if (kw >= 0) return { i: kw, how: 'keywords' };
+    if (!S.matcher || !/[a-z]/i.test(text || '') || to <= from) return { i: -1, how: 'none' };
+    const ext = await getExtractor(S.matcher.model, onProgress);
+    const idx = []; for (let i = Math.max(0, from + 1); i <= to; i++) idx.push(i);
+    const docs = idx.map(i => S.steps[i].title + '. ' + S.steps[i].text + ' ' + S.chars.filter(c => c.a === i).map(c => c.n).join(', '));
+    const out = (await ext([String(text).trim(), ...docs], { pooling: 'mean', normalize: true })).tolist();
+    const q = out[0]; let best = -1, bestSim = 0;
+    out.slice(1).forEach((v, k) => { const sim = v.reduce((a, x, j) => a + x * q[j], 0); if (sim > bestSim) { bestSim = sim; best = idx[k]; } });
+    return bestSim >= 0.4 ? { i: best, how: 'model' } : { i: -1, how: 'none' };
+  }
+  const fmtMB = b => (b / 1e6).toFixed(1);
   const KEY = g => 'stringboard:' + g + ':v1';
   function getState(g) { try { return JSON.parse(localStorage.getItem(KEY(g))) || {}; } catch (e) { return {}; } }
   function setState(g, st) { try { localStorage.setItem(KEY(g), JSON.stringify(st)); return true; } catch (e) { return false; } }
-  return { norm, load, loadImages, maxChapter, chapterStart, chapterEnd, match, getState, setState };
+  return { norm, load, loadImages, smartMatch, modelCached, fmtMB, maxChapter, chapterStart, chapterEnd, match, getState, setState };
 })();

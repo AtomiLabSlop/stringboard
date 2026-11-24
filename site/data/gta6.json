@@ -2,6 +2,7 @@
   "id": "gta6",
   "title": "Grand Theft Auto VI",
   "wiki": "https://gta.fandom.com",
+  "matcher": { "model": "Xenova/all-MiniLM-L6-v2", "sizeMB": 23, "language": "English" },
   "steps": [
     {"ch": 1, "title": "Prologue", "text": "Lucia is in prison, discussing early release. Jason lives in the Leonida Keys.", "kw": ["prologue", "prison", "counselor", "vankila", "prologi"]},
     {"ch": 1, "title": "Gone Fishing", "text": "A smuggling run goes wrong and Jason rescues Donnie from the Kingfishers. Lucia says she is getting out early.", "kw": ["gone fishing", "donnie", "kingfisher", "smuggl", "salakulj", "pelican", "rescue", "pelast"]},

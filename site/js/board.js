@@ -389,17 +389,29 @@ $('#impYes').addEventListener('click', () => { $('#impWarn').hide(); if (pending
 
 /* ---------- timeline + progress update ---------- */
 $('#tl').addEventListener('sl-input', e => { view = +e.target.value; renderTimeline(); renderCards(); if (openCard) openCardPanel(openCard); });
-$('#updBtn').addEventListener('click', () => { $('#uCh').value = S.steps[st.now].ch; $('#uTxt').value = ''; $('#uMsg').textContent = ''; $('#uMsg').className = 'status'; $('#upd').show(); });
+$('#updBtn').addEventListener('click', () => { $('#uProg').hidden = true; $('#uCh').value = String(S.steps[st.now].ch); $('#uTxt').value = ''; $('#uMsg').textContent = ''; $('#uMsg').className = 'status'; $('#upd').show(); });
 $('#uCancel').addEventListener('click', () => $('#upd').hide());
-$('#uGo').addEventListener('click', () => {
-  const msg = $('#uMsg'), v = $('#uCh').value.trim();
+$('#uGo').addEventListener('click', async () => {
+  if ($('#uGo').loading) return;
+  const msg = $('#uMsg'), v = String($('#uCh').value ?? '').trim();
   if (!/^\d{1,3}$/.test(v) || +v < 1) { msg.textContent = 'Enter a chapter number, e.g. 3.'; msg.className = 'status no'; return; }
   const ch = Math.min(+v, SB.maxChapter(S)), cur = S.steps[st.now].ch;
   const base = ch > cur ? SB.chapterStart(S, ch) : st.now;
-  const m = SB.match(S, $('#uTxt').value, st.now, SB.chapterEnd(S, ch));
+  let m = -1;
+  const txt = String($('#uTxt').value || '').trim();
+  if (txt) {
+    $('#uGo').loading = true;
+    try {
+      m = (await SB.smartMatch(S, txt, st.now, SB.chapterEnd(S, ch), (l, t) => {
+        $('#uProg').hidden = false; $('#uBar').value = Math.round(l / t * 100);
+        $('#uBarText').textContent = `Downloading language model… ${SB.fmtMB(l)} / ${SB.fmtMB(t)} MB (only once)`;
+      })).i;
+    } catch (e) { m = SB.match(S, txt, st.now, SB.chapterEnd(S, ch)); }
+    $('#uGo').loading = false; $('#uProg').hidden = true;
+  }
   const next = Math.max(base, m);
   if (next <= st.now) {
-    msg.textContent = $('#uTxt').value.trim() ? "Couldn't recognize that yet. Try a mission name or a character you just met." : 'Nothing new to add. Describe what happened, or enter a later chapter.';
+    msg.textContent = String($('#uTxt').value ?? '').trim() ? "Couldn't recognize that yet. Try a mission name or a character you just met." : 'Nothing new to add. Describe what happened, or enter a later chapter.';
     msg.className = 'status no'; return;
   }
   undoNow = st.now; st.now = next; view = next; save();

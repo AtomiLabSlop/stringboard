@@ -16,6 +16,10 @@ main{min-height:100%;display:flex;flex-direction:column;align-items:center;justi
 .reveal{padding:14px 16px;border:1px solid var(--sl-color-warning-200);border-radius:var(--sl-border-radius-medium);background:color-mix(in srgb,var(--sl-color-warning-50),transparent 40%)}
 .reveal p{margin:4px 0 0 28px;font-size:var(--sl-font-size-small);color:var(--muted)}
 .hidden{display:none!important}
+.mlnote{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:var(--sl-border-radius-medium);background:var(--sl-color-neutral-50);font-size:var(--sl-font-size-small);color:var(--muted)}
+.mlnote sl-icon{font-size:20px;color:var(--sl-color-primary-600);flex:none;margin-top:2px}
+.mlnote b{color:var(--ink);font-weight:600}.mlnote p{margin:2px 0 0}
+#mlProg{margin-top:10px}#mlProg sl-progress-bar{--height:8px}
 .continue{font-size:15px;color:var(--muted);text-align:center;margin:0}
 .continue a,footer a{color:var(--sl-color-primary-600)}
 footer{font-size:13px;color:var(--muted);text-align:center;max-width:620px}
@@ -43,6 +47,15 @@ footer{font-size:13px;color:var(--muted);text-align:center;max-width:620px}
     <div class="reveal">
       <sl-checkbox id="all"><b>Reveal the whole story</b></sl-checkbox>
       <p>Shows every event we have data for. Contains major spoilers.</p>
+    </div>
+  </div>
+
+  <div class="mlnote hidden" id="mlNote">
+    <sl-icon name="cpu" aria-hidden="true"></sl-icon>
+    <div>
+      <b>Smart progress matching</b>
+      <p id="mlText"></p>
+      <div id="mlProg" class="hidden"><sl-progress-bar id="mlBar" value="0" label="Downloading language model"></sl-progress-bar><p class="help" id="mlBarText"></p></div>
     </div>
   </div>
 
@@ -83,6 +96,8 @@ function update(){
   ch.disabled=all.checked;
   $('#lastWrap').classList.toggle('hidden',!g||all.checked||!chNum());
   start.disabled=!(g&&S&&(all.checked||chNum()));
+  const showMl=!!(S&&S.matcher&&g&&!all.checked&&chNum());
+  $('#mlNote').classList.toggle('hidden',!showMl);
   if(!all.checked)recog();
 }
 game.addEventListener('sl-change',async()=>{
@@ -91,6 +106,8 @@ game.addEventListener('sl-change',async()=>{
   try{S=await SB.load(game.value)}catch(e){status.textContent='Could not load story data.'}
   const st=SB.getState(game.value),c=$('#cont');
   if(st.now!=null&&S){c.innerHTML='';const a=document.createElement('a');a.href='board.html?game='+game.value;a.textContent='Continue your saved board';c.append('Played before? ',a,'.');c.classList.remove('hidden')}else c.classList.add('hidden');
+  if(S&&S.matcher){const m=S.matcher,cached=await SB.modelCached(m.model);
+    $('#mlText').textContent=cached?`If you describe what you did last, an ${m.language} language model in your browser works out where you are. It's already downloaded on this device.`:`If you describe what you did last, your browser downloads a small ${m.language} language model (about ${m.sizeMB} MB, only once) to work out where you are. Other languages use simple keyword matching.`;}
   update();
 });
 ch.addEventListener('sl-input',update);last.addEventListener('sl-input',update);all.addEventListener('sl-change',update);
@@ -101,10 +118,20 @@ function go(now,reveal){
   st.now=now;st.reveal=!!reveal;st.chapter=reveal?SB.maxChapter(S):Math.min(chNum(),SB.maxChapter(S));
   SB.setState(g,st);location.href='board.html?game='+encodeURIComponent(g);
 }
-start.addEventListener('click',()=>{
-  if(start.disabled)return;
+start.addEventListener('click',async()=>{
+  if(start.disabled||start.loading)return;
   if(all.checked){$('#spoil').show();return}
-  go(Math.max(base(),recog()));
+  let m=recog();const txt=String(last.value||'').trim();
+  if(m<0&&txt&&S.matcher){
+    start.loading=true;$('#reset').disabled=true;
+    const bar=$('#mlBar'),bt=$('#mlBarText');
+    try{
+      const r=await SB.smartMatch(S,txt,base(),SB.chapterEnd(S,chNum()),(l,t)=>{$('#mlProg').classList.remove('hidden');bar.value=Math.round(l/t*100);bt.textContent=`Downloading language model… ${SB.fmtMB(l)} / ${SB.fmtMB(t)} MB`;});
+      m=r.i;
+    }catch(e){bt.textContent='Could not load the language model. Starting from the beginning of the chapter.';$('#mlProg').classList.remove('hidden');await new Promise(r=>setTimeout(r,1500))}
+    start.loading=false;$('#reset').disabled=false;
+  }
+  go(Math.max(base(),m));
 });
 $('#spNo').addEventListener('click',()=>$('#spoil').hide());
 $('#spYes').addEventListener('click',()=>go(S.steps.length-1,true));
