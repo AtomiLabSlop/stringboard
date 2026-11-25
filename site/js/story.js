@@ -88,8 +88,32 @@ window.SB = (() => {
     document.body.classList.toggle('has-bg', !!b);
     if (b) document.body.style.setProperty('--game-bg', `url("${new URL(b, location.href).href}")`); else document.body.style.removeProperty('--game-bg');
   }
+  /* ---------- progress units per category ----------
+     game:   chapters; the board shows everything up to the START of the chapter entered.
+     series: episodes as "S2E5" (or 2x05, or an absolute number); stored as season*100+episode; shows up to the END of that episode.
+     movie:  minutes watched; shows up to that minute.
+     book:   page number; shows up to that page. */
+  const UNITS = {
+    game:   { label: 'Chapter', placeholder: 'Enter chapter number, e.g. 1', help: 'The board shows everything up to the <b>start</b> of the chapter you enter. If Chapter 3 has just begun, enter 3.', upTo: false },
+    series: { label: 'Last episode watched', placeholder: 'e.g. S2E5', help: 'Enter the last episode you finished, like S2E5. The board shows everything up to the end of it.', upTo: true },
+    movie:  { label: 'Minutes watched', placeholder: 'e.g. 45', help: 'How far into the film you are, in minutes. The board shows everything up to that point.', upTo: true },
+    book:   { label: 'Page', placeholder: 'e.g. 120', help: 'The page you are on. Page numbers differ between editions, so check the edition noted for this book.', upTo: true }
+  };
+  const typeOf = S => (S && S.type) || 'game';
+  function parsePos(type, str) {
+    const v = String(str || '').trim();
+    if (type === 'series') {
+      const m = v.match(/^s?(\d{1,2})\s*[ex]\s*(\d{1,3})$/i);
+      if (m && +m[2] >= 1) return +m[1] * 100 + +m[2];
+    }
+    return /^\d{1,4}$/.test(v) && +v >= 1 ? +v : 0;
+  }
+  function fmtPos(type, n) { return type === 'series' ? `S${Math.floor(n / 100)}E${n % 100}` : String(n); }
+  /* index of the step the board should open at for position n */
+  function basePos(S, n) { return UNITS[typeOf(S)].upTo ? chapterEnd(S, n) : chapterStart(S, n); }
+  async function catalog() { try { const r = await fetch('data/catalog.json', { cache: 'no-cache' }); return r.ok ? r.json() : null; } catch (e) { return null; } }
   const KEY = g => 'stringboard:' + g + ':v1';
   function getState(g) { try { return JSON.parse(localStorage.getItem(KEY(g))) || {}; } catch (e) { return {}; } }
   function setState(g, st) { try { localStorage.setItem(KEY(g), JSON.stringify(st)); return true; } catch (e) { return false; } }
-  return { norm, load, applyBackground, loadImages, smartMatch, modelCached, fmtMB, maxChapter, chapterStart, chapterEnd, match, getState, setState };
+  return { norm, load, applyBackground, UNITS, typeOf, parsePos, fmtPos, basePos, catalog, loadImages, smartMatch, modelCached, fmtMB, maxChapter, chapterStart, chapterEnd, match, getState, setState };
 })();

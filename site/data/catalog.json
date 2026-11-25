@@ -1,0 +1,27 @@
+{
+  "categories": [
+    {
+      "id": "game",
+      "label": "Games"
+    },
+    {
+      "id": "series",
+      "label": "TV series"
+    },
+    {
+      "id": "movie",
+      "label": "Movies"
+    },
+    {
+      "id": "book",
+      "label": "Books"
+    }
+  ],
+  "titles": [
+    {
+      "id": "gta6",
+      "type": "game",
+      "title": "Grand Theft Auto VI"
+    }
+  ]
+}

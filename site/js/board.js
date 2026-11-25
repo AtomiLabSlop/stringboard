@@ -458,14 +458,15 @@ $('#impYes').addEventListener('click', () => { $('#impWarn').hide(); if (pending
 
 /* ---------- timeline + progress update ---------- */
 $('#tl').addEventListener('sl-input', e => { view = +e.target.value; renderTimeline(); renderCards(); if (openCard) openCardPanel(openCard); });
-$('#updBtn').addEventListener('click', () => { $('#uProg').hidden = true; $('#uCh').value = String(S.steps[st.now].ch); $('#uTxt').value = ''; $('#uMsg').textContent = ''; $('#uMsg').className = 'status'; $('#upd').show(); });
+$('#updBtn').addEventListener('click', () => { const ty = SB.typeOf(S), U = SB.UNITS[ty]; $('#uCh').label = U.label; $('#uCh').placeholder = U.placeholder; $('#uProg').hidden = true; $('#uCh').value = SB.fmtPos(ty, S.steps[st.now].ch); $('#uTxt').value = ''; $('#uMsg').textContent = ''; $('#uMsg').className = 'status'; $('#upd').show(); });
 $('#uCancel').addEventListener('click', () => $('#upd').hide());
 $('#uGo').addEventListener('click', async () => {
   if ($('#uGo').loading) return;
   const msg = $('#uMsg'), v = String($('#uCh').value ?? '').trim();
-  if (!/^\d{1,3}$/.test(v) || +v < 1) { msg.textContent = 'Enter a chapter number, e.g. 3.'; msg.className = 'status no'; return; }
-  const ch = Math.min(+v, SB.maxChapter(S)), cur = S.steps[st.now].ch;
-  const base = ch > cur ? SB.chapterStart(S, ch) : st.now;
+  const ty = SB.typeOf(S), pos = SB.parsePos(ty, v);
+  if (!pos) { msg.textContent = 'Enter your position, e.g. ' + SB.UNITS[ty].placeholder.replace(/^.*e\.g\. /, '') + '.'; msg.className = 'status no'; return; }
+  const ch = Math.min(pos, SB.maxChapter(S)), cur = S.steps[st.now].ch;
+  const base = ch > cur ? SB.basePos(S, ch) : st.now;
   let m = -1;
   const txt = String($('#uTxt').value || '').trim();
   if (txt) {

@@ -16,6 +16,8 @@ main{min-height:100%;display:flex;flex-direction:column;align-items:center;justi
 .reveal{padding:14px 16px;border:1px solid var(--sl-color-warning-200);border-radius:var(--sl-border-radius-medium);background:color-mix(in srgb,var(--sl-color-warning-50),transparent 40%)}
 .reveal p{margin:4px 0 0 28px;font-size:var(--sl-font-size-small);color:var(--muted)}
 .hidden{display:none!important}
+.soon{margin:-8px 0 0;color:var(--muted);font-size:var(--sl-font-size-small)}.soon a{color:var(--sl-color-primary-600)}
+#cat::part(button-group){flex-wrap:wrap}
 .mlnote{margin-top:12px;display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:var(--sl-border-radius-medium);background:var(--sl-color-neutral-50);font-size:var(--sl-font-size-small);color:var(--muted)}
 .mlnote sl-icon{font-size:20px;color:var(--sl-color-primary-600);flex:none;margin-top:2px}
 .mlnote b{color:var(--ink);font-weight:600}.mlnote p{margin:2px 0 0}
@@ -29,13 +31,15 @@ footer{font-size:13px;color:var(--muted);text-align:center;max-width:620px}
 <p class="tag">A spoiler-safe detective board for characters and plot. Tell us where you are, and we only pin up what you've already seen.</p>
 
 <div class="form card-surface">
-  <sl-select id="game" label="Game" placeholder="Choose a game…" size="large">
-    <sl-option value="gta6">Grand Theft Auto VI</sl-option>
-  </sl-select>
+  <sl-radio-group id="cat" label="What are you following?" value="game" size="medium">
+    <sl-radio-button value="game">Games</sl-radio-button><sl-radio-button value="series">TV series</sl-radio-button><sl-radio-button value="movie">Movies</sl-radio-button><sl-radio-button value="book">Books</sl-radio-button>
+  </sl-radio-group>
+  <sl-select id="game" label="Title" placeholder="Choose a title…" size="large"></sl-select>
+  <p class="soon hidden" id="soon">Nothing here yet. Want a board for something? <a href="https://github.com/AtomiLabSlop/stringboard/issues" target="_blank" rel="noopener">Suggest a title on GitHub</a>.</p>
 
   <div id="step2" class="hidden">
-    <sl-input id="chapter" label="Chapter" inputmode="numeric" autocomplete="off" placeholder="Enter chapter number, e.g. 1" size="large">
-      <div slot="help-text">The board shows everything up to the <b>start</b> of the chapter you enter. If Chapter 3 has just begun, enter 3.</div>
+    <sl-input id="chapter" label="Chapter" autocomplete="off" placeholder="Enter chapter number, e.g. 1" size="large">
+      <div slot="help-text" id="chHelp"></div>
     </sl-input>
 
     <div id="lastWrap" class="hidden">
@@ -76,17 +80,17 @@ footer{font-size:13px;color:var(--muted);text-align:center;max-width:620px}
 <script src="js/story.js?v=__V__"></script>
 <script type="module">
 const $=s=>document.querySelector(s);
-await Promise.all(['sl-select','sl-input','sl-textarea','sl-checkbox','sl-button','sl-dialog'].map(t=>customElements.whenDefined(t)));
+await Promise.all(['sl-select','sl-radio-group','sl-radio-button','sl-input','sl-textarea','sl-checkbox','sl-button','sl-dialog'].map(t=>customElements.whenDefined(t)));
 const game=$('#game'),ch=$('#chapter'),last=$('#last'),all=$('#all'),start=$('#start'),status=$('#status');
 let S=null;
-const chNum=()=>{const v=String(ch.value||'').trim();return /^\d{1,3}$/.test(v)&&+v>=1?+v:0};
-const base=()=>SB.chapterStart(S,chNum());
+const chNum=()=>SB.parsePos(SB.typeOf(S),ch.value);
+const base=()=>SB.basePos(S,chNum());
 function recog(){
   status.textContent='';status.className='status';
   if(!S||!chNum()||!String(last.value||'').trim())return -1;
   const n=chNum(),m=SB.match(S,last.value,base(),SB.chapterEnd(S,n));
   if(m>=0){status.textContent='✓ Recognized. Your latest progress will be on the board.';status.classList.add('ok')}
-  else{status.textContent='Not recognized. The board will start from the beginning of Chapter '+n+'. Try a mission name or a character you just met.';status.classList.add('no')}
+  else{status.textContent='Not recognized. The board will start from '+(SB.typeOf(S)==='game'?'the beginning of Chapter '+n:'the point you entered')+'. Try a scene, a mission name or a character you just met.';status.classList.add('no')}
   return m;
 }
 function update(){
@@ -99,6 +103,16 @@ function update(){
   $('#mlNote').classList.toggle('hidden',!showMl);
   if(!all.checked)recog();
 }
+const CAT=await SB.catalog()||{titles:[{id:'gta6',type:'game',title:'Grand Theft Auto VI'}]};
+function fillTitles(){
+  const type=$('#cat').value||'game',list=CAT.titles.filter(x=>x.type===type);
+  game.innerHTML='';list.forEach(x=>{const o=document.createElement('sl-option');o.value=x.id;o.textContent=x.title;game.append(o)});
+  game.value='';game.disabled=!list.length;$('#soon').classList.toggle('hidden',!!list.length);
+  const u=SB.UNITS[type];ch.label=u.label;ch.placeholder=u.placeholder;$('#chHelp').innerHTML=u.help;ch.inputmode=type==='series'?'text':'numeric';
+  ch.value='';S=null;SB.applyBackground(null);$('#cont').classList.add('hidden');update();
+}
+$('#cat').addEventListener('sl-change',fillTitles);
+fillTitles();
 game.addEventListener('sl-change',async()=>{
   S=null;SB.applyBackground(null);update();
   if(!game.value)return;
@@ -112,10 +126,10 @@ game.addEventListener('sl-change',async()=>{
 });
 ch.addEventListener('sl-input',update);last.addEventListener('sl-input',update);all.addEventListener('sl-change',update);
 ch.addEventListener('keydown',e=>{if(e.key==='Enter')start.click()});
-$('#reset').addEventListener('click',()=>{SB.applyBackground(null);game.value='';ch.value='';last.value='';all.checked=false;S=null;$('#cont').classList.add('hidden');update();game.focus()});
+$('#reset').addEventListener('click',()=>{SB.applyBackground(null);$('#cat').value='game';fillTitles();game.value='';ch.value='';last.value='';all.checked=false;S=null;$('#cont').classList.add('hidden');update();game.focus()});
 function go(now,reveal){
   const g=game.value,st=SB.getState(g);
-  st.now=now;st.reveal=!!reveal;st.chapter=reveal?SB.maxChapter(S):Math.min(chNum(),SB.maxChapter(S));
+  st.now=now;st.reveal=!!reveal;st.chapter=reveal?SB.maxChapter(S):Math.min(chNum(),SB.maxChapter(S));st.type=SB.typeOf(S);
   SB.setState(g,st);location.href='board.html?game='+encodeURIComponent(g);
 }
 start.addEventListener('click',async()=>{
