@@ -36,7 +36,8 @@
           "#ffd9a0"
         ],
         "motif": "dunes"
-      }
+      },
+      "background": "assets/bg/rdr2.webp"
     },
     {
       "id": "cyberpunk2077",
@@ -51,7 +52,8 @@
           "#f5e663"
         ],
         "motif": "grid"
-      }
+      },
+      "background": "assets/bg/cyberpunk2077.webp"
     },
     {
       "id": "bg3",
@@ -66,7 +68,8 @@
           "#c9a2ff"
         ],
         "motif": "rings"
-      }
+      },
+      "background": "assets/bg/bg3.webp"
     },
     {
       "id": "witcher3",
@@ -81,7 +84,8 @@
           "#d9d2c0"
         ],
         "motif": "mountains"
-      }
+      },
+      "background": "assets/bg/witcher3.webp"
     },
     {
       "id": "masseffect",
@@ -96,7 +100,8 @@
           "#7fd4ff"
         ],
         "motif": "stars"
-      }
+      },
+      "background": "assets/bg/masseffect.webp"
     },
     {
       "id": "ff7",
@@ -111,7 +116,8 @@
           "#8dffc8"
         ],
         "motif": "shards"
-      }
+      },
+      "background": "assets/bg/ff7.webp"
     },
     {
       "id": "discoelysium",
@@ -126,7 +132,8 @@
           "#e3c27a"
         ],
         "motif": "strokes"
-      }
+      },
+      "background": "assets/bg/discoelysium.webp"
     },
     {
       "id": "alanwake2",
@@ -141,7 +148,8 @@
           "#f2e6c4"
         ],
         "motif": "forest"
-      }
+      },
+      "background": "assets/bg/alanwake2.webp"
     },
     {
       "id": "kcd2",
@@ -156,7 +164,8 @@
           "#efe3b8"
         ],
         "motif": "mountains"
-      }
+      },
+      "background": "assets/bg/kcd2.webp"
     },
     {
       "id": "expedition33",
@@ -171,7 +180,8 @@
           "#fff1dd"
         ],
         "motif": "petals"
-      }
+      },
+      "background": "assets/bg/expedition33.webp"
     },
     {
       "id": "dark",
@@ -186,7 +196,8 @@
           "#e2c46a"
         ],
         "motif": "forest"
-      }
+      },
+      "background": "assets/bg/dark.webp"
     },
     {
       "id": "got",
@@ -201,7 +212,8 @@
           "#ff8a3d"
         ],
         "motif": "embers"
-      }
+      },
+      "background": "assets/bg/got.webp"
     },
     {
       "id": "severance",
@@ -216,7 +228,8 @@
           "#9fd6c7"
         ],
         "motif": "lines"
-      }
+      },
+      "background": "assets/bg/severance.webp"
     },
     {
       "id": "thewire",
@@ -231,7 +244,8 @@
           "#ffd36b"
         ],
         "motif": "city"
-      }
+      },
+      "background": "assets/bg/thewire.webp"
     },
     {
       "id": "succession",
@@ -246,7 +260,8 @@
           "#e6c37a"
         ],
         "motif": "city"
-      }
+      },
+      "background": "assets/bg/succession.webp"
     },
     {
       "id": "lost",
@@ -261,7 +276,8 @@
           "#f6f1d6"
         ],
         "motif": "waves"
-      }
+      },
+      "background": "assets/bg/lost.webp"
     },
     {
       "id": "twinpeaks",
@@ -276,7 +292,8 @@
           "#d6e6d0"
         ],
         "motif": "forest"
-      }
+      },
+      "background": "assets/bg/twinpeaks.webp"
     },
     {
       "id": "shogun",
@@ -291,7 +308,8 @@
           "#e8dfcf"
         ],
         "motif": "waves"
-      }
+      },
+      "background": "assets/bg/shogun.webp"
     },
     {
       "id": "slowhorses",
@@ -306,7 +324,8 @@
           "#cfd8df"
         ],
         "motif": "rain"
-      }
+      },
+      "background": "assets/bg/slowhorses.webp"
     },
     {
       "id": "andor",
@@ -321,7 +340,8 @@
           "#ffb27a"
         ],
         "motif": "stars"
-      }
+      },
+      "background": "assets/bg/andor.webp"
     },
     {
       "id": "memento",
@@ -336,7 +356,8 @@
           "#e6e1d6"
         ],
         "motif": "shards"
-      }
+      },
+      "background": "assets/bg/memento.webp"
     },
     {
       "id": "inception",
@@ -351,7 +372,8 @@
           "#c6d6e6"
         ],
         "motif": "rings"
-      }
+      },
+      "background": "assets/bg/inception.webp"
     },
     {
       "id": "tenet",
@@ -366,7 +388,8 @@
           "#9fb6ff"
         ],
         "motif": "waves"
-      }
+      },
+      "background": "assets/bg/tenet.webp"
     },
     {
       "id": "usualsuspects",
@@ -381,7 +404,8 @@
           "#d8d0bf"
         ],
         "motif": "rain"
-      }
+      },
+      "background": "assets/bg/usualsuspects.webp"
     },
     {
       "id": "knivesout",
@@ -396,7 +420,8 @@
           "#f0c48a"
         ],
         "motif": "embers"
-      }
+      },
+      "background": "assets/bg/knivesout.webp"
     },
     {
       "id": "oppenheimer",
@@ -411,7 +436,8 @@
           "#fff0c8"
         ],
         "motif": "embers"
-      }
+      },
+      "background": "assets/bg/oppenheimer.webp"
     },
     {
       "id": "dune",
@@ -426,7 +452,8 @@
           "#fff0d0"
         ],
         "motif": "dunes"
-      }
+      },
+      "background": "assets/bg/dune.webp"
     },
     {
       "id": "asoiaf",
@@ -441,7 +468,8 @@
           "#dbe8f5"
         ],
         "motif": "snow"
-      }
+      },
+      "background": "assets/bg/asoiaf.webp"
     },
     {
       "id": "wot",
@@ -456,7 +484,8 @@
           "#e6d29a"
         ],
         "motif": "rings"
-      }
+      },
+      "background": "assets/bg/wot.webp"
     },
     {
       "id": "stormlight",
@@ -471,7 +500,8 @@
           "#bfe3ff"
         ],
         "motif": "rain"
-      }
+      },
+      "background": "assets/bg/stormlight.webp"
     },
     {
       "id": "malazan",
@@ -486,7 +516,8 @@
           "#e0c9a8"
         ],
         "motif": "mountains"
-      }
+      },
+      "background": "assets/bg/malazan.webp"
     },
     {
       "id": "threebody",
@@ -501,7 +532,8 @@
           "#ff9a5c"
         ],
         "motif": "stars"
-      }
+      },
+      "background": "assets/bg/threebody.webp"
     },
     {
       "id": "warandpeace",
@@ -516,7 +548,8 @@
           "#ffffff"
         ],
         "motif": "snow"
-      }
+      },
+      "background": "assets/bg/warandpeace.webp"
     },
     {
       "id": "christie",
@@ -531,7 +564,8 @@
           "#d9c27a"
         ],
         "motif": "lines"
-      }
+      },
+      "background": "assets/bg/christie.webp"
     }
   ]
 }
