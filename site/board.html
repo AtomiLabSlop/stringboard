@@ -53,24 +53,34 @@
 
       <aside class="panel" id="info" hidden>
         <div class="ph"><h2>Settings</h2><sl-icon-button name="x-lg" label="Close" data-close="info"></sl-icon-button></div>
-        <ul class="howto">
-          <li>The timeline only goes up to where you are. Slide left to rewind the story.</li>
-          <li>Drag cards and notes anywhere. Click a card for what you know, colours, image and text.</li>
-          <li>Pick up the marker to draw, the eraser to wipe. Drag a sticky note from its pad.</li>
-        </ul>
+        <section class="sec"><h3>Board</h3>
+          <sl-radio-group id="g-frame" label="Frame" size="small">
+            <sl-radio-button value="black">Black</sl-radio-button><sl-radio-button value="white">White</sl-radio-button><sl-radio-button value="lightwood">Light wood</sl-radio-button><sl-radio-button value="darkwood">Dark wood</sl-radio-button>
+          </sl-radio-group>
+          <sl-radio-group id="g-bg" label="Background" size="small">
+            <sl-radio-button value="gloss">Gloss</sl-radio-button><sl-radio-button value="cork">Cork</sl-radio-button><sl-radio-button value="darkcork">Dark cork</sl-radio-button><sl-radio-button value="leather">Leather</sl-radio-button><sl-radio-button value="map">Map</sl-radio-button>
+          </sl-radio-group>
+        </section>
+
+        <sl-divider></sl-divider>
+        <section class="sec"><h3>Strings &amp; pins</h3>
+          <div class="field"><span class="flabel">String colour</span><div class="sw" id="swStr"></div></div>
+          <sl-range id="sTen" label="String slack" min="0" max="1" step="0.05" tooltip="none"></sl-range>
+          <div class="field"><span class="flabel">Pin colour</span><div class="sw" id="swPin"></div></div>
+        </section>
 
         <sl-divider></sl-divider>
         <section class="sec"><h3>Cards</h3>
-          <sl-range id="sCard" label="Card size" min="0.7" max="1.4" step="0.05" tooltip="none"></sl-range>
-          <div class="field"><span class="flabel">Card colour</span><div class="sw" id="swCardBg"></div>
-            <p class="tip" style="margin-top:8px">Applies to all cards and replaces colours set on individual cards.</p></div>
-          <sl-range id="sTilt" label="Random tilt" min="0" max="10" step="0.5" tooltip="none"></sl-range>
           <div class="ctl">
             <sl-radio-group id="g-style" label="Card style" size="small">
               <sl-radio-button value="flat">Flat</sl-radio-button><sl-radio-button value="authentic">Authentic</sl-radio-button>
             </sl-radio-group>
             <sl-switch id="sCardRound" size="small">Rounded card corners</sl-switch>
           </div>
+          <div class="field"><span class="flabel">Card colour</span><div class="sw" id="swCardBg"></div>
+            <p class="tip" style="margin-top:8px">Applies to all cards and replaces colours set on individual cards.</p></div>
+          <sl-range id="sCard" label="Card size" min="0.7" max="1.4" step="0.05" tooltip="none"></sl-range>
+          <sl-range id="sTilt" label="Random tilt" min="0" max="10" step="0.5" tooltip="none"></sl-range>
         </section>
 
         <sl-divider></sl-divider>
@@ -93,20 +103,13 @@
         </section>
 
         <sl-divider></sl-divider>
-        <section class="sec"><h3>Board</h3>
-          <sl-radio-group id="g-bg" label="Background" size="small">
-            <sl-radio-button value="gloss">Gloss</sl-radio-button><sl-radio-button value="cork">Cork</sl-radio-button><sl-radio-button value="darkcork">Dark cork</sl-radio-button><sl-radio-button value="leather">Leather</sl-radio-button><sl-radio-button value="map">Map</sl-radio-button>
-          </sl-radio-group>
-          <sl-radio-group id="g-frame" label="Frame" size="small">
-            <sl-radio-button value="black">Black</sl-radio-button><sl-radio-button value="white">White</sl-radio-button><sl-radio-button value="lightwood">Light wood</sl-radio-button><sl-radio-button value="darkwood">Dark wood</sl-radio-button>
-          </sl-radio-group>
-        </section>
-
-        <sl-divider></sl-divider>
-        <section class="sec"><h3>Strings &amp; pins</h3>
-          <div class="field"><span class="flabel">String colour</span><div class="sw" id="swStr"></div></div>
-          <sl-range id="sTen" label="String slack" min="0" max="1" step="0.05" tooltip="none"></sl-range>
-          <div class="field"><span class="flabel">Pin colour</span><div class="sw" id="swPin"></div></div>
+        <section class="sec"><h3>Save</h3>
+          <p class="tip">Your board is saved in this browser automatically. To keep a copy or move it to another browser or device, save it to a file and open it there.</p>
+          <div class="btngrid">
+            <sl-button id="exportBtn" size="small" variant="primary"><sl-icon slot="prefix" name="download"></sl-icon>Save to file</sl-button>
+            <sl-button id="importBtn" size="small" outline><sl-icon slot="prefix" name="folder2-open"></sl-icon>Open file</sl-button>
+          </div>
+          <input type="file" id="importFile" accept=".json,application/json" hidden>
         </section>
 
         <sl-divider></sl-divider>
@@ -119,13 +122,12 @@
         </section>
 
         <sl-divider></sl-divider>
-        <section class="sec"><h3>Save</h3>
-          <p class="tip">Your board is saved in this browser automatically. To keep a copy or move it to another browser or device, save it to a file and open it there.</p>
-          <div class="btngrid">
-            <sl-button id="exportBtn" size="small" variant="primary"><sl-icon slot="prefix" name="download"></sl-icon>Save to file</sl-button>
-            <sl-button id="importBtn" size="small" outline><sl-icon slot="prefix" name="folder2-open"></sl-icon>Open file</sl-button>
-          </div>
-          <input type="file" id="importFile" accept=".json,application/json" hidden>
+        <section class="sec"><h3>How it works</h3>
+          <ul class="howto">
+            <li>The timeline only goes up to where you are. Slide left to rewind the story.</li>
+            <li>Drag cards and notes anywhere. Click a card for what you know, colours, image and text.</li>
+            <li>Pick up the marker to draw, the eraser to wipe. Drag a sticky note from its pad.</li>
+          </ul>
         </section>
         <p class="fine">Fan-made, not affiliated with any publisher. Plot summaries written by AtomiLabSlop. UI: <a href="https://shoelace.style" target="_blank" rel="noopener">Shoelace</a>. <a href="https://github.com/AtomiLabSlop/stringboard" target="_blank" rel="noopener">GitHub</a></p>
       </aside>

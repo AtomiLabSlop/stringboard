@@ -39,8 +39,8 @@ footer{font-size:13px;text-align:center;width:min(560px,100%);box-sizing:border-
     <sl-radio-button value="game">Games</sl-radio-button><sl-radio-button value="series">TV series</sl-radio-button><sl-radio-button value="movie">Movies</sl-radio-button><sl-radio-button value="book">Books</sl-radio-button>
   </sl-radio-group>
   <sl-select id="game" label="Title" placeholder="Choose a title…" size="large"></sl-select>
-  <p class="soon hidden" id="soonPick">This board is coming soon. <a href="https://github.com/AtomiLabSlop/stringboard/issues" target="_blank" rel="noopener">Vote or help on GitHub</a>.</p>
-  <p class="soon hidden" id="soon">Nothing here yet. Want a board for something? <a href="https://github.com/AtomiLabSlop/stringboard/issues" target="_blank" rel="noopener">Suggest a title on GitHub</a>.</p>
+  <p class="soon hidden" id="soonPick">This board is coming soon. <a href="vote.html" class="voteLink">Vote for it to come sooner</a>.</p>
+  <p class="soon hidden" id="soon">Nothing here yet. Want a board for something? <a href="vote.html" class="voteLink">Suggest a title</a>.</p>
 
   <div id="step2" class="hidden">
     <sl-input id="chapter" label="Chapter" autocomplete="off" placeholder="Enter chapter number, e.g. 1" size="large">
@@ -73,7 +73,7 @@ footer{font-size:13px;text-align:center;width:min(560px,100%);box-sizing:border-
   </div>
 </div>
 <p class="continue hidden" id="cont"></p>
-<footer>Fan-made project by AtomiLabSlop. Not affiliated with or endorsed by any game publisher. <a href="https://github.com/AtomiLabSlop/stringboard">Open source on GitHub</a>. UI built with <a href="https://shoelace.style">Shoelace</a>.</footer>
+<footer><a href="vote.html">Vote for the next board</a> · Fan-made project by AtomiLabSlop. Not affiliated with or endorsed by any game publisher. <a href="https://github.com/AtomiLabSlop/stringboard">Open source on GitHub</a>. UI built with <a href="https://shoelace.style">Shoelace</a>.</footer>
 </main>
 
 <sl-dialog id="spoil" class="warn" label="Spoiler warning">
@@ -118,6 +118,7 @@ function fillTitles(){
   const u=SB.UNITS[type];ch.label=u.label;ch.placeholder=u.placeholder;$('#chHelp').innerHTML=u.help;ch.inputmode=type==='series'?'text':'numeric';
   ch.value='';S=null;SB.applyBackground(null);$('#cont').classList.add('hidden');update();
 }
+document.querySelectorAll('a.voteLink').forEach(a=>a.addEventListener('click',()=>{a.href='vote.html?cat='+$('#cat').value}));
 $('#cat').addEventListener('sl-change',fillTitles);
 fillTitles();
 game.addEventListener('sl-change',async()=>{

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" class="sl-theme-dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vote for the next board · Stringboard</title>
+<meta name="description" content="Vote for the games, TV series, movies and books that should get a spoiler-safe Stringboard next.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/dark.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
+<link rel="stylesheet" href="css/common.css?v=__V__">
+<style>
+main{min-height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(28px,6vh,72px) 16px 32px;gap:clamp(16px,2.5vw,24px)}
+.logo{width:min(360px,70vw);height:auto;display:block}
+.glass{width:min(560px,100%);box-sizing:border-box;padding:8px 14px;border-radius:10px;background:rgba(12,10,18,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#f1ece4;text-align:center;margin:0}
+.glass a{color:#ffb4a8}
+h1.glass{font-size:22px;font-weight:700;padding:12px 14px}
+.form{width:min(560px,100%);box-sizing:border-box;padding:28px clamp(18px,4vw,30px);display:grid;gap:22px}
+#cat::part(button-group){flex-wrap:wrap}
+.list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:var(--sl-border-radius-medium);position:relative;overflow:hidden}
+.row .bar{position:absolute;inset:0 auto 0 0;background:color-mix(in srgb,var(--sl-color-primary-600),transparent 82%);transition:width .3s ease-out;pointer-events:none}
+.row .name{position:relative;font-weight:500;min-width:0;overflow-wrap:anywhere}
+.row .name small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.row .act{position:relative;display:flex;gap:10px;align-items:center}
+.row .n{font-variant-numeric:tabular-nums;color:var(--muted);min-width:2ch;text-align:right}
+.row.mine{border-color:var(--sl-color-primary-600)}
+h2{font-size:15px;font-weight:600;margin:0 0 10px}
+.suggest{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+.help{margin:6px 0 0}
+.status{min-height:1.2em;margin:0;font-size:var(--sl-font-size-small);color:var(--muted)}
+.status.err{color:var(--sl-color-danger-600)}
+.empty{color:var(--muted);font-size:var(--sl-font-size-small);margin:0}
+.hidden{display:none!important}
+</style></head><body>
+<main>
+<a href="./" aria-label="Back to Stringboard"><img class="logo" src="assets/logo.png" alt="AtomiLabSlop Stringboard" width="1100" height="378"></a>
+<h1 class="glass">Vote for the next board</h1>
+<p class="glass">Each board is written by hand, chapter by chapter, so it can stay spoiler-free. Vote for the ones you want next, or suggest your own. One vote per title, and you can take it back.</p>
+
+<div class="form card-surface">
+  <sl-radio-group id="cat" label="Category" value="game" size="medium">
+    <sl-radio-button value="game">Games</sl-radio-button><sl-radio-button value="series">TV series</sl-radio-button><sl-radio-button value="movie">Movies</sl-radio-button><sl-radio-button value="book">Books</sl-radio-button>
+  </sl-radio-group>
+
+  <section><h2>Coming soon</h2><ul class="list" id="titles"></ul></section>
+
+  <section>
+    <h2>Suggested by voters</h2>
+    <ul class="list" id="others"></ul>
+    <p class="empty" id="othersEmpty">Nothing yet. Suggestions show up here once two people have asked for the same title.</p>
+  </section>
+
+  <section>
+    <form class="suggest" id="sugForm">
+      <sl-input id="sugName" label="Your favourite isn't listed?" placeholder="Type a title" maxlength="60" autocomplete="off"></sl-input>
+      <sl-button type="submit" variant="primary" id="sugBtn">Suggest</sl-button>
+    </form>
+    <p class="help" id="mineNote"></p>
+  </section>
+  <p class="status" id="status" aria-live="polite"></p>
+</div>
+
+<p class="glass"><a href="./">← Back to Stringboard</a> · Want to help write a board? <a href="https://github.com/AtomiLabSlop/stringboard" target="_blank" rel="noopener">Open source on GitHub</a>.</p>
+</main>
+
+<script src="js/themes.js?v=__V__"></script>
+<script src="js/story.js?v=__V__"></script>
+<script type="module">
+const $=s=>document.querySelector(s);
+await Promise.all(['sl-radio-group','sl-radio-button','sl-input','sl-button'].map(t=>customElements.whenDefined(t)));
+const API='api/vote.php', KEY='stringboard:votes:v1';
+const CAT=await SB.catalog();
+const keyOf=s=>String(s).toLowerCase().replace(/[^\p{L}\p{N}]+/gu,'');
+let mine={ids:[],other:{}};try{mine=Object.assign(mine,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch{}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(mine))}catch{}};
+let R={counts:{},other:{},minShown:2},busy=false;
+const cat=()=>$('#cat').value;
+const status=(t,err)=>{$('#status').textContent=t||'';$('#status').classList.toggle('err',!!err)};
+
+function row({name,sub,n,max,voted,onVote}){
+  const li=document.createElement('li');li.className='row'+(voted?' mine':'');
+  const bar=document.createElement('div');bar.className='bar';bar.style.width=(max?Math.round(n/max*100):0)+'%';
+  const nm=document.createElement('div');nm.className='name';nm.textContent=name;
+  if(sub){const s=document.createElement('small');s.textContent=sub;nm.append(s)}
+  const act=document.createElement('div');act.className='act';
+  const c=document.createElement('span');c.className='n';c.textContent=n;c.title=n+(n===1?' vote':' votes');
+  const b=document.createElement('sl-button');b.size='small';b.variant=voted?'primary':'default';b.outline=!voted;
+  b.innerHTML=`<sl-icon slot="prefix" name="${voted?'check-lg':'hand-thumbs-up'}"></sl-icon>${voted?'Voted':'Vote'}`;
+  b.addEventListener('click',onVote);
+  act.append(c,b);li.append(bar,nm,act);return li;
+}
+
+function render(){
+  const c=cat();
+  const titles=CAT.titles.filter(t=>t.type===c&&t.status==='soon').map(t=>({t,n:R.counts[t.id]||0}))
+    .sort((a,b)=>b.n-a.n||a.t.title.localeCompare(b.t.title));
+  const others=R.other[c]||[];
+  const max=Math.max(1,...titles.map(x=>x.n),...others.map(x=>x.n));
+  $('#titles').replaceChildren(...titles.map(({t,n})=>row({name:t.title,n,max,voted:mine.ids.includes(t.id),onVote:()=>send({id:t.id},t.title)})));
+  $('#others').replaceChildren(...others.map(o=>row({name:o.name,n:o.n,max,voted:(mine.other[c]||[]).includes(o.key),onVote:()=>send({cat:c,name:o.name},o.name)})));
+  $('#othersEmpty').classList.toggle('hidden',others.length>0);
+  // your own suggestions that aren't public yet
+  const shown=new Set(others.map(o=>o.key));
+  const pending=(mine.names?.[c]||[]).filter(n=>(mine.other[c]||[]).includes(keyOf(n))&&!shown.has(keyOf(n)));
+  $('#mineNote').textContent=pending.length?`Your suggestion${pending.length>1?'s':''} (${pending.join(', ')}) will appear once someone else asks for the same title.`:'';
+  const top=titles[0]?.t;if(top)SB.applyBackground(null,top);
+}
+
+async function load(){
+  try{const r=await fetch(API,{cache:'no-store'});if(!r.ok)throw 0;R=await r.json();status('')}
+  catch{status('Voting is offline right now. Please try again later.',true)}
+  render();
+}
+
+async function send(body,label){
+  if(busy)return;busy=true;status('');
+  try{
+    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){status(j.error==='too many votes today'?'That’s a lot of votes for one day. Try again tomorrow.':'Couldn’t save that: '+(j.error||'server error'),true);return false}
+    R=j;
+    if(body.id){mine.ids=mine.ids.filter(x=>x!==body.id);if(j.voted)mine.ids.push(body.id)}
+    else{const k=keyOf(body.name);const l=(mine.other[body.cat]||[]).filter(x=>x!==k);if(j.voted)l.push(k);mine.other[body.cat]=l;
+      mine.names=mine.names||{};const nl=(mine.names[body.cat]||[]).filter(x=>keyOf(x)!==k);if(j.voted)nl.push(body.name);mine.names[body.cat]=nl}
+    save();status(j.voted?`Voted for ${label}.`:`Vote for ${label} removed.`);return true;
+  }catch{status('Voting is offline right now. Please try again later.',true);return false}
+  finally{busy=false;render()}
+}
+
+$('#cat').addEventListener('sl-change',render);
+$('#sugForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const name=String($('#sugName').value||'').trim().replace(/\s+/g,' ');
+  if(name.length<2){status('Type a title first.',true);return}
+  const c=cat(),k=keyOf(name);
+  const known=CAT.titles.find(t=>t.type===c&&keyOf(t.title)===k);
+  if(known){if(known.status!=='soon'){status(`${known.title} already has a board.`);return}
+    if(!mine.ids.includes(known.id))await send({id:known.id},known.title);else status(`You already voted for ${known.title}.`);$('#sugName').value='';return}
+  if((mine.other[c]||[]).includes(k)){status(`You already suggested ${name}.`);return}
+  if(await send({cat:c,name},name))$('#sugName').value='';
+});
+const q=new URLSearchParams(location.search).get('cat');if(['game','series','movie','book'].includes(q))$('#cat').value=q;
+load();
+</script>
+</body></html>
