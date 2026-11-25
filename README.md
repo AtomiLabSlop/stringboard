@@ -51,6 +51,17 @@ Every push to `main` uploads the `site/` folder to https://atomilab.fi/stringboa
 Required repository secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`.
 Optional repository variables: `FTP_SERVER_DIR` (default `httpdocs/stringboard/`), `FTP_PROTOCOL` (default `ftps`; set to `ftp` if the host does not support FTPS).
 
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=atomilabslop%2Fkstringboard&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=atomilabslop/kstringboard&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=atomilabslop/kstringboard&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=atomilabslop/kstringboard&type=date&legend=top-left" />
+ </picture>
+</a>
+
 ---
 
 ### Support me
