@@ -70,6 +70,12 @@
         </section>
 
         <sl-divider></sl-divider>
+        <section class="sec"><h3>Layout</h3>
+          <sl-button id="arrangeAll" size="small" outline><sl-icon slot="prefix" name="diagram-3"></sl-icon>Auto-arrange all cards</sl-button>
+          <p class="tip">Moves every card so connected cards sit close together and strings stay short. Cards you placed yourself move too. You can undo it.</p>
+        </section>
+
+        <sl-divider></sl-divider>
         <section class="sec"><h3>Cards</h3>
           <div class="ctl">
             <sl-radio-group id="g-style" label="Card style" size="small">
@@ -115,9 +121,8 @@
         <sl-divider></sl-divider>
         <section class="sec"><h3>Reset</h3>
           <div class="btngrid">
-            <sl-button id="resetLayout" size="small" outline>Reset layout</sl-button>
             <sl-button id="clearInk" size="small" outline>Clear drawings</sl-button>
-            <sl-button id="resetStyles" size="small" outline class="span2">Reset all styles</sl-button>
+            <sl-button id="resetStyles" size="small" outline>Reset all styles</sl-button>
           </div>
         </section>
 
@@ -144,6 +149,12 @@
           <sl-radio-group id="cpLayer" size="small" label="Layer">
             <sl-radio-button value="under">Under strings</sl-radio-button><sl-radio-button value="over">Over strings</sl-radio-button>
           </sl-radio-group>
+        </section>
+
+        <sl-divider></sl-divider>
+        <section class="sec"><h3>Position</h3>
+          <sl-button id="cpArrange" size="small" outline><sl-icon slot="prefix" name="diagram-3"></sl-icon>Auto-arrange around this card</sl-button>
+          <p class="tip">Moves only this card and the cards it's connected to, as little as needed to shorten their strings. Every other card stays put. You can undo it.</p>
         </section>
 
         <div id="cpImgWrap">

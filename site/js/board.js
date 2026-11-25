@@ -41,7 +41,7 @@ function redo() { clearTimeout(hist.t); commitHist(); if (!hist.r.length) return
 function toast(msg, action, fn) {
   const t = $('#toast'); t.innerHTML = ''; t.append(msg);
   if (action) { const b = document.createElement('sl-button'); b.size = 'small'; b.variant = 'primary'; b.outline = true; b.textContent = action; b.onclick = () => { fn(); t.classList.remove('on'); }; t.append(b); }
-  t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), action ? 7000 : 3500);
+  t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), action ? 10000 : 3500);
 }
 const lum = hex => { const n = parseInt(hex.slice(1), 16), c = [n >> 16, n >> 8 & 255, n & 255].map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; };
 const hash = s => { let h = 2166136261; for (const ch of s) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return ((h >>> 0) % 2000) / 1000 - 1; };
@@ -421,7 +421,8 @@ $('#resetStyles').addEventListener('click', () => {
     st.set = oldSet; Object.entries(oldBg).forEach(([id, bg]) => custom(id).bg = bg); save(); syncSettings(); applySettings();
   });
 });
-$('#resetLayout').addEventListener('click', () => { st.pos = {}; save(); renderCards(); toast('Cards are back in their original places.'); });
+$('#arrangeAll').addEventListener('click', arrangeAll);
+$('#cpArrange').addEventListener('click', () => { if (openCard) arrangeAround(openCard); });
 $('#clearInk').addEventListener('click', () => { const old = st.ink, oldC = st.cardInk; st.ink = []; st.cardInk = {}; save(); renderInk(); renderCards(); toast('Drawings cleared.', 'Undo', () => { st.ink = old; st.cardInk = oldC; save(); renderInk(); renderCards(); }); });
 
 /* ---------- save to file / open saved file ---------- */
@@ -456,6 +457,111 @@ $('#importFile').addEventListener('change', e => {
 $('#impNo').addEventListener('click', () => { pendingImport = null; $('#impWarn').hide(); });
 $('#impYes').addEventListener('click', () => { $('#impWarn').hide(); if (pendingImport) applyImport(pendingImport); pendingImport = null; });
 
+
+/* ---------- auto-arrange: a small force layout. Linked cards pull together (short strings), cards never overlap.
+   Only cards visible at your progress take part, so the layout never hints at what's still to come. ---------- */
+const visIds = v => S.chars.filter(c => c.a <= v).map(c => c.id);
+const visLinks = v => S.links.filter(([a, b, s]) => s <= v && byId(a).a <= v && byId(b).a <= v);
+function cardSize(id) {
+  const c = byId(id), d = els[id], w = (c.main ? 160 : 130) * st.set.cardSize;
+  return d && !d.hidden && d.offsetWidth ? { w: d.offsetWidth, h: d.offsetHeight } : { w, h: w * 1.35 };
+}
+function neighbours(id, v) { const n = new Set(); visLinks(v).forEach(([a, b]) => { if (a === id) n.add(b); if (b === id) n.add(a); }); return [...n]; }
+// movable: ids allowed to move. anchor: pull back toward the starting spot (0 = free, higher = gentler changes).
+// maxMove: hard cap on how far a card may travel. init: optional starting positions for cards without one.
+function arrange(movable, { v = st.now, anchor = 0, maxMove = Infinity, iters = 220, spread = 0, init = {} } = {}) {
+  const ids = visIds(v), mv = new Set(movable);
+  const N = ids.map(id => { const c = byId(id), s = cardSize(id), p = init[id] || st.pos[id] || { x: c.x, y: c.y };
+    return { id, w: s.w, h: s.h, x: p.x + s.w / 2, y: p.y + s.h / 2, ox: p.x + s.w / 2, oy: p.y + s.h / 2, m: mv.has(id), nb: [] }; });
+  const ix = Object.fromEntries(N.map((n, i) => [n.id, i]));
+  visLinks(v).forEach(([a, b]) => { if (ix[a] != null && ix[b] != null) { N[ix[a]].nb.push(ix[b]); N[ix[b]].nb.push(ix[a]); } });
+  const pad = 30, M = N.filter(n => n.m);
+  // a big cast needs more room than the board's base area: grow it, keeping the shape
+  const need = N.reduce((s, n) => s + (n.w + pad) * (n.h + pad), 0) * 1.5, g = Math.max(1, Math.sqrt(need / (VW * VH))), BW = VW * g, BH = VH * g;
+  const clamp = n => {
+    const dx = n.x - n.ox, dy = n.y - n.oy, d = Math.hypot(dx, dy);
+    if (d > maxMove) { n.x = n.ox + dx / d * maxMove; n.y = n.oy + dy / d * maxMove; }
+    n.x = Math.min(BW - n.w / 2 - 8, Math.max(n.w / 2 + 8, n.x)); n.y = Math.min(BH - n.h / 2 - 8, Math.max(n.h / 2 + 8, n.y));
+  };
+  const separate = () => { // push overlapping cards apart along the shorter way out
+    for (let i = 0; i < N.length; i++) for (let j = i + 1; j < N.length; j++) {
+      const A = N[i], B = N[j]; if (!A.m && !B.m) continue;
+      let dx = B.x - A.x, dy = B.y - A.y; if (!dx && !dy) { dx = hash(A.id + B.id) || .5; dy = hash(B.id + A.id); }
+      const ox = (A.w + B.w) / 2 + pad - Math.abs(dx), oy = (A.h + B.h) / 2 + pad - Math.abs(dy);
+      if (ox <= 0 || oy <= 0) continue;
+      const wa = A.m ? (B.m ? .5 : 1) : 0, wb = B.m ? (A.m ? .5 : 1) : 0;
+      if (ox < oy) { const s = Math.sign(dx) * ox; A.x -= s * wa; B.x += s * wb; } else { const s = Math.sign(dy) * oy; A.y -= s * wa; B.y += s * wb; }
+    }
+  };
+  // Fruchterman–Reingold: linked cards attract, every card gently pushes the others away
+  const K = 170 * st.set.cardSize;
+  for (let it = 0; it < iters; it++) {
+    const temp = 40 * (1 - it / iters) + 2, fx = new Float64Array(N.length), fy = new Float64Array(N.length);
+    for (let i = 0; i < N.length; i++) for (let j = i + 1; j < N.length; j++) {
+      const A = N[i], B = N[j]; if (!A.m && !B.m) continue;
+      const dx = B.x - A.x || .1, dy = B.y - A.y, d2 = Math.max(dx * dx + dy * dy, 100), d = Math.sqrt(d2);
+      if (d > 3 * K) continue;
+      const f = K * K / d2 * (spread ? 1 : .6);
+      fx[i] -= dx * f; fy[i] -= dy * f; fx[j] += dx * f; fy[j] += dy * f;
+    }
+    N.forEach((A, i) => A.nb.forEach(j => { if (j < i) return; const B = N[j], dx = B.x - A.x, dy = B.y - A.y, d = Math.hypot(dx, dy) || 1, f = d / K;
+      fx[i] += dx * f; fy[i] += dy * f; fx[j] -= dx * f; fy[j] -= dy * f; }));
+    N.forEach((n, i) => {
+      if (!n.m) return;
+      if (spread) { fx[i] += (BW / 2 - n.x) * .02; fy[i] += (BH / 2 - n.y) * .02; }
+      if (anchor) { fx[i] += (n.ox - n.x) * anchor * 4; fy[i] += (n.oy - n.y) * anchor * 4; }
+      const d = Math.hypot(fx[i], fy[i]) || 1, step = Math.min(d, temp);
+      n.x += fx[i] / d * step; n.y += fy[i] / d * step;
+    });
+    separate(); M.forEach(clamp);
+  }
+  for (let r = 0; r < 40; r++) { separate(); M.forEach(clamp); }
+  // anything still overlapping goes to the nearest free spot (spiral search outward)
+  const hits = (n, x, y) => N.some(o => o !== n && Math.abs(o.x - x) < (o.w + n.w) / 2 + pad - 4 && Math.abs(o.y - y) < (o.h + n.h) / 2 + pad - 4);
+  M.forEach(n => {
+    if (!hits(n, n.x, n.y)) return;
+    for (let r = 20; r < 3000; r += 20) {
+      let found = false;
+      for (let a = 0; a < 360; a += 360 / Math.max(8, r / 12)) {
+        const x = n.x + r * Math.cos(a * Math.PI / 180), y = n.y + r * Math.sin(a * Math.PI / 180);
+        if (x < n.w / 2 + 8 || y < n.h / 2 + 8 || hits(n, x, y)) continue; // may go past the base area: the board grows
+        n.x = x; n.y = y; found = true; break;
+      }
+      if (found) break;
+    }
+  });
+  const out = {}; M.forEach(n => { out[n.id] = { x: Math.round(n.x - n.w / 2), y: Math.round(n.y - n.h / 2) }; });
+  return out;
+}
+// glide cards to their new spots, then record one undo step
+function moveCards(target, msg) {
+  const from = {}; Object.keys(target).forEach(id => { const c = byId(id); from[id] = st.pos[id] || { x: c.x, y: c.y }; });
+  const t0 = performance.now(), D = 380;
+  const frame = now => {
+    const k = Math.min(1, (now - t0) / D), e = 1 - (1 - k) ** 3;
+    Object.keys(target).forEach(id => { const a = from[id], b = target[id]; st.pos[id] = { x: Math.round(a.x + (b.x - a.x) * e), y: Math.round(a.y + (b.y - a.y) * e) };
+      const d = els[id]; if (d) { d.style.left = st.pos[id].x + 'px'; d.style.top = st.pos[id].y + 'px'; } });
+    renderStrings();
+    if (k < 1) requestAnimationFrame(frame);
+    else { renderCards(); save(); clearTimeout(hist.t); commitHist(); if (msg) toast(msg, 'Undo', undo); }
+  };
+  requestAnimationFrame(frame);
+}
+function arrangeAll() { moveCards(arrange(visIds(st.now), { spread: 900 }), 'Cards arranged: connected cards are close together.'); }
+function arrangeAround(id) {
+  const ids = [id, ...neighbours(id, st.now)];
+  moveCards(arrange(ids, { anchor: .05, maxMove: 220, iters: 180 }), 'Moved this card and the cards it connects to.');
+}
+// cards that just became visible get a spot next to the cards they connect to
+function placeNew(ids, v) {
+  const init = {};
+  ids.forEach(id => { const ns = neighbours(id, v).filter(n => !ids.includes(n)), c = byId(id);
+    if (ns.length) { const ps = ns.map(n => st.pos[n] || { x: byId(n).x, y: byId(n).y });
+      init[id] = { x: ps.reduce((s, p) => s + p.x, 0) / ps.length + hash(id) * 90, y: ps.reduce((s, p) => s + p.y, 0) / ps.length + 120 + hash(id + 'y') * 40 }; }
+    else init[id] = { x: c.x, y: c.y }; });
+  Object.assign(st.pos, arrange(ids, { v, init, iters: 200 }));
+}
+
 /* ---------- timeline + progress update ---------- */
 $('#tl').addEventListener('sl-input', e => { view = +e.target.value; renderTimeline(); renderCards(); if (openCard) openCardPanel(openCard); });
 $('#updBtn').addEventListener('click', () => { const ty = SB.typeOf(S), U = SB.UNITS[ty]; $('#uCh').label = U.label; $('#uCh').placeholder = U.placeholder; $('#uProg').hidden = true; $('#uCh').value = SB.fmtPos(ty, S.steps[st.now].ch); $('#uTxt').value = ''; $('#uMsg').textContent = ''; $('#uMsg').className = 'status'; $('#upd').show(); });
@@ -484,9 +590,16 @@ $('#uGo').addEventListener('click', async () => {
     msg.textContent = String($('#uTxt').value ?? '').trim() ? "Couldn't recognize that yet. Try a mission name or a character you just met." : 'Nothing new to add. Describe what happened, or enter a later chapter.';
     msg.className = 'status no'; return;
   }
-  undoNow = st.now; st.now = next; view = next; save();
+  undoNow = st.now; const fresh = S.chars.filter(c => c.a > st.now && c.a <= next).map(c => c.id);
+  st.now = next; view = next;
   $('#upd').hide(); renderTimeline(); renderCards();
-  toast('Board updated. New things are pinned up.', 'Undo', () => { st.now = undoNow; view = undoNow; save(); renderTimeline(); renderCards(); });
+  if (fresh.length) placeNew(fresh, next);
+  renderCards(); save(); clearTimeout(hist.t); commitHist();
+  if (fresh.length) {
+    const around = [...new Set(fresh.flatMap(id => [id, ...neighbours(id, next)]))];
+    toast(`${fresh.length} new card${fresh.length > 1 ? 's' : ''} pinned up. Tidy the cards connected to ${fresh.length > 1 ? 'them' : 'it'}?`, 'Tidy up',
+      () => moveCards(arrange(around, { anchor: .05, maxMove: 220, iters: 180 }), 'Tidied the new cards and their connections.'));
+  } else toast('Board updated. New things are pinned up.', 'Undo', undo);
 });
 
 /* ---------- ink: marker + eraser ---------- */
@@ -662,6 +775,11 @@ document.addEventListener('keydown', e => {
   hist.last = JSON.stringify(st); updHistBtns();
   ro.observe(board); layout();
   document.fonts && document.fonts.ready.then(renderStrings);
+  if (st.lay !== 1) { // smarter default: arrange every card you haven't placed yourself
+    requestAnimationFrame(() => { const free = visIds(st.now).filter(id => !st.pos[id]);
+      if (free.length) Object.assign(st.pos, arrange(free, { spread: 900 }));
+      st.lay = 1; renderCards(); hist.last = JSON.stringify(st); save(); });
+  }
   save();
 })();
 }
