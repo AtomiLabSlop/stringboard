@@ -29,6 +29,8 @@ The files in `site/data/` contain the **whole story**, including endings. The bo
 - **Made for desktop.** It works on phones and tablets too, but the board, marker and notes are designed for a mouse and a larger screen.
 
 ## Adding story data
+Titles are listed in `site/data/catalog.json` (`{ "id", "type": "game" | "series" | "movie" | "book", "title" }`). The type sets how people enter their progress: chapter (games), last episode watched like `S2E5` (series, stored as season×100+episode), minutes watched (movies) or page (books). Use the same numbers in each step's `ch`.
+
 Story data lives in `site/data/<game>.json`:
 - `steps` – timeline steps `{ch, title, text, kw}` in story order; `kw` are matching keywords (any language, lower case, accents removed).
 - `chars` – cards: position in a 1100×1000 board space (`x`, `y`), name `n`, role `r`, the step they appear `a`, optional role changes `rs` and facts `f: [[step, text], …]`.
