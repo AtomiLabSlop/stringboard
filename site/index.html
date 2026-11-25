@@ -29,6 +29,18 @@ footer a,.continue a{color:#ffb4a8}
 #mlProg{margin-top:10px}#mlProg sl-progress-bar{--height:8px}
 .continue{font-size:15px;color:var(--muted);text-align:center;margin:0}
 footer{font-size:13px;text-align:center;width:min(560px,100%);box-sizing:border-box;color:#d9d3ca}
+/* one scale for every control in the form: same label style, same control height, same gaps */
+.form{--sb-gap:20px;gap:var(--sb-gap)}
+#step2{gap:var(--sb-gap)}
+.form sl-radio-group::part(form-control-label),.form sl-select::part(form-control-label),.form sl-input::part(form-control-label),.form sl-textarea::part(form-control-label){font-size:14px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.form sl-select::part(form-control-help-text),.form sl-input::part(form-control-help-text),.form sl-textarea::part(form-control-help-text),.soon,.reveal p,.mlnote,.status{font-size:13px;line-height:1.45}
+#cat::part(button-group),#cat::part(button-group__base){display:flex;width:100%}
+#cat sl-radio-button{flex:1}
+#cat sl-radio-button{min-width:0}
+#cat sl-radio-button::part(button){width:100%;justify-content:center;padding-inline:8px}
+#cat sl-radio-button::part(label){padding:0}
+.form .row sl-button{min-width:128px}
+.reveal sl-checkbox::part(label){font-size:14px}
 </style></head><body>
 <main>
 <img class="logo" src="assets/logo.png" alt="AtomiLabSlop Stringboard" width="1100" height="378">
@@ -38,17 +50,17 @@ footer{font-size:13px;text-align:center;width:min(560px,100%);box-sizing:border-
   <sl-radio-group id="cat" label="What are you following?" value="game" size="medium">
     <sl-radio-button value="game">Games</sl-radio-button><sl-radio-button value="series">TV series</sl-radio-button><sl-radio-button value="movie">Movies</sl-radio-button><sl-radio-button value="book">Books</sl-radio-button>
   </sl-radio-group>
-  <sl-select id="game" label="Title" placeholder="Choose a title…" size="large"></sl-select>
+  <sl-select id="game" label="Title" placeholder="Choose a title…" size="medium"></sl-select>
   <p class="soon hidden" id="soonPick">This board is coming soon. <a href="vote.html" class="voteLink">Vote for it to come sooner</a>.</p>
   <p class="soon hidden" id="soon">Nothing here yet. Want a board for something? <a href="vote.html" class="voteLink">Suggest a title</a>.</p>
 
   <div id="step2" class="hidden">
-    <sl-input id="chapter" label="Chapter" autocomplete="off" placeholder="Enter chapter number, e.g. 1" size="large">
+    <sl-input id="chapter" label="Chapter" autocomplete="off" placeholder="Enter chapter number, e.g. 1" size="medium">
       <div slot="help-text" id="chHelp"></div>
     </sl-input>
 
     <div id="lastWrap" class="hidden">
-      <sl-textarea id="last" label="What did you do last? (optional)" placeholder="e.g. Did my first drug deal with Jason's friend" rows="3" resize="auto"
+      <sl-textarea id="last" size="medium" label="What did you do last? (optional)" placeholder="e.g. Did my first drug deal with Jason's friend" rows="3" resize="auto"
         help-text="Describe your latest mission or a character you just met, in any words. We use it to move the board a bit further into the chapter, without showing anything you haven't seen."></sl-textarea>
       <div class="mlnote hidden" id="mlNote">
         <sl-icon name="cpu" aria-hidden="true"></sl-icon>
@@ -68,8 +80,8 @@ footer{font-size:13px;text-align:center;width:min(560px,100%);box-sizing:border-
   </div>
 
   <div class="row">
-    <sl-button id="reset" size="large" outline>Reset fields</sl-button>
-    <sl-button id="start" variant="primary" size="large" disabled>Start</sl-button>
+    <sl-button id="reset" size="medium" outline>Reset fields</sl-button>
+    <sl-button id="start" variant="primary" size="medium" disabled>Start</sl-button>
   </div>
 </div>
 <p class="continue hidden" id="cont"></p>
@@ -114,7 +126,8 @@ const CAT=await SB.catalog()||{titles:[{id:'gta6',type:'game',title:'Grand Theft
 function fillTitles(){
   const type=$('#cat').value||'game',list=CAT.titles.filter(x=>x.type===type);
   game.innerHTML='';list.forEach(x=>{const o=document.createElement('sl-option');o.value=x.id;o.textContent=x.title;if(x.status==='soon'){const s=document.createElement('span');s.slot='suffix';s.className='soonTag';s.textContent='Coming soon';o.append(s)}game.append(o)});
-  game.value='';game.disabled=!list.length;$('#soon').classList.toggle('hidden',!!list.length);$('#soonPick').classList.add('hidden');
+  game.value='';game.disabled=!list.length;// Shoelace marks every option selected if they upgrade while value is '', so clear the selection once they exist
+customElements.whenDefined('sl-option').then(()=>game.updateComplete).then(()=>{if(!game.value){game.getAllOptions().forEach(o=>o.selected=false);game.selectionChanged()}});$('#soon').classList.toggle('hidden',!!list.length);$('#soonPick').classList.add('hidden');
   const u=SB.UNITS[type];ch.label=u.label;ch.placeholder=u.placeholder;$('#chHelp').innerHTML=u.help;ch.inputmode=type==='series'?'text':'numeric';
   ch.value='';S=null;SB.applyBackground(null);$('#cont').classList.add('hidden');update();
 }
