@@ -83,10 +83,11 @@ window.SB = (() => {
   }
   const fmtMB = b => (b / 1e6).toFixed(1);
   /* per-game page background behind the UI */
-  function applyBackground(S) {
-    const b = S && S.background && /^[\w./-]+$/.test(S.background) ? S.background : null;
+  function applyBackground(S, entry) {
+    const b = S && S.background && /^[\w./-]+$/.test(S.background) ? new URL(S.background, location.href).href
+      : entry && entry.theme && window.SBTheme ? SBTheme.url(entry.id, entry.theme) : null;
     document.body.classList.toggle('has-bg', !!b);
-    if (b) document.body.style.setProperty('--game-bg', `url("${new URL(b, location.href).href}")`); else document.body.style.removeProperty('--game-bg');
+    if (b) document.body.style.setProperty('--game-bg', `url("${b}")`); else document.body.style.removeProperty('--game-bg');
   }
   /* ---------- progress units per category ----------
      game:   chapters; the board shows everything up to the START of the chapter entered.

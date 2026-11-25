@@ -22,6 +22,516 @@
       "id": "gta6",
       "type": "game",
       "title": "Grand Theft Auto VI"
+    },
+    {
+      "id": "rdr2",
+      "type": "game",
+      "title": "Red Dead Redemption 2",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#3b1d1a",
+          "#a2462a",
+          "#e3a35b",
+          "#ffd9a0"
+        ],
+        "motif": "dunes"
+      }
+    },
+    {
+      "id": "cyberpunk2077",
+      "type": "game",
+      "title": "Cyberpunk 2077",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#0b0420",
+          "#3a0f5c",
+          "#0d0a24",
+          "#f5e663"
+        ],
+        "motif": "grid"
+      }
+    },
+    {
+      "id": "bg3",
+      "type": "game",
+      "title": "Baldur's Gate 3",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#120d1f",
+          "#3b1f4a",
+          "#1d1230",
+          "#c9a2ff"
+        ],
+        "motif": "rings"
+      }
+    },
+    {
+      "id": "witcher3",
+      "type": "game",
+      "title": "The Witcher 3: Wild Hunt",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#1a2228",
+          "#4a5a5e",
+          "#232a2c",
+          "#d9d2c0"
+        ],
+        "motif": "mountains"
+      }
+    },
+    {
+      "id": "masseffect",
+      "type": "game",
+      "title": "Mass Effect Trilogy",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#02060f",
+          "#0b2240",
+          "#10294a",
+          "#7fd4ff"
+        ],
+        "motif": "stars"
+      }
+    },
+    {
+      "id": "ff7",
+      "type": "game",
+      "title": "Final Fantasy VII Remake & Rebirth",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#05140f",
+          "#0f3b2c",
+          "#06201a",
+          "#8dffc8"
+        ],
+        "motif": "shards"
+      }
+    },
+    {
+      "id": "discoelysium",
+      "type": "game",
+      "title": "Disco Elysium",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#2a2420",
+          "#5d4a3a",
+          "#2d3a3a",
+          "#e3c27a"
+        ],
+        "motif": "strokes"
+      }
+    },
+    {
+      "id": "alanwake2",
+      "type": "game",
+      "title": "Alan Wake 2",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#05070a",
+          "#132026",
+          "#070b0d",
+          "#f2e6c4"
+        ],
+        "motif": "forest"
+      }
+    },
+    {
+      "id": "kcd2",
+      "type": "game",
+      "title": "Kingdom Come: Deliverance II",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#1d2414",
+          "#59683a",
+          "#2c3320",
+          "#efe3b8"
+        ],
+        "motif": "mountains"
+      }
+    },
+    {
+      "id": "expedition33",
+      "type": "game",
+      "title": "Clair Obscur: Expedition 33",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#1a1328",
+          "#6b3f5e",
+          "#d8a77a",
+          "#fff1dd"
+        ],
+        "motif": "petals"
+      }
+    },
+    {
+      "id": "dark",
+      "type": "series",
+      "title": "Dark",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#0a0b08",
+          "#24261b",
+          "#0c0d0a",
+          "#e2c46a"
+        ],
+        "motif": "forest"
+      }
+    },
+    {
+      "id": "got",
+      "type": "series",
+      "title": "Game of Thrones / House of the Dragon",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#0b0b0f",
+          "#2a2a35",
+          "#3a1410",
+          "#ff8a3d"
+        ],
+        "motif": "embers"
+      }
+    },
+    {
+      "id": "severance",
+      "type": "series",
+      "title": "Severance",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#0b1a22",
+          "#21404b",
+          "#e7efe9",
+          "#9fd6c7"
+        ],
+        "motif": "lines"
+      }
+    },
+    {
+      "id": "thewire",
+      "type": "series",
+      "title": "The Wire",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#0a0c10",
+          "#1d2531",
+          "#0d1015",
+          "#ffd36b"
+        ],
+        "motif": "city"
+      }
+    },
+    {
+      "id": "succession",
+      "type": "series",
+      "title": "Succession",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#0e0e10",
+          "#2b2b30",
+          "#4a3b22",
+          "#e6c37a"
+        ],
+        "motif": "city"
+      }
+    },
+    {
+      "id": "lost",
+      "type": "series",
+      "title": "Lost",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#062a2e",
+          "#0e6a6a",
+          "#c9b27a",
+          "#f6f1d6"
+        ],
+        "motif": "waves"
+      }
+    },
+    {
+      "id": "twinpeaks",
+      "type": "series",
+      "title": "Twin Peaks",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#071512",
+          "#173a32",
+          "#0b1d19",
+          "#d6e6d0"
+        ],
+        "motif": "forest"
+      }
+    },
+    {
+      "id": "shogun",
+      "type": "series",
+      "title": "Shōgun",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#120e0c",
+          "#3a2a22",
+          "#0f1a20",
+          "#e8dfcf"
+        ],
+        "motif": "waves"
+      }
+    },
+    {
+      "id": "slowhorses",
+      "type": "series",
+      "title": "Slow Horses",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#101418",
+          "#2c3640",
+          "#151a1f",
+          "#cfd8df"
+        ],
+        "motif": "rain"
+      }
+    },
+    {
+      "id": "andor",
+      "type": "series",
+      "title": "Andor",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#05070a",
+          "#1c2430",
+          "#3a2418",
+          "#ffb27a"
+        ],
+        "motif": "stars"
+      }
+    },
+    {
+      "id": "memento",
+      "type": "movie",
+      "title": "Memento",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#141414",
+          "#3a3a3a",
+          "#1d1d1d",
+          "#e6e1d6"
+        ],
+        "motif": "shards"
+      }
+    },
+    {
+      "id": "inception",
+      "type": "movie",
+      "title": "Inception",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#0b1118",
+          "#2a3b4c",
+          "#121a22",
+          "#c6d6e6"
+        ],
+        "motif": "rings"
+      }
+    },
+    {
+      "id": "tenet",
+      "type": "movie",
+      "title": "Tenet",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#0b0f1c",
+          "#1c2a4a",
+          "#2a0f14",
+          "#9fb6ff"
+        ],
+        "motif": "waves"
+      }
+    },
+    {
+      "id": "usualsuspects",
+      "type": "movie",
+      "title": "The Usual Suspects",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#0b0c0d",
+          "#2b2f33",
+          "#121416",
+          "#d8d0bf"
+        ],
+        "motif": "rain"
+      }
+    },
+    {
+      "id": "knivesout",
+      "type": "movie",
+      "title": "Knives Out",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#1c120c",
+          "#5a2e1c",
+          "#2a1a10",
+          "#f0c48a"
+        ],
+        "motif": "embers"
+      }
+    },
+    {
+      "id": "oppenheimer",
+      "type": "movie",
+      "title": "Oppenheimer",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#100804",
+          "#5a2408",
+          "#f08a2a",
+          "#fff0c8"
+        ],
+        "motif": "embers"
+      }
+    },
+    {
+      "id": "dune",
+      "type": "movie",
+      "title": "Dune",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#2a1406",
+          "#b25a1c",
+          "#e8a85a",
+          "#fff0d0"
+        ],
+        "motif": "dunes"
+      }
+    },
+    {
+      "id": "asoiaf",
+      "type": "book",
+      "title": "A Song of Ice and Fire",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#0d1420",
+          "#3b4a5e",
+          "#1a0d0d",
+          "#dbe8f5"
+        ],
+        "motif": "snow"
+      }
+    },
+    {
+      "id": "wot",
+      "type": "book",
+      "title": "The Wheel of Time",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#14101e",
+          "#3a2f5a",
+          "#1e1a2e",
+          "#e6d29a"
+        ],
+        "motif": "rings"
+      }
+    },
+    {
+      "id": "stormlight",
+      "type": "book",
+      "title": "The Stormlight Archive",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#081420",
+          "#1f3e5a",
+          "#0d1a26",
+          "#bfe3ff"
+        ],
+        "motif": "rain"
+      }
+    },
+    {
+      "id": "malazan",
+      "type": "book",
+      "title": "Malazan Book of the Fallen",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#1a120e",
+          "#4a3326",
+          "#20160f",
+          "#e0c9a8"
+        ],
+        "motif": "mountains"
+      }
+    },
+    {
+      "id": "threebody",
+      "type": "book",
+      "title": "The Three-Body Problem",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#010205",
+          "#0d1424",
+          "#200a05",
+          "#ff9a5c"
+        ],
+        "motif": "stars"
+      }
+    },
+    {
+      "id": "warandpeace",
+      "type": "book",
+      "title": "War and Peace",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#1b1e26",
+          "#5a6272",
+          "#d8dde6",
+          "#ffffff"
+        ],
+        "motif": "snow"
+      }
+    },
+    {
+      "id": "christie",
+      "type": "book",
+      "title": "Agatha Christie mysteries",
+      "status": "soon",
+      "theme": {
+        "colors": [
+          "#101418",
+          "#2e3a36",
+          "#1a1e1c",
+          "#d9c27a"
+        ],
+        "motif": "lines"
+      }
     }
   ]
 }

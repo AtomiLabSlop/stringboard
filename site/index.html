@@ -17,6 +17,7 @@ body.has-bg .tag,body.has-bg footer{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,
 .reveal{padding:14px 16px;border:1px solid var(--sl-color-warning-200);border-radius:var(--sl-border-radius-medium);background:color-mix(in srgb,var(--sl-color-warning-50),transparent 40%)}
 .reveal p{margin:4px 0 0 28px;font-size:var(--sl-font-size-small);color:var(--muted)}
 .hidden{display:none!important}
+.soonTag{font-size:12px;color:var(--muted);margin-left:8px}
 .soon{margin:-8px 0 0;color:var(--muted);font-size:var(--sl-font-size-small)}.soon a{color:var(--sl-color-primary-600)}
 #cat::part(button-group){flex-wrap:wrap}
 .mlnote{margin-top:12px;display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:var(--sl-border-radius-medium);background:var(--sl-color-neutral-50);font-size:var(--sl-font-size-small);color:var(--muted)}
@@ -36,6 +37,7 @@ footer{font-size:13px;color:var(--muted);text-align:center;max-width:620px}
     <sl-radio-button value="game">Games</sl-radio-button><sl-radio-button value="series">TV series</sl-radio-button><sl-radio-button value="movie">Movies</sl-radio-button><sl-radio-button value="book">Books</sl-radio-button>
   </sl-radio-group>
   <sl-select id="game" label="Title" placeholder="Choose a title…" size="large"></sl-select>
+  <p class="soon hidden" id="soonPick">This board is coming soon. <a href="https://github.com/AtomiLabSlop/stringboard/issues" target="_blank" rel="noopener">Vote or help on GitHub</a>.</p>
   <p class="soon hidden" id="soon">Nothing here yet. Want a board for something? <a href="https://github.com/AtomiLabSlop/stringboard/issues" target="_blank" rel="noopener">Suggest a title on GitHub</a>.</p>
 
   <div id="step2" class="hidden">
@@ -78,6 +80,7 @@ footer{font-size:13px;color:var(--muted);text-align:center;max-width:620px}
   <sl-button slot="footer" id="spYes" variant="primary">Reveal everything</sl-button>
 </sl-dialog>
 
+<script src="js/themes.js?v=__V__"></script>
 <script src="js/story.js?v=__V__"></script>
 <script type="module">
 const $=s=>document.querySelector(s);
@@ -96,7 +99,8 @@ function recog(){
 }
 function update(){
   const g=game.value;
-  $('#step2').classList.toggle('hidden',!g);
+  const isSoon=!!(g&&CAT.titles.find(x=>x.id===g&&x.status==='soon'));
+  $('#step2').classList.toggle('hidden',!g||isSoon);
   ch.disabled=all.checked;
   $('#lastWrap').classList.toggle('hidden',!g||all.checked||!chNum());
   start.disabled=!(g&&S&&(all.checked||chNum()));
@@ -107,16 +111,18 @@ function update(){
 const CAT=await SB.catalog()||{titles:[{id:'gta6',type:'game',title:'Grand Theft Auto VI'}]};
 function fillTitles(){
   const type=$('#cat').value||'game',list=CAT.titles.filter(x=>x.type===type);
-  game.innerHTML='';list.forEach(x=>{const o=document.createElement('sl-option');o.value=x.id;o.textContent=x.title;game.append(o)});
-  game.value='';game.disabled=!list.length;$('#soon').classList.toggle('hidden',!!list.length);
+  game.innerHTML='';list.forEach(x=>{const o=document.createElement('sl-option');o.value=x.id;o.textContent=x.title;if(x.status==='soon'){const s=document.createElement('span');s.slot='suffix';s.className='soonTag';s.textContent='Coming soon';o.append(s)}game.append(o)});
+  game.value='';game.disabled=!list.length;$('#soon').classList.toggle('hidden',!!list.length);$('#soonPick').classList.add('hidden');
   const u=SB.UNITS[type];ch.label=u.label;ch.placeholder=u.placeholder;$('#chHelp').innerHTML=u.help;ch.inputmode=type==='series'?'text':'numeric';
   ch.value='';S=null;SB.applyBackground(null);$('#cont').classList.add('hidden');update();
 }
 $('#cat').addEventListener('sl-change',fillTitles);
 fillTitles();
 game.addEventListener('sl-change',async()=>{
-  S=null;SB.applyBackground(null);update();
+  S=null;SB.applyBackground(null);$('#soonPick').classList.add('hidden');update();
   if(!game.value)return;
+  const entry=CAT.titles.find(x=>x.id===game.value);
+  if(entry&&entry.status==='soon'){SB.applyBackground(null,entry);$('#soonPick').classList.remove('hidden');$('#step2').classList.add('hidden');return;}
   try{S=await SB.load(game.value)}catch(e){status.textContent='Could not load story data.'}
   SB.applyBackground(S);
   const st=SB.getState(game.value),c=$('#cont');
