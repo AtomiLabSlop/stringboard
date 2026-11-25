@@ -23,8 +23,8 @@ footer a,.continue a{color:#ffb4a8}
 .soonTag{font-size:12px;color:var(--muted);margin-left:8px}
 .soon{margin:-8px 0 0;color:var(--muted);font-size:var(--sl-font-size-small)}.soon a{color:var(--sl-color-primary-600)}
 #cat::part(button-group){flex-wrap:wrap}
-.mlnote{margin-top:12px;display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:var(--sl-border-radius-medium);background:var(--sl-color-neutral-50);font-size:var(--sl-font-size-small);color:var(--muted)}
-.mlnote sl-icon{font-size:20px;color:var(--sl-color-primary-600);flex:none;margin-top:2px}
+.mlnote{margin-top:12px;padding:12px 14px;border:1px solid #d9b44a;border-radius:var(--sl-border-radius-medium);background:rgba(217,180,74,.07);font-size:var(--sl-font-size-small);color:var(--muted)}
+.checkrow{display:flex;gap:12px;align-items:center;margin-top:10px}.checkrow .status{margin:0;min-height:0}
 .mlnote b{color:var(--ink);font-weight:600}.mlnote p{margin:2px 0 0}
 #mlProg{margin-top:10px}#mlProg sl-progress-bar{--height:8px}
 .continue{font-size:15px;color:var(--muted);text-align:center;margin:0}
@@ -62,15 +62,12 @@ footer{font-size:13px;text-align:center;width:min(560px,100%);box-sizing:border-
     <div id="lastWrap" class="hidden">
       <sl-textarea id="last" size="medium" label="What did you do last? (optional)" placeholder="e.g. Did my first drug deal with Jason's friend" rows="3" resize="auto"
         help-text="Describe your latest mission or a character you just met, in any words. We use it to move the board a bit further into the chapter, without showing anything you haven't seen."></sl-textarea>
+      <div class="checkrow"><sl-button id="check" size="small" outline disabled>Check</sl-button><p class="status" id="status" aria-live="polite"></p></div>
       <div class="mlnote hidden" id="mlNote">
-        <sl-icon name="cpu" aria-hidden="true"></sl-icon>
-        <div>
-          <b>Smart progress matching</b>
-          <p id="mlText"></p>
-          <div id="mlProg" class="hidden"><sl-progress-bar id="mlBar" value="0" label="Downloading language model"></sl-progress-bar><p class="help" id="mlBarText"></p></div>
-        </div>
+        <b>Smart progress matching</b>
+        <p id="mlText"></p>
+        <div id="mlProg" class="hidden"><sl-progress-bar id="mlBar" value="0" label="Downloading language model"></sl-progress-bar><p class="help" id="mlBarText"></p></div>
       </div>
-      <p class="status" id="status" aria-live="polite"></p>
     </div>
 
     <div class="reveal">
@@ -103,13 +100,23 @@ const game=$('#game'),ch=$('#chapter'),last=$('#last'),all=$('#all'),start=$('#s
 let S=null;
 const chNum=()=>SB.parsePos(SB.typeOf(S),ch.value);
 const base=()=>SB.basePos(S,chNum());
-function recog(){
-  status.textContent='';status.className='status';
-  if(!S||!chNum()||!String(last.value||'').trim())return -1;
-  const n=chNum(),m=SB.match(S,last.value,base(),SB.chapterEnd(S,n));
-  if(m>=0){status.textContent='✓ Recognized. Your latest progress will be on the board.';status.classList.add('ok')}
-  else{status.textContent='Not recognized. The board will start from '+(SB.typeOf(S)==='game'?'the beginning of Chapter '+n:'the point you entered')+'. Try a scene, a mission name or a character you just met.';status.classList.add('no')}
-  return m;
+let checked=null; // {text, m}: result of the last Check, valid while the text is unchanged
+const lastText=()=>String(last.value||'').trim();
+function showResult(m){
+  const n=chNum();status.className='status';
+  if(m>=0){status.textContent='✓ Found it. Your latest progress will be on the board.';status.classList.add('ok')}
+  else{status.textContent='Not found. The board will start from '+(SB.typeOf(S)==='game'?'the beginning of Chapter '+n:'the point you entered')+'. Try a scene, a mission name or a character you just met.';status.classList.add('no')}
+}
+async function runCheck(){
+  const txt=lastText();if(!S||!chNum()||!txt)return -1;
+  if(checked&&checked.text===txt)return checked.m;
+  let m=SB.match(S,txt,base(),SB.chapterEnd(S,chNum()));
+  if(m<0&&S.matcher){
+    const bar=$('#mlBar'),bt=$('#mlBarText');status.textContent='Checking…';status.className='status';
+    try{const r=await SB.smartMatch(S,txt,base(),SB.chapterEnd(S,chNum()),(l,t)=>{$('#mlProg').classList.remove('hidden');bar.value=Math.round(l/t*100);bt.textContent=`Downloading language model… ${SB.fmtMB(l)} / ${SB.fmtMB(t)} MB`;});m=r.i;$('#mlProg').classList.add('hidden')}
+    catch(e){bt.textContent='Could not load the language model.';$('#mlProg').classList.remove('hidden')}
+  }
+  checked={text:txt,m};showResult(m);return m;
 }
 function update(){
   const g=game.value;
@@ -120,7 +127,8 @@ function update(){
   start.disabled=!(g&&S&&(all.checked||chNum()));
   const showMl=!!(S&&S.matcher&&g&&!all.checked&&chNum());
   $('#mlNote').classList.toggle('hidden',!showMl);
-  if(!all.checked)recog();
+  $('#check').disabled=!lastText()||!chNum();
+  if(!checked||checked.text!==lastText()){checked=null;status.textContent='';status.className='status'}
 }
 const CAT=await SB.catalog()||{titles:[{id:'gta6',type:'game',title:'Grand Theft Auto VI'}]};
 function fillTitles(){
@@ -144,9 +152,10 @@ game.addEventListener('sl-change',async()=>{
   const st=SB.getState(game.value),c=$('#cont');
   if(st.now!=null&&S){c.innerHTML='';const a=document.createElement('a');a.href='board.html?game='+game.value;a.textContent='Continue your saved board';c.append('Played before? ',a,'.');c.classList.remove('hidden')}else c.classList.add('hidden');
   if(S&&S.matcher){const m=S.matcher,cached=await SB.modelCached(m.model);
-    $('#mlText').textContent=cached?`If you describe what you did last, an ${m.language} language model in your browser works out where you are. It's already downloaded on this device.`:`If you describe what you did last, your browser downloads a small ${m.language} language model (about ${m.sizeMB} MB, only once) to work out where you are. Other languages use simple keyword matching.`;}
+    $('#mlText').textContent=cached?`When you press Check, a language model in your browser works out where you are from what you wrote. It's already downloaded on this device.`:`When you press Check, your browser downloads a small language model (about ${m.sizeMB} MB, only once) and uses it to work out where you are from what you wrote.`;}
   update();
 });
+$('#check').addEventListener('click',async()=>{const b=$('#check');b.loading=true;await runCheck();b.loading=false});
 ch.addEventListener('sl-input',update);last.addEventListener('sl-input',update);all.addEventListener('sl-change',update);
 ch.addEventListener('keydown',e=>{if(e.key==='Enter')start.click()});
 $('#reset').addEventListener('click',()=>{SB.applyBackground(null);$('#cat').value='game';fillTitles();game.value='';ch.value='';last.value='';all.checked=false;S=null;$('#cont').classList.add('hidden');update();game.focus()});
@@ -158,16 +167,9 @@ function go(now,reveal){
 start.addEventListener('click',async()=>{
   if(start.disabled||start.loading)return;
   if(all.checked){$('#spoil').show();return}
-  let m=recog();const txt=String(last.value||'').trim();
-  if(m<0&&txt&&S.matcher){
-    start.loading=true;$('#reset').disabled=true;
-    const bar=$('#mlBar'),bt=$('#mlBarText');
-    try{
-      const r=await SB.smartMatch(S,txt,base(),SB.chapterEnd(S,chNum()),(l,t)=>{$('#mlProg').classList.remove('hidden');bar.value=Math.round(l/t*100);bt.textContent=`Downloading language model… ${SB.fmtMB(l)} / ${SB.fmtMB(t)} MB`;});
-      m=r.i;
-    }catch(e){bt.textContent='Could not load the language model. Starting from the beginning of the chapter.';$('#mlProg').classList.remove('hidden');await new Promise(r=>setTimeout(r,1500))}
-    start.loading=false;$('#reset').disabled=false;
-  }
+  start.loading=true;$('#reset').disabled=true;
+  const m=await runCheck();
+  start.loading=false;$('#reset').disabled=false;
   go(Math.max(base(),m));
 });
 $('#spNo').addEventListener('click',()=>$('#spoil').hide());

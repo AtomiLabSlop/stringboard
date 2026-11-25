@@ -30,8 +30,11 @@ window.SB = (() => {
     return e < 0 ? 0 : e;
   }
   /* Best matching step in (from, to]. Returns index or -1. Never looks past `to`. */
+  const STOP = new Set('the and for but not you your yours she her hers him his they them their its was were are did does done had has have get got just now then than that this these those with from into onto out off over under again some any all one two who what when where why how went go goes going came come made make took take saw see met meet first last next after before about also very still back there here our ours mine'.split(' '));
   function match(S, text, from, to) {
-    const t = ' ' + norm(text) + ' ';
+    // whole-word matching only, and common filler words never count as a match
+    const clean = s => norm(s).replace(/[^a-z0-9' ]+/g, ' ').replace(/\s+/g, ' ').trim();
+    const t = ' ' + clean(text) + ' ';
     if (t.trim().length < 3) return -1;
     let best = -1, bestScore = 0;
     for (let i = Math.max(0, from + 1); i <= to; i++) {
@@ -39,7 +42,7 @@ window.SB = (() => {
       const words = [...(s.kw || []), s.title];
       S.chars.filter(c => c.a === i).forEach(c => { words.push(c.n); words.push(c.n.split(' ')[0]); });
       let score = 0;
-      new Set(words.map(norm)).forEach(w => { if (w.length > 2 && t.includes(w)) score += w.length > 8 ? 2 : 1; });
+      new Set(words.map(clean)).forEach(w => { if (w.length > 2 && !STOP.has(w) && t.includes(' ' + w + ' ')) score += w.length > 8 ? 2 : 1; });
       if (score > bestScore || (score === bestScore && score > 0 && i > best)) { bestScore = score; best = i; }
     }
     return bestScore > 0 ? best : -1;
@@ -72,7 +75,9 @@ window.SB = (() => {
   async function smartMatch(S, text, from, to, onProgress) {
     const kw = match(S, text, from, to);
     if (kw >= 0) return { i: kw, how: 'keywords' };
-    if (!S.matcher || !/[a-z]/i.test(text || '') || to <= from) return { i: -1, how: 'none' };
+    // filler like "i did the" says nothing about where you are, so don't ask the model to guess
+    const content = norm(text).replace(/[^a-z0-9' ]+/g, ' ').split(/\s+/).filter(w => w.length > 2 && !STOP.has(w));
+    if (!S.matcher || content.length < 2 || to <= from) return { i: -1, how: 'none' };
     const ext = await getExtractor(S.matcher.model, onProgress);
     const idx = []; for (let i = Math.max(0, from + 1); i <= to; i++) idx.push(i);
     const docs = idx.map(i => S.steps[i].title + '. ' + S.steps[i].text + ' ' + S.chars.filter(c => c.a === i).map(c => c.n).join(', '));
