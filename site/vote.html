@@ -8,33 +8,23 @@
 <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
 <link rel="stylesheet" href="css/common.css?v=__V__">
 <style>
-main{min-height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(28px,6vh,72px) 16px 32px;gap:clamp(16px,2.5vw,24px)}
-.logo{width:min(360px,70vw);height:auto;display:block}
-.glass{width:min(560px,100%);box-sizing:border-box;padding:8px 14px;border-radius:10px;background:rgba(12,10,18,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#f1ece4;text-align:center;margin:0}
-.glass a{color:#ffb4a8}
-h1.glass{font-size:22px;font-weight:700;padding:12px 14px}
-.form{width:min(560px,100%);box-sizing:border-box;padding:28px clamp(18px,4vw,30px);display:grid;gap:22px}
-#cat::part(button-group){flex-wrap:wrap}
-.list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
-.row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:var(--sl-border-radius-medium);position:relative;overflow:hidden}
+.list{display:grid;gap:8px;margin:0;padding:0;list-style:none;align-content:start}
+.row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:8px 8px 8px 14px;border:1px solid var(--line);border-radius:var(--sl-border-radius-medium);position:relative;overflow:hidden;min-height:48px;box-sizing:border-box}
 .row .bar{position:absolute;inset:0 auto 0 0;background:color-mix(in srgb,var(--sl-color-primary-600),transparent 82%);transition:width .3s ease-out;pointer-events:none}
-.row .name{position:relative;font-weight:500;min-width:0;overflow-wrap:anywhere}
-.row .name small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.row .name{position:relative;font-size:14px;font-weight:500;min-width:0;overflow-wrap:anywhere}
 .row .act{position:relative;display:flex;gap:10px;align-items:center}
-.row .n{font-variant-numeric:tabular-nums;color:var(--muted);min-width:2ch;text-align:right}
+.row .n{font-size:13px;font-variant-numeric:tabular-nums;color:var(--muted);min-width:2ch;text-align:right}
 .row.mine{border-color:var(--sl-color-primary-600)}
-h2{font-size:15px;font-weight:600;margin:0 0 10px}
 .suggest{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
 .help{margin:6px 0 0}
-.status{min-height:1.2em;margin:0;font-size:var(--sl-font-size-small);color:var(--muted)}
+.status{min-height:1.2em;margin:0;font-size:13px;color:var(--muted)}
 .status.err{color:var(--sl-color-danger-600)}
-.empty{color:var(--muted);font-size:var(--sl-font-size-small);margin:0}
+.empty,.help{color:var(--muted);font-size:13px;line-height:1.45;margin:0}
 .hidden{display:none!important}
 </style></head><body>
 <main>
 <a href="./" aria-label="Back to Stringboard"><img class="logo" src="assets/logo.png" alt="AtomiLabSlop Stringboard" width="1100" height="378"></a>
-<h1 class="glass">Vote for the next board</h1>
-<p class="glass">Each board is written by hand, chapter by chapter, so it can stay spoiler-free. Vote for the ones you want next, or suggest your own. One vote per title, and you can take it back.</p>
+<p class="tag"><b>Vote for the next board.</b> Each board is written by hand, chapter by chapter, so it can stay spoiler-free. Vote for the ones you want next, or suggest your own. One vote per title, and you can take it back.</p>
 
 <div class="form card-surface">
   <sl-radio-group id="cat" label="Category" value="game" size="medium">
@@ -51,15 +41,15 @@ h2{font-size:15px;font-weight:600;margin:0 0 10px}
 
   <section>
     <form class="suggest" id="sugForm">
-      <sl-input id="sugName" label="Your favourite isn't listed?" placeholder="Type a title" maxlength="60" autocomplete="off"></sl-input>
-      <sl-button type="submit" variant="primary" id="sugBtn">Suggest</sl-button>
+      <sl-input id="sugName" size="medium" label="Your favourite isn't listed?" placeholder="Type a title" maxlength="60" autocomplete="off"></sl-input>
+      <sl-button type="submit" variant="primary" id="sugBtn" size="medium">Suggest</sl-button>
     </form>
     <p class="help" id="mineNote"></p>
   </section>
   <p class="status" id="status" aria-live="polite"></p>
 </div>
 
-<p class="glass"><a href="./">← Back to Stringboard</a> · Want to help write a board? <a href="https://github.com/AtomiLabSlop/stringboard" target="_blank" rel="noopener">Open source on GitHub</a>.</p>
+<footer><a href="./">← Back to Stringboard</a> · Want to help write a board? <a href="https://github.com/AtomiLabSlop/stringboard" target="_blank" rel="noopener">Open source on GitHub</a>.</footer>
 </main>
 
 <script src="js/themes.js?v=__V__"></script>
@@ -89,8 +79,7 @@ function row({name,sub,n,max,voted,onVote}){
   act.append(c,b);li.append(bar,nm,act);return li;
 }
 
-function render(){
-  const c=cat();
+function render(c=cat()){
   const titles=CAT.titles.filter(t=>t.type===c&&t.status==='soon').map(t=>({t,n:R.counts[t.id]||0}))
     .sort((a,b)=>b.n-a.n||a.t.title.localeCompare(b.t.title));
   const others=R.other[c]||[];
@@ -103,12 +92,21 @@ function render(){
   const pending=(mine.names?.[c]||[]).filter(n=>(mine.other[c]||[]).includes(keyOf(n))&&!shown.has(keyOf(n)));
   $('#mineNote').textContent=pending.length?`Your suggestion${pending.length>1?'s':''} (${pending.join(', ')}) will appear once someone else asks for the same title.`:'';
   const top=titles[0]?.t;if(top)SB.applyBackground(null,top);
+
 }
 
+// keep the page from jumping between categories: reserve room for the tallest list
+function reserve(){
+  const ul=$('#titles');ul.style.minHeight='';let max=0;
+  for(const k of ['game','series','movie','book']){render(k);max=Math.max(max,ul.offsetHeight)}
+  ul.style.minHeight=max+'px';render();
+}
+addEventListener('resize',()=>{clearTimeout(reserve.t);reserve.t=setTimeout(reserve,150)});
+document.fonts.ready.then(()=>customElements.whenDefined('sl-button')).then(()=>setTimeout(reserve,300));
 async function load(){
   try{const r=await fetch(API,{cache:'no-store'});if(!r.ok)throw 0;R=await r.json();status('')}
   catch{status('Voting is offline right now. Please try again later.',true)}
-  render();
+  reserve();
 }
 
 async function send(body,label){
@@ -126,7 +124,7 @@ async function send(body,label){
   finally{busy=false;render()}
 }
 
-$('#cat').addEventListener('sl-change',render);
+$('#cat').addEventListener('sl-change',()=>render());
 $('#sugForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const name=String($('#sugName').value||'').trim().replace(/\s+/g,' ');

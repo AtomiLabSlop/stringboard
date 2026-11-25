@@ -8,38 +8,19 @@
 <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
 <link rel="stylesheet" href="css/common.css?v=__V__">
 <style>
-main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:clamp(28px,6vh,72px) 16px 32px;gap:clamp(16px,2.5vw,24px)}
-.logo{width:min(560px,92vw);height:auto}
-.tag{margin:-6px 0 0;text-align:center;width:min(560px,100%);box-sizing:border-box}
-/* text outside the form sits on a dark glass strip so it stays readable on light backgrounds */
-.tag,.continue,footer{padding:8px 14px;border-radius:10px;background:rgba(12,10,18,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#f1ece4}
-footer a,.continue a{color:#ffb4a8}
-.tag{margin:0}
-.form{width:min(560px,100%);padding:28px clamp(18px,4vw,30px);display:grid;gap:22px}
 #step2{display:grid;gap:22px}
 .reveal{padding:14px 16px;border:1px solid var(--sl-color-warning-200);border-radius:var(--sl-border-radius-medium);background:color-mix(in srgb,var(--sl-color-warning-50),transparent 40%)}
 .reveal p{margin:4px 0 0 28px;font-size:var(--sl-font-size-small);color:var(--muted)}
 .hidden{display:none!important}
 .soonTag{font-size:12px;color:var(--muted);margin-left:8px}
 .soon{margin:-8px 0 0;color:var(--muted);font-size:var(--sl-font-size-small)}.soon a{color:var(--sl-color-primary-600)}
-#cat::part(button-group){flex-wrap:wrap}
 .mlnote{margin-top:12px;padding:12px 14px;border:1px solid #d9b44a;border-radius:var(--sl-border-radius-medium);background:rgba(217,180,74,.07);font-size:var(--sl-font-size-small);color:var(--muted)}
 .checkrow{display:flex;gap:12px;align-items:center;margin-top:10px}.checkrow .status{margin:0;min-height:0}
 .mlnote b{color:var(--ink);font-weight:600}.mlnote p{margin:2px 0 0}
 #mlProg{margin-top:10px}#mlProg sl-progress-bar{--height:8px}
 .continue{font-size:15px;color:var(--muted);text-align:center;margin:0}
-footer{font-size:13px;text-align:center;width:min(560px,100%);box-sizing:border-box;color:#d9d3ca}
-/* one scale for every control in the form: same label style, same control height, same gaps */
-.form{--sb-gap:20px;gap:var(--sb-gap)}
 #step2{gap:var(--sb-gap)}
-.form sl-radio-group::part(form-control-label),.form sl-select::part(form-control-label),.form sl-input::part(form-control-label),.form sl-textarea::part(form-control-label){font-size:14px;font-weight:600;color:var(--ink);margin-bottom:8px}
 .form sl-select::part(form-control-help-text),.form sl-input::part(form-control-help-text),.form sl-textarea::part(form-control-help-text),.soon,.reveal p,.mlnote,.status{font-size:13px;line-height:1.45}
-#cat::part(button-group),#cat::part(button-group__base){display:flex;width:100%}
-#cat sl-radio-button{flex:1}
-#cat sl-radio-button{min-width:0}
-#cat sl-radio-button::part(button){width:100%;justify-content:center;padding-inline:8px}
-#cat sl-radio-button::part(label){padding:0}
-.form .row sl-button{min-width:128px}
 .reveal sl-checkbox::part(label){font-size:14px}
 </style></head><body>
 <main>
