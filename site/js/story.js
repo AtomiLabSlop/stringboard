@@ -86,7 +86,8 @@ window.SB = (() => {
   function applyBackground(S, entry) {
     const img = (S && S.background) || (entry && entry.background);
     const b = img && /^[\w./-]+$/.test(img) ? new URL(img, location.href).href
-      : entry && entry.theme && window.SBTheme ? SBTheme.url(entry.id, entry.theme) : null;
+      : entry && entry.theme && window.SBTheme ? SBTheme.url(entry.id, entry.theme)
+      : new URL('assets/bg/default.webp', location.href).href; // calm default before anything is chosen
     document.body.classList.toggle('has-bg', !!b);
     if (b) document.body.style.setProperty('--game-bg', `url("${b}")`); else document.body.style.removeProperty('--game-bg');
   }
