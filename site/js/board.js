@@ -4,9 +4,12 @@ const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAl
 const NS = 'http://www.w3.org/2000/svg';
 const GAME = new URLSearchParams(location.search).get('game') || 'gta6';
 const VW = 1100, VH = 1000;
-const COL = { red: '#c0262d', yellow: '#f2c230', green: '#3c9a4a', blue: '#2f6fc0', white: '#f4f2ee', black: '#1c1c1c' };
-const CARD_BG = { white: '#ffffff', cream: '#f3ead7', tan: '#c9a67a', slate: '#3d3f44', black: '#141414' };
-const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'authentic', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', penSize: 'fine', cardBg: null, lamp: false };
+const COL = { red: '#9b2423', yellow: '#b98b2e', green: '#4f5d3a', blue: '#2b4562', white: '#e6e0d3', black: '#262522' };
+const COL_NAME = { red: 'Oxblood', yellow: 'Ochre', green: 'Olive', blue: 'Ink blue', white: 'Bone', black: 'Graphite', line: 'Fishing line' };
+const LINE = 'rgba(226,232,236,.55)'; // fishing line: clear nylon, strings only
+const CARD_BG = { white: '#f5f2eb', cream: '#e9dfcb', tan: '#b49873', sage: '#a7ae9a', slate: '#3e4247', black: '#1d1c1a' };
+const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'authentic', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', penSize: 'fine', cardBg: null, lamp: false, strW: 'normal', strSee: false, couples: true, facts: 'back' };
+const STR_W = { thin: 1.3, normal: 2, thick: 3.2 };
 
 let IMGS = {};
 let S, st, view, scale = 1, mode = null, selNote = null, openCard = null, undoNow = null;
@@ -19,10 +22,16 @@ function save() {
   if (!hist.mute) { clearTimeout(hist.t); hist.t = setTimeout(commitHist, 600); }
 }
 /* ---------- undo / redo: snapshots of the board, last 10 actions. Rapid changes (sliders, typing) group into one step. ---------- */
-const HIST_MAX = 10;
+const HIST_MAX = 100;
 const hist = { u: [], r: [], last: null, t: null, mute: false };
+const imgPool = new Map(), imgKey = new Map();
+const snap = s => JSON.stringify(s, (k, v) => {
+  if (typeof v === 'string' && v.length > 2000 && v.startsWith('data:')) {
+    let key = imgKey.get(v); if (!key) { key = '\u0000img' + imgPool.size; imgPool.set(key, v); imgKey.set(v, key); } return key;
+  } return v; });
+const unsnap = j => JSON.parse(j, (k, v) => typeof v === 'string' && v.startsWith('\u0000img') ? imgPool.get(v) : v);
 function commitHist() {
-  const cur = JSON.stringify(st);
+  const cur = snap(st);
   if (hist.last === null) { hist.last = cur; return; }
   if (cur === hist.last) return;
   hist.u.push(hist.last); if (hist.u.length > HIST_MAX) hist.u.shift();
@@ -30,17 +39,17 @@ function commitHist() {
 }
 function updHistBtns() { $('#undoBtn').disabled = !hist.u.length; $('#redoBtn').disabled = !hist.r.length; }
 function restore(json) {
-  hist.last = json; st = JSON.parse(json); view = st.now;
+  hist.last = json; st = unsnap(json); view = Math.min(view, st.now);
   hist.mute = true; save(); hist.mute = false;
-  hideNoteBar(); syncSettings(); applySettings(); renderTimeline();
+  hideNoteBar(); syncSettings(); applySettings(); renderTimeline(); nbSync();
   if (openCard) { if (els[openCard] && !els[openCard].hidden) openCardPanel(openCard); else closePanel('cardPanel'); }
   updHistBtns();
 }
 function undo() { clearTimeout(hist.t); commitHist(); if (!hist.u.length) return; hist.r.push(hist.last); restore(hist.u.pop()); }
 function redo() { clearTimeout(hist.t); commitHist(); if (!hist.r.length) return; hist.u.push(hist.last); restore(hist.r.pop()); }
-function toast(msg, action, fn) {
+function toast(msg, action, fn, action2, fn2) {
   const t = $('#toast'); t.innerHTML = ''; t.append(msg);
-  if (action) { const b = document.createElement('sl-button'); b.size = 'small'; b.variant = 'primary'; b.outline = true; b.textContent = action; b.onclick = () => { fn(); t.classList.remove('on'); }; t.append(b); }
+  [[action, fn], [action2, fn2]].forEach(([a, f], i) => { if (!a) return; const b = document.createElement('sl-button'); b.size = 'small'; b.variant = i ? 'default' : 'primary'; b.outline = true; b.textContent = a; b.onclick = () => { f(); t.classList.remove('on'); }; t.append(b); });
   t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), action ? 10000 : 3500);
 }
 const lum = hex => { const n = parseInt(hex.slice(1), 16), c = [n >> 16, n >> 8 & 255, n & 255].map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; };
@@ -62,15 +71,43 @@ function buildCards() {
     const d = document.createElement('div');
     d.className = 'card' + (c.main ? ' main' : '') + (c.note ? ' note-card' : '');
     d.dataset.id = c.id; d.tabIndex = 0; d.setAttribute('role', 'button');
-    d.innerHTML = `<div class="pht">${sil(c)}<img alt="" referrerpolicy="no-referrer" draggable="false"><i class="xx"></i></div><div class="nm"></div><div class="rl"></div><svg class="cink" aria-hidden="true"></svg>`;
+    d.innerHTML = `<div class="phw"><div class="pht">${sil(c)}<img alt="" referrerpolicy="no-referrer" draggable="false"></div>${XSVG}</div><div class="nm"></div><div class="rl"></div><ul class="cf"></ul>` +
+      `<div class="back"><div class="bn"></div><ul class="bf"></ul></div><svg class="cink" aria-hidden="true"></svg>` +
+      `<button class="corner" type="button" tabindex="-1" aria-label="Turn card over"></button><button class="cset" type="button" tabindex="-1" aria-label="Card settings"><sl-icon name="sliders2"></sl-icon></button>`;
+    d.querySelector('.corner').addEventListener('click', e => { e.stopPropagation(); cornerClick(c.id); });
+    d.querySelector('.cset').addEventListener('click', e => { e.stopPropagation(); openCardPanel(c.id); });
     d.querySelector('img').addEventListener('error', e => { e.target.dataset.failed = e.target.getAttribute('src') || ''; e.target.parentNode.classList.remove('has'); });
     d.querySelector('img').addEventListener('load', e => { delete e.target.dataset.failed; });
     cardsEl.append(d); els[c.id] = d;
-    dragify(d, () => st.pos[c.id] || { x: c.x, y: c.y }, p => { st.pos[c.id] = p; }, () => openCardPanel(c.id));
+    dragify(d, () => st.pos[c.id] || { x: c.x, y: c.y }, p => { st.pos[c.id] = p; followPartner(c.id); }, () => { if (flipped.has(c.id) || expanded.has(c.id)) cornerClick(c.id); });
     d.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCardPanel(c.id); } });
   });
 }
 const byId = id => S.chars.find(c => c.id === id);
+/* hand-drawn red cross for characters who died, a little wider than the photo */
+const XSVG = `<svg class="xx" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g filter="url(#inkRough)" fill="none" stroke="#a8201a" stroke-width="7.5" stroke-linecap="round" opacity=".92"><path d="M4 7 C30 32 62 66 97 94"/><path d="M95 5 C68 34 40 60 6 96"/><path d="M12 14 C34 36 58 60 88 86" stroke-width="3" opacity=".5"/></g></svg>`;
+const flipped = new Set(), expanded = new Set();          // view-only: which cards are turned over / opened up
+const factsMode = id => (st.cards[id] || {}).facts || st.set.facts;
+function cornerClick(id) {
+  const m = factsMode(id), d = els[id];
+  if (m === 'peek') { expanded.has(id) ? expanded.delete(id) : expanded.add(id); renderCards(); return; }
+  if (m !== 'back') return;
+  d.classList.add('turning');                               // squeeze, swap side, open again
+  setTimeout(() => { flipped.has(id) ? flipped.delete(id) : flipped.add(id); renderCards(); d.classList.remove('turning'); }, 140);
+}
+/* couples the story has confirmed by this point (data: [a, b, from]) */
+const couplesAt = v => st.set.couples ? (S.couples || []).filter(([a, b, s]) => s <= v && byId(a).a <= v && byId(b).a <= v) : [];
+const partnerOf = (id, v = view) => { const p = couplesAt(v).find(([a, b]) => a === id || b === id); return p ? (p[0] === id ? p[1] : p[0]) : null; };
+/* dragging one half of a couple: it may move around its partner, but never more than a small gap away; further and the partner follows */
+function followPartner(id) {
+  const o = partnerOf(id); if (!o || !els[o] || els[o].hidden) return;
+  const a = st.pos[id], b = st.pos[o] || { x: byId(o).x, y: byId(o).y }, A = els[id], B = els[o];
+  const ax = a.x + A.offsetWidth / 2, ay = a.y + A.offsetHeight / 2, bx = b.x + B.offsetWidth / 2, by = b.y + B.offsetHeight / 2;
+  const maxD = (A.offsetWidth + B.offsetWidth) / 2 + 40, d = Math.hypot(bx - ax, by - ay);
+  if (d <= maxD) return;
+  const k = maxD / d, nb = { x: Math.round(ax + (bx - ax) * k - B.offsetWidth / 2), y: Math.round(ay + (by - ay) * k - B.offsetHeight / 2) };
+  st.pos[o] = nb; B.style.left = nb.x + 'px'; B.style.top = nb.y + 'px';
+}
 const custom = id => (st.cards[id] = st.cards[id] || {});
 /* Stacking: cards under strings 10+, strings 500, cards over strings 600+, notes 900, pins 1000. Last moved card is highest in its layer. */
 function cardZ(id) { const i = st.order.indexOf(id); return ((st.cards[id] || {}).over ? 600 : 10) + (i < 0 ? 0 : i + 1); }
@@ -104,6 +141,16 @@ function renderCards() {
     if (bg) { const dark = lum(bg) < .35; d.style.setProperty('--bgc', bg); d.style.setProperty('--fg', dark ? '#f4efe4' : '#231a12'); d.style.setProperty('--fg2', dark ? '#cbbfa9' : '#5a4a3a'); }
     else ['--bgc', '--fg', '--fg2'].forEach(k => d.style.removeProperty(k));
     d.classList.toggle('dead', !!c.dead && view >= c.dead);
+    const facts = c.f.filter(([st0]) => st0 <= view).map(([, x]) => x), fm = factsMode(c.id);
+    if (fm !== 'back') flipped.delete(c.id); if (fm !== 'peek') expanded.delete(c.id);
+    const shown = fm === 'below' || expanded.has(c.id) ? facts : fm === 'peek' ? facts.slice(0, 3) : [];
+    const li = x => { const l = document.createElement('li'); l.textContent = x; return l; };
+    d.querySelector('.cf').replaceChildren(...shown.map(li));
+    d.querySelector('.bf').replaceChildren(...(facts.length ? facts : ['Nothing yet.']).map(li));
+    d.querySelector('.bn').textContent = cu.n || c.n;
+    d.classList.toggle('flipped', flipped.has(c.id));
+    d.classList.toggle('m-back', fm === 'back' && !c.note); d.classList.toggle('m-peek', fm === 'peek' && facts.length > 3); d.classList.toggle('open', expanded.has(c.id));
+    d.querySelector('.corner').setAttribute('aria-label', fm === 'peek' ? (expanded.has(c.id) ? 'Show less' : 'Show everything') : flipped.has(c.id) ? 'Turn card face up' : 'Turn card over');
     d.querySelector('.nm').textContent = cu.n || c.n;
     d.querySelector('.rl').textContent = cu.r || roleAt(c, view);
     const ph = d.querySelector('.pht'), img = ph.querySelector('img');
@@ -122,16 +169,28 @@ function pinOf(id) {
   return [cx + dd * Math.sin(a), cy - dd * Math.cos(a)];
 }
 function renderStrings() {
-  const s = st.set, col = COL[s.strColor];
+  const s = st.set, line = s.strColor === 'line', col = line ? LINE : COL[s.strColor], base = STR_W[s.strW] || 2;
+  const pairs = new Set(couplesAt(view).map(([a, b]) => [a, b].sort().join('|')));
   let out = '', pins = new Set();
   S.links.forEach(([a, b, step]) => {
     if (step > view || byId(a).a > view || byId(b).a > view) return;
+    if (pairs.has([a, b].sort().join('|'))) { pins.add(a); pins.add(b); return; } // couples sit together, no string
     const [x1, y1] = pinOf(a), [x2, y2] = pinOf(b), len = Math.hypot(x2 - x1, y2 - y1);
-    const sag = s.tension * len * .28;
-    const w = a === 'jason' && b === 'lucia' ? 3.4 : 2;
-    out += `<path d="M${x1} ${y1} Q${(x1 + x2) / 2} ${(y1 + y2) / 2 + sag} ${x2} ${y2}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" opacity=".92"/>`;
+    const sag = s.tension * len * .28, d = `M${x1} ${y1} Q${(x1 + x2) / 2} ${(y1 + y2) / 2 + sag} ${x2} ${y2}`;
+    out += `<path d="${d}" fill="none" stroke="${col}" stroke-width="${base}" stroke-linecap="round" opacity="${line ? 1 : .94}"/>`;
+    if (line) out += `<path d="${d}" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="${Math.max(.6, base * .3)}" stroke-linecap="round" transform="translate(-.4 -.5)"/>`;
     pins.add(a); pins.add(b);
   });
+  // see-through: where a string crosses a card, it fades so the card shows through
+  let mask = '';
+  if (s.strSee) {
+    let holes = '';
+    S.chars.forEach(c => { const el = els[c.id]; if (!el || el.hidden) return;
+      const p = st.pos[c.id] || { x: c.x, y: c.y }, w = el.offsetWidth, h = el.offsetHeight, a = (hash(c.id) * s.tilt).toFixed(2);
+      holes += `<rect x="${p.x}" y="${p.y}" width="${w}" height="${h}" fill="#4a4a4a" transform="rotate(${a} ${p.x + w / 2} ${p.y + h / 2})"/>`; });
+    mask = `<defs><mask id="strMask" maskUnits="userSpaceOnUse" x="-20000" y="-20000" width="40000" height="40000"><rect x="-20000" y="-20000" width="40000" height="40000" fill="#fff"/>${holes}</mask></defs>`;
+    out = `${mask}<g mask="url(#strMask)">${out}</g>`;
+  }
   S.chars.forEach(c => { if (c.a <= view) pins.add(c.id); });
   const pc = COL[s.pinColor]; let pout = '';
   pins.forEach(id => { const [x, y] = pinOf(id); pout += `<circle cx="${x + 1.5}" cy="${y + 2.5}" r="6" fill="rgba(0,0,0,.35)"/><circle cx="${x}" cy="${y}" r="6.5" fill="${pc}" stroke="rgba(0,0,0,.45)" stroke-width="1"/><circle cx="${x - 2}" cy="${y - 2}" r="2" fill="rgba(255,255,255,.65)"/>`; });
@@ -142,22 +201,16 @@ function renderTimeline() {
   const s = S.steps[view];
   $('#capT').textContent = (view === st.now ? 'Now · ' : '') + 'Chapter ' + s.ch + ' · ' + s.title + '.';
   $('#capD').textContent = s.text;
-  requestAnimationFrame(fitCaption);
+  $('#tlPrev').disabled = view <= 0; $('#tlNext').disabled = view >= st.now;
 }
-/* Show a "…" button only when the description doesn't fit on one line. */
-function fitCaption() {
-  const cap = $('#cap'), txt = $('#capTxt'), btn = $('#capMore');
-  if (cap.classList.contains('open')) { btn.hidden = false; return; }
-  btn.hidden = txt.scrollWidth <= txt.clientWidth + 1;
+function setDetails(open) {
+  $('#capPop').hidden = !open; $('#capMore').disabled = open; $('#capMore').setAttribute('aria-expanded', open);
 }
-$('#capMore').addEventListener('click', () => {
-  const cap = $('#cap'), open = !cap.classList.contains('open');
-  cap.classList.toggle('open', open);
-  const b = $('#capMore'); b.setAttribute('aria-expanded', open); b.textContent = open ? 'Less' : '…';
-  b.setAttribute('aria-label', open ? 'Show less' : 'Show full description');
-  if (!open) fitCaption();
-});
-
+$('#capMore').addEventListener('click', () => setDetails(true));
+$('#capClose').addEventListener('click', () => setDetails(false));
+function stepTo(v) { v = Math.max(0, Math.min(st.now, v)); if (v === view) return; view = v; renderTimeline(); renderCards(); if (openCard) openCardPanel(openCard); }
+$('#tlPrev').addEventListener('click', () => stepTo(view - 1));
+$('#tlNext').addEventListener('click', () => stepTo(view + 1));
 /* ---------- scaling: board keeps a fixed virtual space so cards stay put relative to the map ---------- */
 /* zoom + pan (not part of the saved board) */
 let zoom = 1; const pan = { x: 0, y: 0 }; const ZMIN = 0.5, ZMAX = 3;
@@ -211,7 +264,12 @@ $('#zFit').addEventListener('click', () => {
   layout(); if (openCard) placeCardPanel(openCard); hideNoteBar();
 });
 $('#zPct').addEventListener('click', () => { pan.x = pan.y = 0; zoomTo(1); });
-board.addEventListener('wheel', e => { if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); zoomTo(zoom * (e.deltaY < 0 ? 1.1 : 1 / 1.1), e.clientX, e.clientY); }, { passive: false });
+/* pinch / ctrl+wheel zoom: proportional to how far you scroll, so a trackpad glides and a mouse notch is a small step */
+board.addEventListener('wheel', e => {
+  if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault();
+  const dy = Math.max(-60, Math.min(60, e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY));
+  zoomTo(zoom * Math.exp(-dy * .0035), e.clientX, e.clientY);
+}, { passive: false });
 /* drag the empty board to pan */
 board.addEventListener('pointerdown', e => {
   if (mode || e.button > 0 || e.target.closest('.card,.note,.panel,#noteBar,.zoom')) return;
@@ -220,13 +278,13 @@ board.addEventListener('pointerdown', e => {
   const up = () => { board.removeEventListener('pointermove', mv); board.removeEventListener('pointerup', up); board.removeEventListener('pointercancel', up); board.classList.remove('panning'); if (moved && openCard) placeCardPanel(openCard); };
   board.setPointerCapture(e.pointerId); board.addEventListener('pointermove', mv); board.addEventListener('pointerup', up); board.addEventListener('pointercancel', up);
 });
-const ro = new ResizeObserver(() => { layout(); fitCaption(); if (openCard) placeCardPanel(openCard); });
+const ro = new ResizeObserver(() => { layout(); if (openCard) placeCardPanel(openCard); });
 function toVirtual(e) { const r = stage.getBoundingClientRect(); return { x: (e.clientX - r.left) / scale, y: (e.clientY - r.top) / scale }; }
 
 /* ---------- dragging (cards + notes) ---------- */
 function dragify(el, get, set, onClick) {
   el.addEventListener('pointerdown', e => {
-    if (mode || e.button > 0) return;
+    if (mode || e.button > 0 || e.target.closest('.corner,.cset,.back ul')) return;
     if (e.target.closest('.txt') && document.activeElement === e.target.closest('.txt')) return;
     if (!e.target.closest('.txt')) e.preventDefault();
     const start = toVirtual(e), p0 = { ...get() }; let moved = false;
@@ -235,8 +293,8 @@ function dragify(el, get, set, onClick) {
       const v = toVirtual(ev), dx = v.x - start.x, dy = v.y - start.y;
       if (!moved && Math.hypot(dx, dy) * scale < 5) return;
       if (!moved) { moved = true; el.classList.add('drag'); hideNoteBar(); if (el.classList.contains('card')) bringToFront(el.dataset.id); }
-      const np = { x: Math.round(Math.min(VW - 40, Math.max(-60, p0.x + dx))), y: Math.round(Math.min(VH - 30, Math.max(-20, p0.y + dy))) };
-      set(np); el.style.left = np.x + 'px'; el.style.top = np.y + 'px';
+      const np = { x: Math.round(p0.x + dx), y: Math.round(p0.y + dy) };   // anywhere: the board pans and zooms to follow
+      el.style.left = np.x + 'px'; el.style.top = np.y + 'px'; set(np);
       renderStrings();
     };
     const up = ev => {
@@ -266,6 +324,7 @@ function openCardPanel(id) {
     $('#cpBg').append(b);
   });
   $('#cpLayer').value = cu.over ? 'over' : 'under';
+  $('#cpFactsMode').value = cu.facts || '';
   $('#cpImgWrap').hidden = !!c.note;
   const def = IMGS[id]; $('#cpCredit').hidden = !(def && def.credit && !cu.img); $('#cpCredit').textContent = def && def.credit ? 'Default image: ' + def.credit : '';
   const kind = cu.img ? (cu.img.startsWith('data:') ? 'file' : 'url') : 'default';
@@ -357,6 +416,7 @@ document.addEventListener('paste', e => {
 });
 $('#cpN').addEventListener('sl-input', e => { const c = byId(openCard); custom(openCard).n = e.target.value && e.target.value !== c.n ? e.target.value : undefined; $('#cpName').textContent = e.target.value || c.n; save(); renderCards(); });
 $('#cpR').addEventListener('sl-input', e => { const c = byId(openCard); custom(openCard).r = e.target.value && e.target.value !== roleAt(c, view) ? e.target.value : undefined; save(); renderCards(); });
+$('#cpFactsMode').addEventListener('sl-change', e => { if (!openCard) return; custom(openCard).facts = e.target.value || undefined; save(); renderCards(); });
 $('#cpLayer').addEventListener('sl-change', e => { if (!openCard) return; custom(openCard).over = e.target.value === 'over' || undefined; bringToFront(openCard); save(); renderCards(); });
 $('#cpReset').addEventListener('click', () => { delete st.cards[openCard]; delete st.pos[openCard]; save(); renderCards(); openCardPanel(openCard); });
 
@@ -374,11 +434,11 @@ document.addEventListener('pointerdown', e => {
 }, true);
 
 /* ---------- settings panel ---------- */
-function swatches(el, key, labelPrefix) {
+function swatches(el, key, labelPrefix, withLine) {
   el.innerHTML = '';
-  Object.entries(COL).forEach(([k, v]) => {
-    const b = document.createElement('button'); b.type = 'button'; b.style.setProperty('--c', v);
-    b.setAttribute('aria-label', labelPrefix + ' ' + k); b.setAttribute('aria-pressed', st.set[key] === k);
+  Object.entries(withLine ? { ...COL, line: LINE } : COL).forEach(([k, v]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.style.setProperty('--c', v); if (k === 'line') b.className = 'sw-line';
+    b.title = COL_NAME[k] || k; b.setAttribute('aria-label', labelPrefix + ' ' + (COL_NAME[k] || k)); b.setAttribute('aria-pressed', st.set[key] === k);
     b.onclick = () => { st.set[key] = k; save(); applySettings(); swatches(el, key, labelPrefix); };
     el.append(b);
   });
@@ -388,7 +448,8 @@ function syncSettings() {
   $('#sCard').value = s.cardSize; $('#sImg').value = s.imgSize; $('#sFont').value = s.fontSize; $('#sTilt').value = s.tilt; $('#sTen').value = s.tension;
   $('#sCardRound').checked = s.cardRounded;
   $('#sRound').checked = s.rounded; $('#sRound').disabled = s.shape === 'circle';
-  ['shape', 'style', 'font', 'bg', 'frame'].forEach(k => { $('#g-' + k).value = s[k]; });
+  ['shape', 'style', 'font', 'bg', 'frame', 'strW', 'facts'].forEach(k => { $('#g-' + k).value = s[k]; });
+  $('#sSee').checked = s.strSee; $('#sCouples').checked = s.couples;
   const cb = $('#swCardBg'); cb.innerHTML = '';
   Object.entries({ default: null, ...CARD_BG }).forEach(([k, v]) => {
     const b = document.createElement('button'); b.type = 'button';
@@ -401,13 +462,21 @@ function syncSettings() {
     };
     cb.append(b);
   });
-  swatches($('#swStr'), 'strColor', 'String'); swatches($('#swPin'), 'pinColor', 'Pin'); swatches($('#swPen'), 'penColor', 'Marker');
+  swatches($('#swStr'), 'strColor', 'String', true); swatches($('#swPin'), 'pinColor', 'Pin'); swatches($('#swPen'), 'penColor', 'Marker');
 }
 [['#sCard', 'cardSize'], ['#sImg', 'imgSize'], ['#sFont', 'fontSize'], ['#sTilt', 'tilt'], ['#sTen', 'tension']].forEach(([sel, k]) =>
   $(sel).addEventListener('sl-input', e => { st.set[k] = +e.target.value; save(); applySettings(); }));
 $('#sRound').addEventListener('sl-change', e => { st.set.rounded = e.target.checked; save(); applySettings(); });
 $('#sCardRound').addEventListener('sl-change', e => { st.set.cardRounded = e.target.checked; save(); applySettings(); });
-['shape', 'style', 'font', 'bg', 'frame'].forEach(k => $('#g-' + k).addEventListener('sl-change', e => { st.set[k] = e.target.value; save(); applySettings(); syncSettings(); }));
+['shape', 'style', 'font', 'bg', 'frame', 'strW'].forEach(k => $('#g-' + k).addEventListener('sl-change', e => { st.set[k] = e.target.value; save(); applySettings(); syncSettings(); }));
+$('#g-facts').addEventListener('sl-change', e => {             // board-wide choice replaces every card's own choice
+  if (e.target.value === st.set.facts) return;
+  st.set.facts = e.target.value; Object.values(st.cards).forEach(cu => { delete cu.facts; });
+  save(); applySettings(); if (openCard) openCardPanel(openCard);
+  if (e.target.value !== 'back') toast('Cards grew taller and may overlap. Tidy them up?', 'Tidy up', arrangeAll);
+});
+$('#sSee').addEventListener('sl-change', e => { st.set.strSee = e.target.checked; save(); renderStrings(); });
+$('#sCouples').addEventListener('sl-change', e => { st.set.couples = e.target.checked; save(); renderStrings(); });
 $('#infoBtn').addEventListener('click', () => {
   const p = $('#info'), open = p.hidden; closePanel('cardPanel'); p.hidden = !open; $('#infoBtn').setAttribute('aria-expanded', open);
 });
@@ -422,6 +491,14 @@ $('#resetStyles').addEventListener('click', () => {
   });
 });
 $('#arrangeAll').addEventListener('click', arrangeAll);
+$('#arrangeTray').addEventListener('click', arrangeAll);
+$('#resetAll').addEventListener('click', () => {
+  Object.assign(st, { pos: {}, cards: {}, ink: [], cardInk: {}, notes: [], order: [], notebook: '', set: Object.assign({}, DEF) });
+  flipped.clear(); expanded.clear(); closePanel('info');
+  syncSettings(); applySettings(); nbSync();
+  requestAnimationFrame(() => { Object.assign(st.pos, arrange(visIds(st.now), { spread: 900 })); renderCards(); save(); clearTimeout(hist.t); commitHist();
+    toast('Everything is back to a fresh board. Your progress stayed.', 'Undo', undo); });
+});
 $('#cpArrange').addEventListener('click', () => { if (openCard) arrangeAround(openCard); });
 $('#clearInk').addEventListener('click', () => { const old = st.ink, oldC = st.cardInk; st.ink = []; st.cardInk = {}; save(); renderInk(); renderCards(); toast('Drawings cleared.', 'Undo', () => { st.ink = old; st.cardInk = oldC; save(); renderInk(); renderCards(); }); });
 
@@ -475,6 +552,8 @@ function arrange(movable, { v = st.now, anchor = 0, maxMove = Infinity, iters = 
     return { id, w: s.w, h: s.h, x: p.x + s.w / 2, y: p.y + s.h / 2, ox: p.x + s.w / 2, oy: p.y + s.h / 2, m: mv.has(id), nb: [] }; });
   const ix = Object.fromEntries(N.map((n, i) => [n.id, i]));
   visLinks(v).forEach(([a, b]) => { if (ix[a] != null && ix[b] != null) { N[ix[a]].nb.push(ix[b]); N[ix[b]].nb.push(ix[a]); } });
+  const CP = couplesAt(v).map(([a, b]) => [ix[a], ix[b]]).filter(([a, b]) => a != null && b != null);
+  CP.forEach(([a, b]) => { for (let k = 0; k < 3; k++) { N[a].nb.push(b); N[b].nb.push(a); } }); // couples: much stronger pull
   const pad = 30, M = N.filter(n => n.m);
   // a big cast needs more room than the board's base area: grow it, keeping the shape
   const need = N.reduce((s, n) => s + (n.w + pad) * (n.h + pad), 0) * 1.5, g = Math.max(1, Math.sqrt(need / (VW * VH))), BW = VW * g, BH = VH * g;
@@ -530,6 +609,12 @@ function arrange(movable, { v = st.now, anchor = 0, maxMove = Infinity, iters = 
       if (found) break;
     }
   });
+  // a movable half of a couple settles right beside its partner if that spot is free
+  CP.forEach(([a, b]) => { [[N[a], N[b]], [N[b], N[a]]].some(([m, o]) => {
+    if (!m.m) return false;
+    const gap = (m.w + o.w) / 2 + pad, side = m.x < o.x ? -1 : 1;
+    for (const [x, y] of [[o.x + side * gap, o.y], [o.x - side * gap, o.y]]) if (!hits(m, x, y)) { m.x = x; m.y = y; return true; }
+    return false; }); });
   const out = {}; M.forEach(n => { out[n.id] = { x: Math.round(n.x - n.w / 2), y: Math.round(n.y - n.h / 2) }; });
   return out;
 }
@@ -614,7 +699,7 @@ $('#pen').addEventListener('click', () => setMode('pen'));
 function syncPenSize() { $$('#penSizes sl-button').forEach(b => b.variant = b.dataset.v === st.set.penSize ? 'primary' : 'default'); }
 $$('#penSizes sl-button').forEach(b => b.addEventListener('click', () => { st.set.penSize = b.dataset.v; save(); syncPenSize(); }));
 $('#eraser').addEventListener('click', () => setMode('erase'));
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (mode) setMode(mode); closePanel('info'); closePanel('cardPanel'); hideNoteBar(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (mode) setMode(mode); closePanel('info'); closePanel('cardPanel'); hideNoteBar(); setDetails(false); if (!nbPinned) nbOpen(false); } });
 /* Smooth, sketchy marker lines: points are eased while drawing and joined with curves. */
 /* Chaikin corner-cutting: rounds off the jitter of hand-drawn input */
 function chaikin(P, n) {
@@ -736,7 +821,7 @@ $('#noteDel').addEventListener('click', () => {
 board.addEventListener('pointerdown', e => { if (!e.target.closest('.note,#noteBar')) hideNoteBar(); });
 $$('.pad').forEach(pad => pad.addEventListener('pointerdown', e => {
   e.preventDefault(); const color = pad.dataset.color;
-  const g = document.createElement('div'); g.className = 'ghost'; g.style.background = color === 'blue' ? '#c3e2f4' : '#fde96b';
+  const g = document.createElement('div'); g.className = 'ghost'; g.style.background = color === 'blue' ? '#c2d5df' : '#efd97c';
   const place = ev => { g.style.left = ev.clientX + 'px'; g.style.top = ev.clientY + 'px'; };
   place(e); document.body.append(g); pad.setPointerCapture(e.pointerId);
   const mv = ev => place(ev);
@@ -751,6 +836,20 @@ $$('.pad').forEach(pad => pad.addEventListener('pointerdown', e => {
   pad.addEventListener('pointermove', mv); pad.addEventListener('pointerup', up);
 }));
 
+/* ---------- notebook: rises from the tray; pinned, it stays open while you work ---------- */
+let nbPinned = false;
+function nbSync() { $('#nbText').value = st.notebook || ''; }
+function nbOpen(open) {
+  $('#nb').hidden = !open; $('#nbTab').setAttribute('aria-expanded', open); $('#nbTab').classList.toggle('out', open);
+  if (open) { nbSync(); requestAnimationFrame(() => $('#nbText').focus()); }
+}
+$('#nbTab').addEventListener('click', () => nbOpen($('#nb').hidden));
+$('#nbClose').addEventListener('click', () => nbOpen(false));
+$('#nbPin').addEventListener('click', () => { nbPinned = !nbPinned; $('#nbPin').name = nbPinned ? 'pin-fill' : 'pin-angle'; $('#nbPin').label = nbPinned ? 'Unpin notebook' : 'Keep the notebook open'; $('#nb').classList.toggle('pinned', nbPinned); });
+$('#nbText').addEventListener('input', e => { st.notebook = e.target.value; save(); });
+document.addEventListener('pointerdown', e => { if (!nbPinned && !$('#nb').hidden && !e.target.closest('#nb,#nbTab')) nbOpen(false); }, true);
+$('#aboutBtn').addEventListener('click', () => $('#about').show());
+
 /* ---------- start ---------- */
 $('#undoBtn').addEventListener('click', undo);
 $('#redoBtn').addEventListener('click', redo);
@@ -762,7 +861,7 @@ document.addEventListener('keydown', e => {
   else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); redo(); }
 });
 (async () => {
-  await Promise.race([Promise.all(['sl-range', 'sl-radio-group', 'sl-radio-button', 'sl-switch', 'sl-button', 'sl-input', 'sl-dialog'].map(t => customElements.whenDefined(t))), new Promise(r => setTimeout(r, 4000))]);
+  await Promise.race([Promise.all(['sl-range', 'sl-radio-group', 'sl-radio-button', 'sl-switch', 'sl-button', 'sl-input', 'sl-dialog', 'sl-tab-group'].map(t => customElements.whenDefined(t))), new Promise(r => setTimeout(r, 4000))]);
   st = SB.getState(GAME);
   if (st.now == null) { location.replace('index.html'); return; }
   SB.loadImages(GAME).then(m => { IMGS = m; if (S) renderCards(); });
@@ -771,14 +870,14 @@ document.addEventListener('keydown', e => {
   st.now = Math.min(st.now, S.steps.length - 1);
   st.set = Object.assign({}, DEF, st.set || {}); if (st.set.style === 'photo') st.set.style = 'authentic'; st.pos = st.pos || {}; st.cards = st.cards || {}; st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || []; st.order = st.order || [];
   view = st.now;
-  buildCards(); syncSettings(); applySettings(); renderTimeline();
-  hist.last = JSON.stringify(st); updHistBtns();
+  buildCards(); syncSettings(); applySettings(); renderTimeline(); nbSync();
+  hist.last = snap(st); updHistBtns();
   ro.observe(board); layout();
   document.fonts && document.fonts.ready.then(renderStrings);
   if (st.lay !== 1) { // smarter default: arrange every card you haven't placed yourself
     requestAnimationFrame(() => { const free = visIds(st.now).filter(id => !st.pos[id]);
       if (free.length) Object.assign(st.pos, arrange(free, { spread: 900 }));
-      st.lay = 1; renderCards(); hist.last = JSON.stringify(st); save(); });
+      st.lay = 1; renderCards(); hist.last = snap(st); save(); });
   }
   save();
 })();

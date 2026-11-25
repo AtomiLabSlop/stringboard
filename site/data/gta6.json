@@ -147,5 +147,6 @@
     ["fuentes", "bag", 51], ["valentina", "raul", 55], ["mattia", "giorgio", 56], ["giorgio", "fuentes", 57], ["giorgio", "vinny", 57],
     ["vinny", "kevin", 57], ["vinny", "liz", 57], ["albanians", "giorgio", 58], ["kat", "giorgio", 59], ["vinny", "rocco", 60],
     ["danica", "lucia", 62], ["giorgio", "jason", 62]
-  ]
+  ],
+  "couples": [["jason", "lucia", 0], ["brian", "lori", 4]]
 }

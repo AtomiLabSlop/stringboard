@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" class="sl-theme-dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en" class="sl-theme-dark"><head><meta charset="utf-8"><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" href="assets/favicon.png"><link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Stringboard – board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Inter:wght@400;500;600;700&family=Special+Elite&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
@@ -15,17 +16,20 @@
 <header class="top card-surface">
   <a class="home" href="index.html"><sl-icon name="house" aria-hidden="true"></sl-icon><span>Home</span></a>
   <div class="tl">
-    <div class="cap" id="cap"><span class="captxt" id="capTxt"><b id="capT"></b> <span id="capD"></span></span><sl-button class="more" id="capMore" size="small" pill hidden aria-expanded="false" aria-label="Show full description">…</sl-button></div>
-    <div class="tlrow"><span>Start</span><sl-range id="tl" min="0" step="1" tooltip="none" label="Story timeline"></sl-range><span>Now</span></div>
+    <div class="cap" id="cap"><b id="capT"></b><button class="details" id="capMore" type="button" aria-expanded="false" aria-controls="capPop">Show details</button></div>
+    <div class="tlrow"><span>Start</span><sl-range id="tl" min="0" step="1" tooltip="none" label="Story timeline"></sl-range><span>Now</span>
+      <span class="tlstep"><sl-icon-button id="tlPrev" name="chevron-left" label="Previous event"></sl-icon-button><sl-icon-button id="tlNext" name="chevron-right" label="Next event"></sl-icon-button></span></div>
+    <div class="cappop" id="capPop" role="region" aria-label="Event details" hidden><p id="capD"></p><sl-icon-button id="capClose" name="x-lg" label="Hide details"></sl-icon-button></div>
   </div>
   <div class="hw">
+    <sl-button id="updBtn" outline><sl-icon slot="prefix" name="flag"></sl-icon>Update progress</sl-button>
     <sl-icon-button id="undoBtn" name="arrow-counterclockwise" label="Undo" disabled></sl-icon-button>
     <sl-icon-button id="redoBtn" name="arrow-clockwise" label="Redo" disabled></sl-icon-button>
     <sl-divider vertical></sl-divider>
-    <sl-button id="updBtn" outline><sl-icon slot="prefix" name="flag"></sl-icon>Update progress</sl-button>
-    <sl-divider vertical></sl-divider>
-    <sl-icon-button id="infoBtn" name="gear" label="Settings and help" aria-expanded="false"></sl-icon-button>
+    <sl-icon-button id="infoBtn" name="gear" label="Settings" aria-expanded="false"></sl-icon-button>
     <span class="lampwrap"><sl-icon name="lightbulb" class="bulb" aria-hidden="true"></sl-icon><sl-switch id="lampBtn" size="small" aria-label="Desk lamp"></sl-switch></span>
+    <sl-divider vertical></sl-divider>
+    <sl-icon-button id="aboutBtn" name="question-circle" label="About AtomiLabSlop"></sl-icon-button>
   </div>
 </header>
 
@@ -53,7 +57,14 @@
 
       <aside class="panel" id="info" hidden>
         <div class="ph"><h2>Settings</h2><sl-icon-button name="x-lg" label="Close" data-close="info"></sl-icon-button></div>
-        <section class="sec"><h3>Board</h3>
+        <sl-tab-group id="setTabs">
+          <sl-tab slot="nav" panel="t-board">Board</sl-tab>
+          <sl-tab slot="nav" panel="t-strings">Strings</sl-tab>
+          <sl-tab slot="nav" panel="t-cards">Cards</sl-tab>
+          <sl-tab slot="nav" panel="t-general">General</sl-tab>
+
+          <sl-tab-panel name="t-board">
+        <section class="sec">
           <sl-radio-group id="g-frame" label="Frame" size="small">
             <sl-radio-button value="black">Black</sl-radio-button><sl-radio-button value="white">White</sl-radio-button><sl-radio-button value="lightwood">Light wood</sl-radio-button><sl-radio-button value="darkwood">Dark wood</sl-radio-button>
           </sl-radio-group>
@@ -61,21 +72,22 @@
             <sl-radio-button value="gloss">Gloss</sl-radio-button><sl-radio-button value="cork">Cork</sl-radio-button><sl-radio-button value="darkcork">Dark cork</sl-radio-button><sl-radio-button value="leather">Leather</sl-radio-button><sl-radio-button value="map">Map</sl-radio-button>
           </sl-radio-group>
         </section>
+          </sl-tab-panel>
 
-        <sl-divider></sl-divider>
-        <section class="sec"><h3>Strings &amp; pins</h3>
+          <sl-tab-panel name="t-strings">
+        <section class="sec">
           <div class="field"><span class="flabel">String colour</span><div class="sw" id="swStr"></div></div>
+          <sl-radio-group id="g-strW" label="Thickness" size="small">
+            <sl-radio-button value="thin">Thin</sl-radio-button><sl-radio-button value="normal">Normal</sl-radio-button><sl-radio-button value="thick">Thick</sl-radio-button>
+          </sl-radio-group>
           <sl-range id="sTen" label="String slack" min="0" max="1" step="0.05" tooltip="none"></sl-range>
+          <sl-switch id="sSee" size="small">See cards through strings</sl-switch>
+          <p class="tip">Strings turn partly see-through where they cross a card, so the card stays readable.</p>
           <div class="field"><span class="flabel">Pin colour</span><div class="sw" id="swPin"></div></div>
         </section>
+          </sl-tab-panel>
 
-        <sl-divider></sl-divider>
-        <section class="sec"><h3>Layout</h3>
-          <sl-button id="arrangeAll" size="small" outline><sl-icon slot="prefix" name="diagram-3"></sl-icon>Auto-arrange all cards</sl-button>
-          <p class="tip">Moves every card so connected cards sit close together and strings stay short. Cards you placed yourself move too. You can undo it.</p>
-        </section>
-
-        <sl-divider></sl-divider>
+          <sl-tab-panel name="t-cards">
         <section class="sec"><h3>Cards</h3>
           <div class="ctl">
             <sl-radio-group id="g-style" label="Card style" size="small">
@@ -88,7 +100,13 @@
           <sl-range id="sCard" label="Card size" min="0.7" max="1.4" step="0.05" tooltip="none"></sl-range>
           <sl-range id="sTilt" label="Random tilt" min="0" max="10" step="0.5" tooltip="none"></sl-range>
         </section>
-
+        <sl-divider></sl-divider>
+        <section class="sec"><h3>Story notes</h3>
+          <sl-radio-group id="g-facts" label="Where a card shows what you know" size="small">
+            <sl-radio-button value="back">On the back</sl-radio-button><sl-radio-button value="below">Below, all</sl-radio-button><sl-radio-button value="peek">Below, top 3</sl-radio-button>
+          </sl-radio-group>
+          <p class="tip">On the back: fold up the bottom-right corner to turn the card over. Below, top 3: the corner opens the rest. Changing this here replaces the choice on every single card.</p>
+        </section>
         <sl-divider></sl-divider>
         <section class="sec"><h3>Image</h3>
           <sl-range id="sImg" label="Image size" min="0.6" max="1.5" step="0.05" tooltip="none"></sl-range>
@@ -99,7 +117,6 @@
             <sl-switch id="sRound" size="small">Rounded image corners</sl-switch>
           </div>
         </section>
-
         <sl-divider></sl-divider>
         <section class="sec"><h3>Text</h3>
           <sl-radio-group id="g-font" label="Font" size="small">
@@ -107,7 +124,15 @@
           </sl-radio-group>
           <sl-range id="sFont" label="Font size" min="0.8" max="1.5" step="0.05" tooltip="none"></sl-range>
         </section>
+          </sl-tab-panel>
 
+          <sl-tab-panel name="t-general">
+        <section class="sec"><h3>Layout</h3>
+          <sl-button id="arrangeAll" size="small" outline><sl-icon slot="prefix" name="diagram-3"></sl-icon>Auto-arrange all cards</sl-button>
+          <p class="tip">Moves every card so connected cards sit close together and strings stay short. Cards you placed yourself move too. You can undo it.</p>
+          <sl-switch id="sCouples" size="small">Keep couples side by side</sl-switch>
+          <p class="tip">A couple's cards stay next to each other without a string between them. Drag one and it keeps close to the other; drag further and the other follows. Only couples the story has confirmed by your point count, so this changes when relationships do.</p>
+        </section>
         <sl-divider></sl-divider>
         <section class="sec"><h3>Save</h3>
           <p class="tip">Your board is saved in this browser automatically. To keep a copy or move it to another browser or device, save it to a file and open it there.</p>
@@ -117,15 +142,15 @@
           </div>
           <input type="file" id="importFile" accept=".json,application/json" hidden>
         </section>
-
         <sl-divider></sl-divider>
         <section class="sec"><h3>Reset</h3>
           <div class="btngrid">
             <sl-button id="clearInk" size="small" outline>Clear drawings</sl-button>
             <sl-button id="resetStyles" size="small" outline>Reset all styles</sl-button>
+            <sl-button id="resetAll" size="small" variant="danger" outline class="span2">Reset all</sl-button>
           </div>
+          <p class="tip">Reset all puts everything back to a fresh board: card positions, card colours, images and text edits, drawings, sticky notes, the notebook and every setting. Your story progress stays. You can undo it.</p>
         </section>
-
         <sl-divider></sl-divider>
         <section class="sec"><h3>How it works</h3>
           <ul class="howto">
@@ -135,6 +160,8 @@
           </ul>
         </section>
         <p class="fine">Fan-made, not affiliated with any publisher. Plot summaries written by AtomiLabSlop. UI: <a href="https://shoelace.style" target="_blank" rel="noopener">Shoelace</a>. <a href="https://github.com/AtomiLabSlop/stringboard" target="_blank" rel="noopener">GitHub</a></p>
+          </sl-tab-panel>
+        </sl-tab-group>
       </aside>
 
       <aside class="panel" id="cardPanel" hidden>
@@ -148,6 +175,13 @@
           <div class="field"><span class="flabel">Card colour</span><div class="sw" id="cpBg"></div></div>
           <sl-radio-group id="cpLayer" size="small" label="Layer">
             <sl-radio-button value="under">Under strings</sl-radio-button><sl-radio-button value="over">Over strings</sl-radio-button>
+          </sl-radio-group>
+        </section>
+
+        <sl-divider></sl-divider>
+        <section class="sec"><h3>Story notes</h3>
+          <sl-radio-group id="cpFactsMode" size="small" label="Show what you know">
+            <sl-radio-button value="">Board default</sl-radio-button><sl-radio-button value="back">On the back</sl-radio-button><sl-radio-button value="below">Below, all</sl-radio-button><sl-radio-button value="peek">Below, top 3</sl-radio-button>
           </sl-radio-group>
         </section>
 
@@ -185,7 +219,7 @@
       <div class="notebar" id="noteBar" hidden>
         <sl-button-group class="seg" data-k="size" label="Size"><sl-button size="small" data-v="S">S</sl-button><sl-button size="small" data-v="M">M</sl-button><sl-button size="small" data-v="L">L</sl-button></sl-button-group>
         <sl-button-group class="seg" data-k="font" label="Font"><sl-button size="small" data-v="hand"><span class="f-hand">Aa</span></sl-button><sl-button size="small" data-v="sans"><span class="f-sans">Aa</span></sl-button><sl-button size="small" data-v="mono"><span class="f-mono">Aa</span></sl-button></sl-button-group>
-        <sl-button-group class="seg" data-k="color" label="Colour"><sl-button size="small" data-v="yellow" aria-label="Yellow"><span class="dot" style="--c:#fde96b"></span></sl-button><sl-button size="small" data-v="blue" aria-label="Light blue"><span class="dot" style="--c:#c3e2f4"></span></sl-button></sl-button-group>
+        <sl-button-group class="seg" data-k="color" label="Colour"><sl-button size="small" data-v="yellow" aria-label="Yellow"><span class="dot" style="--c:#efd97c"></span></sl-button><sl-button size="small" data-v="blue" aria-label="Light blue"><span class="dot" style="--c:#c2d5df"></span></sl-button></sl-button-group>
         <sl-icon-button id="noteDel" name="trash3" label="Delete note"></sl-icon-button>
       </div>
     </div>
@@ -229,11 +263,21 @@
       </svg>
     </button>
   </div>
-  <div class="pads">
-    <div class="pad" data-color="yellow" title="Drag a note onto the board"><i class="top"></i></div>
-    <div class="pad blue" data-color="blue" title="Drag a note onto the board"><i class="top"></i></div>
+  <div class="traymid"><sl-button id="arrangeTray" size="small" outline><sl-icon slot="prefix" name="diagram-3"></sl-icon>Auto-arrange</sl-button></div>
+  <div class="trayr">
+    <div class="pads">
+      <div class="pad" data-color="yellow" title="Drag a note onto the board"><i class="top"></i></div>
+      <div class="pad blue" data-color="blue" title="Drag a note onto the board"><i class="top"></i></div>
+    </div>
+    <button class="nbtab" id="nbTab" type="button" aria-label="Open notebook" aria-expanded="false" title="Notebook"><span class="nbcover"></span><span class="nbpaper"></span><span class="nbrings"></span></button>
   </div>
 </footer>
+<section class="notebook" id="nb" aria-label="Notebook" hidden>
+  <div class="nbtop"><span class="nbrings"></span>
+    <sl-icon-button id="nbPin" name="pin-angle" label="Keep the notebook open"></sl-icon-button>
+    <sl-icon-button id="nbClose" name="x-lg" label="Close notebook"></sl-icon-button></div>
+  <textarea id="nbText" spellcheck="false" placeholder="Case notes, theories, names to remember…"></textarea>
+</section>
 </div>
 
 <sl-dialog id="upd" label="Update progress">
@@ -250,6 +294,27 @@
   <p style="margin:0">This saved board goes further in the story than yours. Opening it shows events you may not have reached yet.</p>
   <sl-button slot="footer" id="impNo" outline>Cancel</sl-button>
   <sl-button slot="footer" id="impYes" variant="primary">Open anyway</sl-button>
+</sl-dialog>
+<sl-dialog id="about" label="The Tale of Kaamos" class="about">
+  <p>It was a dark October. Not exactly stormy, but dark, and the real polar night hadn’t even started yet. One designer, one cup of coffee and one AI decided to build something nobody had asked for: a render studio that runs in the browser.</p>
+  <p>The world did not applaud. Spam filters removed the first posts. Some said no machine could ever make anything good. Others suspected the models were being stolen. Many judged, few believed.</p>
+  <p>But Kaamos did not give up. It had Finnish sisu, a bag of salmiakki and a very specific shade of amber (#FAAF57, and absolutely nothing blue). It rose like a proper Finnish rye bread: slowly, dense, and in spite of everyone’s doubts.</p>
+  <p>Now the same stubborn little lab turns out good stuff for every genre and every kind of user, from render studios to detective boards. Free, open source and slightly stubborn. Just as the north intended.</p>
+  <div class="reviews">
+    <div class="stars" aria-label="One star out of five">★☆☆☆☆</div>
+    <ul>
+      <li>“You built it?”</li>
+      <li>“Get that slop out of here.”</li>
+      <li>“you clearly haven't considered your customer acquisition pipeline and market positioning”</li>
+      <li>“Can we please get a rule against vibe coded slop apps”</li>
+      <li>“Why do all AI generated apps have the same look”</li>
+      <li>“atomilab is really shit name”</li>
+      <li>“useless for any power user.”</li>
+      <li>“someone make it stoooop”</li>
+      <li>“the f*cking ai responses dude”</li>
+    </ul>
+  </div>
+  <p class="fine"><a href="https://github.com/AtomiLabSlop/stringboard" target="_blank" rel="noopener">Stringboard on GitHub</a> · <a href="https://atomilab.fi" target="_blank" rel="noopener">atomilab.fi</a></p>
 </sl-dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 

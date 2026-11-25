@@ -40,11 +40,11 @@ main{min-height:100%;display:flex;flex-direction:column;align-items:center;justi
 .logo{width:min(560px,92vw);height:auto}
 .tag{margin:-6px 0 0;text-align:center;width:min(560px,100%);box-sizing:border-box}
 /* text outside the form sits on a dark glass strip so it stays readable on light backgrounds */
-.tag,.continue,footer{padding:8px 14px;border-radius:10px;background:rgba(12,10,18,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#f1ece4}
-footer a,.continue a{color:#ffb4a8}
+.tag,.continue,footer:not(.tray){padding:8px 14px;border-radius:10px;background:rgba(12,10,18,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#f1ece4}
+footer:not(.tray) a,.continue a{color:#ffb4a8}
 .tag{margin:0}
 .form{width:min(560px,100%);padding:28px clamp(18px,4vw,30px);display:grid;gap:22px}
-footer{font-size:13px;text-align:center;width:min(560px,100%);box-sizing:border-box;color:#d9d3ca}
+footer:not(.tray){font-size:13px;text-align:center;width:min(560px,100%);box-sizing:border-box;color:#d9d3ca}
 /* one scale for every control in the form: same label style, same control height, same gaps */
 .form{--sb-gap:20px;gap:var(--sb-gap)}
 .form sl-radio-group::part(form-control-label),.form sl-select::part(form-control-label),.form sl-input::part(form-control-label),.form sl-textarea::part(form-control-label){font-size:14px;font-weight:600;color:var(--ink);margin-bottom:8px}
