@@ -19,6 +19,15 @@ Live: https://atomilab.fi/stringboard/
 ## Current boards
 - GTA VI – up to the start of Chapter 3 (*Dealer's Choice*).
 
+## ⚠️ Spoiler warning
+The files in `site/data/` contain the **whole story**, including endings. The board only ever shows what you have reached, but opening those files on GitHub (or viewing the page source) shows everything. If you're still playing, stay out of `site/data/`.
+
+## Status and known limits
+- **Beta.** The story data past the start of Chapter 3 hasn't been checked by a human player yet. If you spot a mistake, please open an [issue](https://github.com/AtomiLabSlop/stringboard/issues) (and mark spoilers clearly).
+- **Default card images** are optional links to images hosted on other websites. They may disappear or be removed at any time; cards then fall back to a silhouette. You can always set your own image on any card.
+- **Progress matching.** When you describe what you did last, keywords are tried first. If they find nothing, a small English language model (about 23 MB, downloaded once and kept by your browser) runs in your browser to match the meaning. Nothing is sent to a server. Other languages fall back to keyword matching. Matching only ever looks inside the chapter you entered.
+- **Made for desktop.** It works on phones and tablets too, but the board, marker and notes are designed for a mouse and a larger screen.
+
 ## Adding story data
 Story data lives in `site/data/<game>.json`:
 - `steps` – timeline steps `{ch, title, text, kw}` in story order; `kw` are matching keywords (any language, lower case, accents removed).
