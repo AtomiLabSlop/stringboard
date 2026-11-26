@@ -1145,7 +1145,7 @@ document.addEventListener('keydown', e => {
     requestAnimationFrame(() => { const free = visIds(st.now).filter(id => !st.pos[id]);
       if (free.length) Object.assign(st.pos, arrange(free, { spread: 900 }));
       st.lay = 1; renderCards(); hist.last = snap(st); save(); requestAnimationFrame(() => $('#zFit').click()); });
-  }
+  } else requestAnimationFrame(() => requestAnimationFrame(() => $('#zFit').click()));   // the board always opens fitted to its cards
   save();
 })();
 }
