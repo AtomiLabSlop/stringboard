@@ -135,6 +135,10 @@ function roleAt(c, v) { let r = c.r; (c.rs || []).forEach(([s, t]) => { if (s <=
 function applySettings() {
   const s = st.set;
   stage.className = 'stage st-' + s.style + ' font-' + s.font + (s.shape === 'circle' ? ' st-circle' : '') + (s.rounded && s.shape !== 'circle' ? ' st-rounded' : '') + (s.cardRounded ? ' st-cardround' : '');
+  // the map background only exists for titles that have a map (GTA VI)
+  const hasMap = GAME === 'gta6' || !!(S && S.map);
+  const mapBtn = document.querySelector('#g-bg sl-radio-button[value="map"]'); if (mapBtn) mapBtn.hidden = !hasMap;
+  if (s.bg === 'map' && !hasMap) s.bg = 'cork';
   board.className = 'board bg-' + s.bg;
   $('#frame').className = 'frame f-' + s.frame;
   document.body.classList.toggle('lamp-on', s.lamp);
