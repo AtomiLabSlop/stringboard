@@ -361,3 +361,15 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .about .support h3{margin:0 0 8px;font-size:14px;font-weight:600;color:var(--muted)}
 .about .support p{color:var(--muted);font-size:15px}
 .about .support img{display:block;border-radius:8px}
+
+/* ===== chapter box: hidden until you move the slider; one box that opens up for the details ===== */
+.capfloat{display:block;padding:9px 8px 9px 16px;border-radius:12px;background:rgba(24,22,24,.8);-webkit-backdrop-filter:blur(10px) saturate(1.2);backdrop-filter:blur(10px) saturate(1.2);box-shadow:0 10px 26px rgba(0,0,0,.4);color:#f3efe8;
+  opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .25s,transform .25s;width:max-content;max-width:min(720px,calc(100vw - 80px))}
+.capfloat.on{opacity:1;transform:none;pointer-events:auto}
+.capfloat .caprow{display:flex;align-items:center;gap:4px;font-size:14px}
+.capfloat .caprow b{font-weight:600;margin-right:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.capfloat sl-icon-button{font-size:15px;color:#d8d2c8}
+.capfloat sl-icon-button::part(base){padding:5px}
+.capfloat.pinned #capPin{color:#e0b04a}
+.capfloat #capD{margin:6px 30px 4px 0;font-size:15px;line-height:1.55;white-space:normal}
+.capfloat.open{width:min(720px,calc(100vw - 80px))}

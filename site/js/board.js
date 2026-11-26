@@ -205,12 +205,27 @@ function renderTimeline() {
   $('#capD').textContent = s.text;
   $('#tlPrev').disabled = view <= 0; $('#tlNext').disabled = view >= st.now;
 }
-function setDetails(open) {
-  $('#capPop').hidden = !open; $('#capMore').disabled = open; $('#capMore').setAttribute('aria-expanded', open);
+/* chapter box: pops up for 5 s when you move through the story; chevron opens the details, pin keeps it up */
+let capT = null, capPinned = false, capOpen = false;
+const capBox = $('#capBox');
+function flashCap() {
+  capBox.classList.add('on'); clearTimeout(capT);
+  if (!capPinned) capT = setTimeout(() => { if (!capBox.matches(':hover')) capHide(); else flashCap(); }, 5000);
 }
-$('#capMore').addEventListener('click', () => setDetails(true));
-$('#capClose').addEventListener('click', () => setDetails(false));
-function stepTo(v) { v = Math.max(0, Math.min(st.now, v)); if (v === view) return; view = v; renderTimeline(); renderCards(); if (openCard) openCardPanel(openCard); }
+function capHide() { if (capPinned) return; capBox.classList.remove('on'); setDetails(false); }
+function setDetails(open) {
+  capOpen = open; $('#capD').hidden = !open; $('#capPin').hidden = !open; capBox.classList.toggle('open', open);
+  $('#capMore').name = open ? 'chevron-up' : 'chevron-down'; $('#capMore').label = open ? 'Hide details' : 'Show details'; $('#capMore').setAttribute('aria-expanded', open);
+  if (!open && capPinned) setPin(false);
+}
+function setPin(on) {
+  capPinned = on; $('#capPin').name = on ? 'pin-fill' : 'pin-angle'; $('#capPin').label = on ? 'Let it hide again' : 'Keep this visible';
+  capBox.classList.toggle('pinned', on); if (on) clearTimeout(capT); else flashCap();
+}
+$('#capMore').addEventListener('click', () => { setDetails(!capOpen); flashCap(); });
+$('#capPin').addEventListener('click', () => setPin(!capPinned));
+capBox.addEventListener('pointerleave', () => { if (!capPinned) flashCap(); });
+function stepTo(v) { v = Math.max(0, Math.min(st.now, v)); if (v === view) return; view = v; renderTimeline(); renderCards(); flashCap(); if (openCard) openCardPanel(openCard); }
 $('#tlPrev').addEventListener('click', () => stepTo(view - 1));
 $('#tlNext').addEventListener('click', () => stepTo(view + 1));
 /* ---------- scaling: board keeps a fixed virtual space so cards stay put relative to the map ---------- */
@@ -651,7 +666,7 @@ function placeNew(ids, v) {
 }
 
 /* ---------- timeline + progress update ---------- */
-$('#tl').addEventListener('sl-input', e => { view = +e.target.value; renderTimeline(); renderCards(); if (openCard) openCardPanel(openCard); });
+$('#tl').addEventListener('sl-input', e => { view = +e.target.value; renderTimeline(); renderCards(); flashCap(); if (openCard) openCardPanel(openCard); });
 $('#updBtn').addEventListener('click', () => { const ty = SB.typeOf(S), U = SB.UNITS[ty]; $('#uCh').label = U.label; $('#uCh').placeholder = U.placeholder; $('#uProg').hidden = true; $('#uCh').value = SB.fmtPos(ty, S.steps[st.now].ch); $('#uTxt').value = ''; $('#uMsg').textContent = ''; $('#uMsg').className = 'status'; $('#upd').show(); });
 $('#uCancel').addEventListener('click', () => $('#upd').hide());
 $('#uGo').addEventListener('click', async () => {
@@ -702,7 +717,7 @@ $('#pen').addEventListener('click', () => setMode('pen'));
 function syncPenSize() { $$('#penSizes sl-button').forEach(b => b.variant = b.dataset.v === st.set.penSize ? 'primary' : 'default'); }
 $$('#penSizes sl-button').forEach(b => b.addEventListener('click', () => { st.set.penSize = b.dataset.v; save(); syncPenSize(); }));
 $('#eraser').addEventListener('click', () => setMode('erase'));
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (mode) setMode(mode); closePanel('info'); closePanel('cardPanel'); hideNoteBar(); setDetails(false); if (!nbPinned) nbOpen(false); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (mode) setMode(mode); closePanel('info'); closePanel('cardPanel'); hideNoteBar(); capHide(); if (!nbPinned) nbOpen(false); } });
 /* Smooth, sketchy marker lines: points are eased while drawing and joined with curves. */
 /* Chaikin corner-cutting: rounds off the jitter of hand-drawn input */
 function chaikin(P, n) {
@@ -873,7 +888,7 @@ document.addEventListener('keydown', e => {
   st.now = Math.min(st.now, S.steps.length - 1);
   st.set = Object.assign({}, DEF, st.set || {}); if (st.set.style === 'photo') st.set.style = 'authentic'; st.pos = st.pos || {}; st.cards = st.cards || {}; st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || []; st.order = st.order || [];
   view = st.now;
-  buildCards(); syncSettings(); applySettings(); renderTimeline(); nbSync();
+  buildCards(); syncSettings(); applySettings(); renderTimeline(); nbSync(); flashCap();
   hist.last = snap(st); updHistBtns();
   ro.observe(board); layout();
   document.fonts && document.fonts.ready.then(renderStrings);

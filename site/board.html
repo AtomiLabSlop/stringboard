@@ -18,9 +18,11 @@
   <div class="tl">
     <div class="tlrow"><span>Start</span><sl-range id="tl" min="0" step="1" tooltip="none" label="Story timeline"></sl-range><span>Now</span>
       <span class="tlstep"><sl-icon-button id="tlPrev" name="chevron-left" label="Previous event"></sl-icon-button><sl-icon-button id="tlNext" name="chevron-right" label="Next event"></sl-icon-button></span></div>
-    <div class="capfloat">
-      <div class="cap" id="cap"><b id="capT"></b><button class="details" id="capMore" type="button" aria-expanded="false" aria-controls="capPop">Show details</button></div>
-      <div class="cappop" id="capPop" role="region" aria-label="Event details" hidden><p id="capD"></p><sl-icon-button id="capClose" name="x-lg" label="Hide details"></sl-icon-button></div>
+    <div class="capfloat" id="capBox" role="status" aria-live="polite">
+      <div class="caprow"><b id="capT"></b>
+        <sl-icon-button id="capMore" name="chevron-down" label="Show details" aria-expanded="false"></sl-icon-button>
+        <sl-icon-button id="capPin" name="pin-angle" label="Keep this visible" hidden></sl-icon-button></div>
+      <p id="capD" hidden></p>
     </div>
   </div>
   <div class="hw">
