@@ -41,7 +41,7 @@ function updHistBtns() { $('#undoBtn').disabled = !hist.u.length; $('#redoBtn').
 function restore(json) {
   hist.last = json; st = unsnap(json); view = Math.min(view, st.now);
   hist.mute = true; save(); hist.mute = false;
-  hideNoteBar(); syncSettings(); applySettings(); renderTimeline(); nbSync();
+  hideNoteBar(); syncSettings(); applySettings(); renderTimeline(); nbSync(); grpHover = -1; drawGroupBox();
   if (openCard) { if (els[openCard] && !els[openCard].hidden) openCardPanel(openCard); else closePanel('cardPanel'); }
   updHistBtns();
 }
@@ -76,13 +76,13 @@ function buildCards() {
       `<svg class="curl" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="cg-${c.id}" x1=".66" y1=".66" x2=".18" y2=".18">` +
       `<stop offset="0" class="s0"/><stop offset=".12" class="s1"/><stop offset=".42" class="s2"/><stop offset=".78" class="s3"/><stop offset="1" class="s4"/></linearGradient></defs>` +
       `<path d="M100 0 C82 36 36 66 -16 84 Q-8 95 0 100 Q70 70 100 0Z" fill="url(#cg-${c.id})"/><path d="M100 0 Q70 70 0 100" fill="none" stroke="rgba(0,0,0,.12)" stroke-width="1"/></svg>` +
-      `<button class="corner" type="button" tabindex="-1" aria-label="Turn card over"></button><button class="cset" type="button" tabindex="-1" aria-label="Card settings"><sl-icon name="sliders2"></sl-icon></button>`;
+      `<button class="corner" type="button" tabindex="-1" aria-label="Turn card over"></button><button class="cset" type="button" tabindex="-1" aria-label="Card settings"><sl-icon name="gear"></sl-icon></button>`;
     d.querySelector('.cset').addEventListener('click', e => { e.stopPropagation(); openCardPanel(c.id); });
     d.addEventListener('pointerenter', () => hotCard(d));
     d.querySelector('img').addEventListener('error', e => { e.target.dataset.failed = e.target.getAttribute('src') || ''; e.target.parentNode.classList.remove('has'); });
     d.querySelector('img').addEventListener('load', e => { delete e.target.dataset.failed; });
     cardsEl.append(d); els[c.id] = d;
-    dragify(d, () => st.pos[c.id] || { x: c.x, y: c.y }, p => { st.pos[c.id] = p; followPartner(c.id); }, () => { if (flipped.has(c.id) || expanded.has(c.id)) cornerClick(c.id); });
+    dragify(d, () => st.pos[c.id] || { x: c.x, y: c.y }, p => { moveGroup(c.id, p); st.pos[c.id] = p; followPartner(c.id); }, () => { if (flipped.has(c.id) || expanded.has(c.id)) cornerClick(c.id); });
     d.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCardPanel(c.id); } });
   });
 }
@@ -135,6 +135,68 @@ function followPartner(id) {
   partnersOf(id).forEach(o => { const A = els[id], B = els[o]; if (!B || B.hidden) return;
     const n = touch(st.pos[id], { w: A.offsetWidth, h: A.offsetHeight }, st.pos[o] || { x: byId(o).x, y: byId(o).y }, { w: B.offsetWidth, h: B.offsetHeight });
     if (n) { st.pos[o] = n; B.style.left = n.x + 'px'; B.style.top = n.y + 'px'; } });
+}
+/* ---------- groups: overlapping cards the user has tied together. st.groups = [[id, id, …], …] ---------- */
+const cardBox = id => { const d = els[id], c = byId(id), p = st.pos[id] || { x: c.x, y: c.y }; return { x: p.x, y: p.y, w: d.offsetWidth, h: d.offsetHeight }; };
+const shown = id => els[id] && !els[id].hidden;
+const boxesTouch = (A, B) => Math.min(A.x + A.w, B.x + B.w) - Math.max(A.x, B.x) > 0 && Math.min(A.y + A.h, B.y + B.h) - Math.max(A.y, B.y) > 0;
+/* every card in the same overlapping pile as this one (cards touching cards touching …) */
+function stackOf(id) {
+  const all = S.chars.map(c => c.id).filter(shown), out = [id];
+  for (let k = 0; k < out.length; k++) { const A = cardBox(out[k]); all.forEach(o => { if (!out.includes(o) && boxesTouch(A, cardBox(o))) out.push(o); }); }
+  return out;
+}
+const groupIdx = id => (st.groups || []).findIndex(g => g.includes(id));
+/* groups as they show at this point of the story: only cards already on the board, and only if 2+ of them are */
+const visGroups = (v = view) => (st.groups || []).map(g => g.filter(id => byId(id) && byId(id).a <= v)).filter(g => g.length > 1);
+function moveGroup(id, np) {
+  const i = groupIdx(id); if (i < 0) return;
+  const c = byId(id), old = st.pos[id] || { x: c.x, y: c.y }, dx = np.x - old.x, dy = np.y - old.y; if (!dx && !dy) return;
+  st.groups[i].forEach(o => { if (o === id || !shown(o)) return; const b = cardBox(o), n = { x: b.x + dx, y: b.y + dy };
+    st.pos[o] = n; els[o].style.left = n.x + 'px'; els[o].style.top = n.y + 'px'; });
+  drawGroupBox();
+}
+function setGroup(id, on) {
+  st.groups = (st.groups || []).filter(g => !g.includes(id));
+  if (on) { const s = stackOf(id); st.groups = st.groups.map(g => g.filter(x => !s.includes(x))).filter(g => g.length > 1); st.groups.push(s); }
+  save(); renderStrings(); drawGroupBox();
+}
+/* the dashed outline + Ungroup button, shown while the pointer is over a group */
+const grpBox = document.createElement('div'); grpBox.className = 'grpbox'; grpBox.hidden = true;
+grpBox.innerHTML = '<button type="button" class="ungroup"><sl-icon name="x-lg"></sl-icon>Ungroup</button>';
+stage.insertBefore(grpBox, $('#notes'));
+let grpHover = -1;
+function groupRect(g) {
+  const bs = g.filter(shown).map(cardBox), m = 10;
+  const x = Math.min(...bs.map(b => b.x)) - m, y = Math.min(...bs.map(b => b.y)) - m;
+  return { x, y, w: Math.max(...bs.map(b => b.x + b.w)) + m - x, h: Math.max(...bs.map(b => b.y + b.h)) + m - y };
+}
+function drawGroupBox() {
+  const g = grpHover >= 0 && (st.groups || [])[grpHover];
+  if (!g || g.filter(shown).length < 2 || mode) { grpBox.hidden = true; return; }
+  const r = groupRect(g); grpBox.style.setProperty('--inv', 1 / scale); Object.assign(grpBox.style, { left: r.x + 'px', top: r.y + 'px', width: r.w + 'px', height: r.h + 'px' }); grpBox.hidden = false;
+}
+board.addEventListener('pointermove', e => {
+  if (e.buttons && !grpBox.hidden) { drawGroupBox(); return; }          // keep following while a group is dragged
+  const v = toVirtual(e); let hit = -1;
+  (st.groups || []).forEach((g, i) => { if (hit >= 0 || g.filter(shown).length < 2) return; const r = groupRect(g);
+    if (v.x >= r.x && v.x <= r.x + r.w && v.y >= r.y - 24 && v.y <= r.y + r.h) hit = i; });
+  if (hit !== grpHover) { grpHover = hit; drawGroupBox(); }
+});
+board.addEventListener('pointerleave', () => { grpHover = -1; drawGroupBox(); });
+board.addEventListener('wheel', () => requestAnimationFrame(drawGroupBox), { passive: true });
+grpBox.querySelector('.ungroup').addEventListener('click', e => {
+  e.stopPropagation(); const g = st.groups[grpHover]; if (!g) return;
+  st.groups.splice(grpHover, 1); grpHover = -1; save(); renderStrings(); drawGroupBox();
+  if (openCard && g.includes(openCard)) syncGroupSwitch(openCard);
+  toast('Cards ungrouped.', 'Undo', undo);
+});
+function syncGroupSwitch(id) {
+  const sw = $('#cpGroup'), inG = groupIdx(id) >= 0;
+  sw.checked = inG; sw.disabled = !inG && stackOf(id).length < 2;
+  $('#cpGroupTip').textContent = sw.disabled ? 'This card doesn’t overlap any other card. Drag it onto another card to group them.'
+    : inG ? 'Grouped cards move together. Someone tied to several of them gets one string, to the nearest card.'
+    : 'Ties together every card in this overlapping pile (' + stackOf(id).length + ' cards).';
 }
 const custom = id => (st.cards[id] = st.cards[id] || {});
 /* Stacking: cards under strings 10+, strings 500, cards over strings 600+, notes 900, pins 1000. Last moved card is highest in its layer. */
@@ -206,8 +268,15 @@ function renderStrings() {
   const s = st.set, line = s.strColor === 'line', col = line ? LINE : COL[s.strColor], base = STR_W[s.strW] || 2;
   const pairs = new Set(bondsAt(view).map(({ a, b }) => [a, b].sort().join('|')));
   let out = '', pins = new Set();
-  S.links.forEach(([a, b, step]) => {
+  // grouped cards: one person gets one string to the group, to its nearest card
+  const gOf = {}; visGroups(view).forEach((g, i) => g.forEach(id => { gOf[id] = 'g' + i; }));
+  const unit = id => gOf[id] || id, best = {};
+  S.links.forEach((l, i) => { const [a, b, step] = l; if (step > view || byId(a).a > view || byId(b).a > view) return;
+    if (!gOf[a] && !gOf[b] || unit(a) === unit(b)) return; const k = [unit(a), unit(b)].sort().join('|');
+    const [x1, y1] = pinOf(a), [x2, y2] = pinOf(b), d = Math.hypot(x2 - x1, y2 - y1); if (!best[k] || d < best[k].d) best[k] = { d, i }; });
+  S.links.forEach(([a, b, step], i) => {
     if (step > view || byId(a).a > view || byId(b).a > view) return;
+    if ((gOf[a] || gOf[b]) && unit(a) !== unit(b) && best[[unit(a), unit(b)].sort().join('|')].i !== i) return;
     if (pairs.has([a, b].sort().join('|'))) { pins.add(a); pins.add(b); return; } // couples sit together, no string
     const [x1, y1] = pinOf(a), [x2, y2] = pinOf(b), len = Math.hypot(x2 - x1, y2 - y1);
     const sag = s.tension * len * .28, d = `M${x1} ${y1} Q${(x1 + x2) / 2} ${(y1 + y2) / 2 + sag} ${x2} ${y2}`;
@@ -325,7 +394,7 @@ board.addEventListener('wheel', e => {
 }, { passive: false });
 /* drag the empty board to pan */
 board.addEventListener('pointerdown', e => {
-  if (mode || e.button > 0 || e.target.closest('.card,.note,.panel,#noteBar,.zoom')) return;
+  if (mode || e.button > 0 || e.target.closest('.card,.note,.panel,#noteBar,.zoom,.grpbox')) return;
   const sx = e.clientX, sy = e.clientY, p0 = { ...pan }; let moved = false;
   const mv = ev => { const dx = ev.clientX - sx, dy = ev.clientY - sy; if (!moved && Math.hypot(dx, dy) < 4) return; moved = true; board.classList.add('panning'); pan.x = p0.x + dx; pan.y = p0.y + dy; layout(); };
   const up = () => { board.removeEventListener('pointermove', mv); board.removeEventListener('pointerup', up); board.removeEventListener('pointercancel', up); board.classList.remove('panning'); if (moved && openCard) placeCardPanel(openCard); };
@@ -377,7 +446,7 @@ function openCardPanel(id) {
     $('#cpBg').append(b);
   });
   $('#cpLayer').value = cu.over ? 'over' : 'under';
-  $('#cpFactsMode').value = factsMode(id);
+  $('#cpFactsMode').value = factsMode(id); syncGroupSwitch(id);
   $('#cpImgWrap').hidden = !!c.note;
   const def = IMGS[id]; $('#cpCredit').hidden = !(def && def.credit && !cu.img); $('#cpCredit').textContent = def && def.credit ? 'Default image: ' + def.credit : '';
   const kind = cu.img ? (cu.img.startsWith('data:') ? 'file' : 'url') : 'default';
@@ -553,6 +622,7 @@ $('#resetAll').addEventListener('click', () => {
   requestAnimationFrame(() => { Object.assign(st.pos, arrange(visIds(st.now), { spread: 900 })); renderCards(); save(); clearTimeout(hist.t); commitHist();
     toast('Everything is back to a fresh board. Your progress stayed.', 'Undo', undo); });
 });
+$('#cpGroup').addEventListener('sl-change', e => { if (!openCard) return; setGroup(openCard, e.target.checked); syncGroupSwitch(openCard); });
 $('#cpArrange').addEventListener('click', () => { if (openCard) arrangeAround(openCard); });
 $('#clearInk').addEventListener('click', () => { const old = st.ink, oldC = st.cardInk; st.ink = []; st.cardInk = {}; save(); renderInk(); renderCards(); toast('Drawings cleared.', 'Undo', () => { st.ink = old; st.cardInk = oldC; save(); renderInk(); renderCards(); }); });
 
@@ -614,10 +684,18 @@ function arrange(movable, { v = st.now, anchor = 0, maxMove = Infinity, iters = 
   const posOf = id => { const c = byId(id); return init[id] || st.pos[id] || { x: c.x, y: c.y }; };
   const links = visLinks(v), deg = {}; links.forEach(([a, b]) => { deg[a] = (deg[a] || 0) + 1; deg[b] = (deg[b] || 0) + 1; });
   // --- family units (union of bonds) ---
-  const bonds = bondsAt(v), root = {}; const find = x => root[x] == null || root[x] === x ? x : (root[x] = find(root[x]));
+  const gOf = {}; visGroups(v).forEach((g, i) => g.forEach(id => { gOf[id] = 'G' + i; }));
+  const bonds = bondsAt(v).filter(({ a, b }) => !gOf[a] && !gOf[b]), root = {}; const find = x => root[x] == null || root[x] === x ? x : (root[x] = find(root[x]));
   bonds.forEach(({ a, b }) => { root[find(a)] = find(b); });
-  const groups = {}; ids.forEach(id => (groups[find(id)] = groups[find(id)] || []).push(id));
+  const groups = {}; ids.forEach(id => { const k = gOf[id] || find(id); (groups[k] = groups[k] || []).push(id); });
   const U = Object.values(groups).map(members => {
+    if (gOf[members[0]]) { // a user's group keeps the shape it has on the board
+      const ps = members.map(posOf), mx = Math.min(...ps.map(p => p.x)), my = Math.min(...ps.map(p => p.y)), off = {};
+      members.forEach((id, k) => { off[id] = { dx: ps[k].x - mx, dy: ps[k].y - my }; });
+      const w = Math.max(...members.map(id => off[id].dx + cardSize(id).w)), h = Math.max(...members.map(id => off[id].dy + cardSize(id).h));
+      const head = members.slice().sort((x, y) => (deg[y] || 0) - (deg[x] || 0))[0];
+      return { head, members, off, w, h, x: mx + w / 2, y: my + h / 2, ox: mx + w / 2, oy: my + h / 2, m: members.some(id => mv.has(id)), nb: [], deg: members.reduce((s, id) => s + (deg[id] || 0), 0) };
+    }
     // lay the unit out: start from its best-connected card, then add bonded cards to the right (second partner to the left)
     const head = members.slice().sort((x, y) => (byId(y).main ? 99 : 0) + (deg[y] || 0) - (byId(x).main ? 99 : 0) - (deg[x] || 0))[0];
     const off = { [head]: { dx: 0, dy: 0 } }, order = [head], right = {}, left = {};

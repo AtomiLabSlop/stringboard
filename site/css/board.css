@@ -423,3 +423,9 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .card .ex:empty{display:none}
 /* the back is plain paper: nothing from the photo side shows through */
 .card .back{z-index:2}
+
+/* group of overlapping cards: dashed outline on hover, Ungroup in its top-right corner */
+.grpbox{position:absolute;z-index:950;border:calc(2px * var(--inv,1)) dashed rgba(255,246,222,.95);border-radius:12px;pointer-events:none;background:rgba(255,246,222,.07);filter:drop-shadow(0 0 1px rgba(0,0,0,.6))}
+.grpbox .ungroup{pointer-events:auto;position:absolute;right:-1px;top:0;transform:translateY(-100%) scale(var(--inv,1));transform-origin:100% 100%;display:flex;align-items:center;gap:4px;font:600 11px/1 var(--sl-font-sans);letter-spacing:.02em;color:#f6efe0;background:rgba(24,22,20,.86);border:1px solid rgba(255,244,214,.35);border-radius:6px 6px 0 0;padding:5px 8px;cursor:pointer}
+.grpbox .ungroup:hover{background:rgba(40,36,32,.95)}
+.grpbox .ungroup sl-icon{font-size:10px}
