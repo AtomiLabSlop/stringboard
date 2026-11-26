@@ -105,6 +105,13 @@
           <sl-range id="sTilt" label="Random tilt" min="0" max="10" step="0.5" tooltip="none"></sl-range>
         </section>
         <sl-divider></sl-divider>
+        <section class="sec"><h3>Groups and families</h3>
+          <sl-radio-group id="g-grpShow" label="How groups show" size="small">
+            <sl-radio-button value="hover">On hover</sl-radio-button><sl-radio-button value="line">Dashed outline</sl-radio-button><sl-radio-button value="fill">Soft fill</sl-radio-button>
+          </sl-radio-group>
+          <p class="tip">Grouped cards and families (couples, children) move together and keep their places. To rearrange them, hover the group and press Modify, move the cards, then press Done.</p>
+        </section>
+        <sl-divider></sl-divider>
         <section class="sec"><h3>Story notes</h3>
           <sl-radio-group id="g-facts" label="Where a card shows what you know" size="small">
             <sl-radio-button value="back">On the back</sl-radio-button><sl-radio-button value="below">Below, all</sl-radio-button><sl-radio-button value="peek">Below, top 3</sl-radio-button>
@@ -177,6 +184,14 @@
         </section>
 
         <sl-divider></sl-divider>
+        <section class="sec"><h3>Position</h3>
+          <sl-button id="cpArrange" size="small" outline><sl-icon slot="prefix" name="diagram-3"></sl-icon>Auto-arrange around this card</sl-button>
+          <p class="tip">Moves only this card and the cards it's connected to, as little as needed to shorten their strings. Every other card stays put. You can undo it.</p>
+          <sl-switch id="cpGroup" size="small">Group overlapping cards</sl-switch>
+          <p class="tip" id="cpGroupTip"></p>
+        </section>
+
+        <sl-divider></sl-divider>
         <section class="sec"><h3>Look</h3>
           <div class="field"><span class="flabel">Card colour</span><div class="sw" id="cpBg"></div></div>
           <sl-radio-group id="cpLayer" size="small" label="Layer">
@@ -191,13 +206,6 @@
           </sl-radio-group>
         </section>
 
-        <sl-divider></sl-divider>
-        <section class="sec"><h3>Position</h3>
-          <sl-button id="cpArrange" size="small" outline><sl-icon slot="prefix" name="diagram-3"></sl-icon>Auto-arrange around this card</sl-button>
-          <p class="tip">Moves only this card and the cards it's connected to, as little as needed to shorten their strings. Every other card stays put. You can undo it.</p>
-          <sl-switch id="cpGroup" size="small">Group overlapping cards</sl-switch>
-          <p class="tip" id="cpGroupTip"></p>
-        </section>
 
         <div id="cpImgWrap">
           <sl-divider></sl-divider>

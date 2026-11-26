@@ -8,7 +8,7 @@ const COL = { red: '#9b2423', yellow: '#b98b2e', green: '#4f5d3a', blue: '#2b456
 const COL_NAME = { red: 'Oxblood', yellow: 'Ochre', green: 'Olive', blue: 'Ink blue', white: 'Bone', black: 'Graphite', line: 'Fishing line' };
 const LINE = 'rgba(226,232,236,.55)'; // fishing line: clear nylon, strings only
 const CARD_BG = { white: '#f5f2eb', cream: '#e9dfcb', tan: '#b49873', sage: '#a7ae9a', slate: '#3e4247', black: '#1d1c1a' };
-const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'authentic', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', penSize: 'fine', cardBg: null, lamp: false, strW: 'normal', strSee: false, couples: true, kids: true, facts: 'back' };
+const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'authentic', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', penSize: 'fine', cardBg: null, lamp: false, strW: 'normal', strSee: false, couples: true, kids: true, facts: 'back', grpShow: 'hover' };
 const STR_W = { thin: 1.3, normal: 2, thick: 3.2 };
 
 let IMGS = {};
@@ -41,7 +41,7 @@ function updHistBtns() { $('#undoBtn').disabled = !hist.u.length; $('#redoBtn').
 function restore(json) {
   hist.last = json; st = unsnap(json); view = Math.min(view, st.now);
   hist.mute = true; save(); hist.mute = false;
-  hideNoteBar(); syncSettings(); applySettings(); renderTimeline(); nbSync(); grpHover = -1; drawGroupBox();
+  hideNoteBar(); syncSettings(); applySettings(); renderTimeline(); nbSync(); hoverKey = null; modifyKey = null;
   if (openCard) { if (els[openCard] && !els[openCard].hidden) openCardPanel(openCard); else closePanel('cardPanel'); }
   updHistBtns();
 }
@@ -82,8 +82,7 @@ function buildCards() {
     d.querySelector('img').addEventListener('error', e => { e.target.dataset.failed = e.target.getAttribute('src') || ''; e.target.parentNode.classList.remove('has'); });
     d.querySelector('img').addEventListener('load', e => { delete e.target.dataset.failed; });
     cardsEl.append(d); els[c.id] = d;
-    d.addEventListener('pointerdown', () => { chain = null; });
-    dragify(d, () => st.pos[c.id] || { x: c.x, y: c.y }, p => { moveGroup(c.id, p); st.pos[c.id] = p; followPartner(c.id); }, () => { if (flipped.has(c.id) || expanded.has(c.id)) cornerClick(c.id); });
+    dragify(d, () => st.pos[c.id] || { x: c.x, y: c.y }, p => { moveGroup(c.id, p); st.pos[c.id] = p; }, () => { if (flipped.has(c.id) || expanded.has(c.id)) cornerClick(c.id); });
     // double-click a card to open its settings (not on the corner, which turns it over)
     d.addEventListener('dblclick', e => { if (mode || performance.now() - cornerTap < 600 || e.target.closest('.cset,.txt')) return; openCardPanel(c.id); });
     d.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCardPanel(c.id); } });
@@ -101,7 +100,7 @@ document.addEventListener('pointerdown', e => {
     const k = d.querySelector('.corner'); if (!k || getComputedStyle(k).display === 'none') return false;
     const r = k.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom; });
   if (!d) return;
-  e.preventDefault(); e.stopPropagation(); chain = null;
+  e.preventDefault(); e.stopPropagation();
   // pressing the corner can still drag the card; only a tap (no movement) turns it over
   const id = d.dataset.id, tap = () => { cornerTap = performance.now(); cornerClick(id); };
   if (mode) tap(); else d._drag(e, tap);
@@ -148,37 +147,8 @@ function enforcePairs(v = view) {
     const sa = { w: A.offsetWidth, h: A.offsetHeight }, sb = { w: B.offsetWidth, h: B.offsetHeight };
     const u = unbury(pa, sa, pb, sb) || pb, n = touch(pa, sa, u, sb) || u; if (n !== pb) st.pos[b] = n; });
 }
-/* dragging a family card pulls the rest along like a chain: every card trails the one before it in the chain
-   (Walter -> Skyler -> Walter Jr.), on a rope as long as their distance when the drag began, and still overlaps it by 5px */
-let chain = null;
-const centre = id => { const b = cardBox(id); return { x: b.x + b.w / 2, y: b.y + b.h / 2 }; };
-function followPartner(id) {
-  if (!chain || chain.id !== id) {
-    const order = [id];
-    for (let k = 0; k < order.length; k++) partnersOf(order[k]).forEach(o => { if (!order.includes(o) && shown(o)) order.push(o); });
-    order.slice().reverse().forEach(bringToFront);   // the chain lies on top, in order: dragged card, then the next …
-    chain = { id, links: order.slice(1).map((o, k) => { const a = centre(order[k]), b = centre(o); return [order[k], o, Math.max(40, Math.hypot(b.x - a.x, b.y - a.y)), order.slice(0, k + 1)]; }) };
-  }
-  chain.links.forEach(([lead, o, L, before]) => {
-    const A = els[lead], B = els[o], a = centre(lead), b = centre(o), d = Math.hypot(b.x - a.x, b.y - a.y);
-    let p = st.pos[o] || { x: byId(o).x, y: byId(o).y };
-    if (d > L) p = { x: Math.round(p.x - (b.x - a.x) * (1 - L / d)), y: Math.round(p.y - (b.y - a.y) * (1 - L / d)) };
-    const sz = x => ({ w: els[x].offsetWidth, h: els[x].offsetHeight }), at = x => st.pos[x] || { x: byId(x).x, y: byId(x).y };
-    // never hidden under any card earlier in the chain: if it would be, it takes the nearest free spot around its leader
-    const ok = q => before.every(x => !unbury(at(x), sz(x), q, sz(o)));
-    if (!ok(p)) {
-      const la = at(lead), SA = sz(lead), SB = sz(o), q0 = p, spots = [];
-      [[.8, 0], [-.8, 0], [.8, .35], [-.8, .35], [.8, -.35], [-.8, -.35], [0, .8], [0, -.8], [.55, .75], [-.55, .75], [.55, -.75], [-.55, -.75]].forEach(([fx, fy]) => {
-        const q = { x: Math.round(la.x + (SA.w - SB.w) / 2 + fx * (SA.w + SB.w) / 2), y: Math.round(la.y + (SA.h - SB.h) / 2 + fy * (SA.h + SB.h) / 2) };
-        if (ok(q)) spots.push(q); });
-      if (spots.length) p = spots.sort((m, n) => Math.hypot(m.x - q0.x, m.y - q0.y) - Math.hypot(n.x - q0.x, n.y - q0.y))[0];
-      else before.forEach(x => { p = unbury(at(x), sz(x), p, sz(o)) || p; });
-    }
-    p = touch(st.pos[lead] || { x: byId(lead).x, y: byId(lead).y }, { w: A.offsetWidth, h: A.offsetHeight }, p, { w: B.offsetWidth, h: B.offsetHeight }, 14) || p;
-    st.pos[o] = p; B.style.left = p.x + 'px'; B.style.top = p.y + 'px';
-  });
-}
-/* ---------- groups: overlapping cards the user has tied together. st.groups = [[id, id, …], …] ---------- */
+/* ---------- groups: overlapping cards the user has tied together (st.groups = [[id, id, …], …]).
+   Families (couples, children) behave the same way: their cards keep their places relative to each other. ---------- */
 const cardBox = id => { const d = els[id], c = byId(id), p = st.pos[id] || { x: c.x, y: c.y }; return { x: p.x, y: p.y, w: d.offsetWidth, h: d.offsetHeight }; };
 const shown = id => els[id] && !els[id].hidden;
 const boxesTouch = (A, B) => Math.min(A.x + A.w, B.x + B.w) - Math.max(A.x, B.x) > 0 && Math.min(A.y + A.h, B.y + B.h) - Math.max(A.y, B.y) > 0;
@@ -191,53 +161,90 @@ function stackOf(id) {
 const groupIdx = id => (st.groups || []).findIndex(g => g.includes(id));
 /* groups as they show at this point of the story: only cards already on the board, and only if 2+ of them are */
 const visGroups = (v = view) => (st.groups || []).map(g => g.filter(id => byId(id) && byId(id).a <= v)).filter(g => g.length > 1);
+/* cards that move as one: user groups and families, merged where they share a card */
+function rigidSets(v = view) {
+  const root = {}, find = x => root[x] == null || root[x] === x ? x : (root[x] = find(root[x])), join = (a, b) => { root[find(a)] = find(b); };
+  const vg = visGroups(v), bonds = bondsAt(v);
+  vg.forEach(g => g.slice(1).forEach(x => join(g[0], x))); bonds.forEach(({ a, b }) => join(a, b));
+  const sets = {}; S.chars.forEach(c => { if (c.a > v) return; const r = find(c.id); (sets[r] = sets[r] || []).push(c.id); });
+  return Object.values(sets).filter(ids => ids.length > 1).map(ids => ({ ids, key: ids.slice().sort().join(','),
+    user: vg.some(g => g.some(x => ids.includes(x))), fam: bonds.some(({ a }) => ids.includes(a)) }));
+}
+var modifyKey = null, hoverKey = null, grpLayer = null;   // var: used by renders that can run before this point
 function moveGroup(id, np) {
-  const i = groupIdx(id); if (i < 0) return;
+  const set = rigidSets().find(g => g.ids.includes(id)); if (!set || set.key === modifyKey) return;   // in Modify, cards move one by one
   const c = byId(id), old = st.pos[id] || { x: c.x, y: c.y }, dx = np.x - old.x, dy = np.y - old.y; if (!dx && !dy) return;
-  st.groups[i].forEach(o => { if (o === id || !shown(o)) return; const b = cardBox(o), n = { x: b.x + dx, y: b.y + dy };
+  set.ids.forEach(o => { if (o === id || !shown(o)) return; const b = cardBox(o), n = { x: b.x + dx, y: b.y + dy };
     st.pos[o] = n; els[o].style.left = n.x + 'px'; els[o].style.top = n.y + 'px'; });
-  drawGroupBox();
 }
 function setGroup(id, on) {
   st.groups = (st.groups || []).filter(g => !g.includes(id));
   if (on) { const s = stackOf(id); st.groups = st.groups.map(g => g.filter(x => !s.includes(x))).filter(g => g.length > 1); st.groups.push(s); }
-  save(); renderStrings(); drawGroupBox();
+  save(); renderStrings();
 }
-/* the dashed outline + Ungroup button, shown while the pointer is over a group */
-const grpBox = document.createElement('div'); grpBox.className = 'grpbox'; grpBox.hidden = true;
-grpBox.innerHTML = '<button type="button" class="ungroup"><sl-icon name="x-lg"></sl-icon>Ungroup</button>';
-stage.insertBefore(grpBox, $('#notes'));
-let grpHover = -1;
-function groupRect(g) {
-  const bs = g.filter(shown).map(cardBox), m = 10;
+function groupRect(ids) {
+  const bs = ids.filter(shown).map(cardBox), m = 10;
   const x = Math.min(...bs.map(b => b.x)) - m, y = Math.min(...bs.map(b => b.y)) - m;
   return { x, y, w: Math.max(...bs.map(b => b.x + b.w)) + m - x, h: Math.max(...bs.map(b => b.y + b.h)) + m - y };
 }
-function drawGroupBox() {
-  const g = grpHover >= 0 && (st.groups || [])[grpHover];
-  if (!g || g.filter(shown).length < 2 || mode) { grpBox.hidden = true; return; }
-  const r = groupRect(g); grpBox.style.setProperty('--inv', 1 / scale); Object.assign(grpBox.style, { left: r.x + 'px', top: r.y + 'px', width: r.w + 'px', height: r.h + 'px' }); grpBox.hidden = false;
+const GRP_SHOW = ['hover', 'line', 'fill'], GRP_SHOW_NAME = { hover: 'Outline on hover', line: 'Dashed outline always', fill: 'Soft fill always' };
+/* outlines for every group / family; buttons (Modify, Ungroup, look) appear on hover */
+function drawGroups() {
+  if (!grpLayer) { grpLayer = document.createElement('div'); grpLayer.className = 'grplayer'; stage.insertBefore(grpLayer, $('#notes')); }
+  const sets = mode ? [] : rigidSets().filter(g => g.ids.filter(shown).length > 1), show = st.set.grpShow || 'hover', seen = new Set();
+  if (modifyKey && !sets.some(g => g.key === modifyKey)) modifyKey = null;
+  grpLayer.style.setProperty('--inv', 1 / scale);
+  sets.forEach(g => {
+    seen.add(g.key);
+    let el = grpLayer.querySelector(`[data-key="${g.key}"]`);
+    if (!el) {
+      el = document.createElement('div'); el.className = 'grpbox'; el.dataset.key = g.key;
+      el.innerHTML = '<div class="gtools"><button type="button" class="gmod"></button><button type="button" class="gun"><sl-icon name="x-lg"></sl-icon>Ungroup</button>'
+        + '<button type="button" class="glook" aria-label="How groups show"><sl-icon name="eye"></sl-icon></button></div>';
+      el.querySelector('.gmod').addEventListener('click', e => { e.stopPropagation(); toggleModify(g.key); });
+      el.querySelector('.gun').addEventListener('click', e => { e.stopPropagation(); ungroup(el.dataset.key); });
+      el.querySelector('.glook').addEventListener('click', e => { e.stopPropagation();
+        st.set.grpShow = GRP_SHOW[(GRP_SHOW.indexOf(st.set.grpShow || 'hover') + 1) % 3]; save(); syncSettings(); drawGroups(); toast(GRP_SHOW_NAME[st.set.grpShow] + '.'); });
+      grpLayer.append(el);
+    }
+    const r = groupRect(g.ids), mod = g.key === modifyKey, hot = g.key === hoverKey || mod;
+    Object.assign(el.style, { left: r.x + 'px', top: r.y + 'px', width: r.w + 'px', height: r.h + 'px' });
+    el.classList.toggle('on', hot || show !== 'hover'); el.classList.toggle('hot', hot); el.classList.toggle('mod', mod);
+    el.classList.toggle('fill', show === 'fill' && !hot); el.classList.toggle('fam', g.fam && !g.user);
+    el.querySelector('.gmod').innerHTML = mod ? '<sl-icon name="check-lg"></sl-icon>Done' : '<sl-icon name="arrows-move"></sl-icon>Modify';
+    el.querySelector('.gmod').title = mod ? 'Lock the cards in place again' : 'Move these cards one by one';
+    el.querySelector('.gun').hidden = !g.user;
+    el.querySelector('.glook').title = 'Showing: ' + GRP_SHOW_NAME[show].toLowerCase() + '. Click to change.';
+  });
+  grpLayer.querySelectorAll('.grpbox').forEach(el => { if (!seen.has(el.dataset.key)) el.remove(); });
+}
+function toggleModify(key) {
+  if (modifyKey === key) { modifyKey = null; enforcePairs(); renderCards(); save(); }   // Done: couples still overlap a little
+  else { modifyKey = key; toast('Move the cards one by one, then press Done.'); }
+  drawGroups();
+}
+function ungroup(key) {
+  const ids = key.split(','); if (modifyKey === key) modifyKey = null;
+  st.groups = (st.groups || []).filter(g => !g.some(x => ids.includes(x))); hoverKey = null;
+  save(); renderStrings();
+  if (openCard && ids.includes(openCard)) syncGroupSwitch(openCard);
+  toast('Cards ungrouped.', 'Undo', undo);
 }
 board.addEventListener('pointermove', e => {
-  if (e.buttons && !grpBox.hidden) { drawGroupBox(); return; }          // keep following while a group is dragged
-  const v = toVirtual(e); let hit = -1;
-  (st.groups || []).forEach((g, i) => { if (hit >= 0 || g.filter(shown).length < 2) return; const r = groupRect(g);
-    if (v.x >= r.x && v.x <= r.x + r.w && v.y >= r.y - 24 && v.y <= r.y + r.h) hit = i; });
-  if (hit !== grpHover) { grpHover = hit; drawGroupBox(); }
+  if (e.buttons) return;                                               // dragging: renderStrings keeps the outlines in step
+  const v = toVirtual(e), top = 34 / scale; let hit = null;
+  rigidSets().forEach(g => { if (hit || g.ids.filter(shown).length < 2) return; const r = groupRect(g.ids);
+    if (v.x >= r.x && v.x <= r.x + r.w && v.y >= r.y - top && v.y <= r.y + r.h) hit = g.key; });
+  if (hit !== hoverKey) { hoverKey = hit; drawGroups(); }
 });
-board.addEventListener('pointerleave', () => { grpHover = -1; drawGroupBox(); });
-board.addEventListener('wheel', () => requestAnimationFrame(drawGroupBox), { passive: true });
-grpBox.querySelector('.ungroup').addEventListener('click', e => {
-  e.stopPropagation(); const g = st.groups[grpHover]; if (!g) return;
-  st.groups.splice(grpHover, 1); grpHover = -1; save(); renderStrings(); drawGroupBox();
-  if (openCard && g.includes(openCard)) syncGroupSwitch(openCard);
-  toast('Cards ungrouped.', 'Undo', undo);
-});
+board.addEventListener('pointerleave', () => { hoverKey = null; drawGroups(); });
+board.addEventListener('wheel', () => requestAnimationFrame(drawGroups), { passive: true });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && modifyKey) toggleModify(modifyKey); });
 function syncGroupSwitch(id) {
   const sw = $('#cpGroup'), inG = groupIdx(id) >= 0;
   sw.checked = inG; sw.disabled = !inG && stackOf(id).length < 2;
   $('#cpGroupTip').textContent = sw.disabled ? 'This card doesn’t overlap any other card. Drag it onto another card to group them.'
-    : inG ? 'Grouped cards move together. Someone tied to several of them gets one string, to the nearest card.'
+    : inG ? 'Grouped cards move together; hover the group and press Modify to move them one by one. Someone tied to several of them gets one string, to the nearest card.'
     : 'Ties together every card in this overlapping pile (' + stackOf(id).length + ' cards).';
 }
 const custom = id => (st.cards[id] = st.cards[id] || {});
@@ -339,7 +346,7 @@ function renderStrings() {
   S.chars.forEach(c => { if (c.a <= view) pins.add(c.id); });
   const pc = COL[s.pinColor]; let pout = '';
   pins.forEach(id => { const [x, y] = pinOf(id); pout += `<circle cx="${x + 1.5}" cy="${y + 2.5}" r="6" fill="rgba(0,0,0,.35)"/><circle cx="${x}" cy="${y}" r="6.5" fill="${pc}" stroke="rgba(0,0,0,.45)" stroke-width="1"/><circle cx="${x - 2}" cy="${y - 2}" r="2" fill="rgba(255,255,255,.65)"/>`; });
-  strSvg.innerHTML = out; pinSvg.innerHTML = pout;
+  strSvg.innerHTML = out; pinSvg.innerHTML = pout; drawGroups();
 }
 function renderTimeline() {
   const tl = $('#tl'); tl.max = st.now; tl.value = view;
@@ -615,7 +622,7 @@ function syncSettings() {
   $('#sCard').value = s.cardSize; $('#sImg').value = s.imgSize; $('#sFont').value = s.fontSize; $('#sTilt').value = s.tilt; $('#sTen').value = s.tension;
   $('#sCardRound').checked = s.cardRounded;
   $('#sRound').checked = s.rounded; $('#sRound').disabled = s.shape === 'circle';
-  ['shape', 'style', 'font', 'bg', 'frame', 'strW', 'facts'].forEach(k => { $('#g-' + k).value = s[k]; });
+  ['shape', 'style', 'font', 'bg', 'frame', 'strW', 'facts', 'grpShow'].forEach(k => { $('#g-' + k).value = s[k]; });
   $('#sSee').checked = s.strSee; $('#sCouples').checked = s.couples; $('#sKids').checked = s.kids;
   const cb = $('#swCardBg'); cb.innerHTML = '';
   Object.entries({ default: null, ...CARD_BG }).forEach(([k, v]) => {
@@ -635,7 +642,7 @@ function syncSettings() {
   $(sel).addEventListener('sl-input', e => { st.set[k] = +e.target.value; save(); applySettings(); }));
 $('#sRound').addEventListener('sl-change', e => { st.set.rounded = e.target.checked; save(); applySettings(); });
 $('#sCardRound').addEventListener('sl-change', e => { st.set.cardRounded = e.target.checked; save(); applySettings(); });
-['shape', 'style', 'font', 'bg', 'frame', 'strW'].forEach(k => $('#g-' + k).addEventListener('sl-change', e => { st.set[k] = e.target.value; save(); applySettings(); syncSettings(); }));
+['shape', 'style', 'font', 'bg', 'frame', 'strW', 'grpShow'].forEach(k => $('#g-' + k).addEventListener('sl-change', e => { st.set[k] = e.target.value; save(); applySettings(); syncSettings(); }));
 $('#g-facts').addEventListener('sl-change', e => {             // board-wide choice replaces every card's own choice
   if (e.target.value === st.set.facts) return;
   st.set.facts = e.target.value; Object.values(st.cards).forEach(cu => { delete cu.facts; });
