@@ -31,15 +31,22 @@ def build(mod):
         raise SystemExit(f'{mod.META["id"]}: position {p} is after the last step')
 
     chars, ids = [], set()
-    n = len(mod.CHARS)
-    cols = max(4, math.ceil(math.sqrt(n * 1.2)))
+    # starting spots: the most connected characters in the middle, the rest on a spiral around them
+    deg = {}
+    for a, b, _ in mod.LINKS:
+        deg[a] = deg.get(a, 0) + 1; deg[b] = deg.get(b, 0) + 1
+    order = sorted(range(len(mod.CHARS)), key=lambda k: -deg.get(mod.CHARS[k][0], 0))
+    spot = {}
+    for r, k in enumerate(order):
+        ang, rad = r * 2.39996, 150 * math.sqrt(r)
+        spot[k] = (round(550 + rad * math.cos(ang) - 65), round(500 + rad * math.sin(ang) * .85 - 80))
     for k, row in enumerate(mod.CHARS):
         cid, name, role, first, facts = row[:5]
         extra = row[5] if len(row) > 5 else {}
         assert cid not in ids, cid
         ids.add(cid)
         c = {"id": cid, "n": name, "r": role, "a": idx(first),
-             "x": 60 + (k % cols) * (980 // cols), "y": 40 + (k // cols) * 200,
+             "x": spot[k][0], "y": spot[k][1],
              "f": [[idx(p), t] for p, t in facts]}
         if extra.get('main'): c['main'] = True
         if extra.get('grp'): c['grp'] = True

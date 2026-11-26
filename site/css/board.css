@@ -414,3 +414,7 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .card{-webkit-mask:linear-gradient(#000 0 0) border-box no-repeat,radial-gradient(circle at calc(100% - 80px) calc(100% - 80px),transparent calc(var(--curl)*1.05),#000 calc(var(--curl)*2)) -80px -80px/calc(100% + 160px) calc(100% + 160px) no-repeat;
   mask:linear-gradient(#000 0 0) border-box no-repeat,radial-gradient(circle at calc(100% - 80px) calc(100% - 80px),transparent calc(var(--curl)*1.05),#000 calc(var(--curl)*2)) -80px -80px/calc(100% + 160px) calc(100% + 160px) no-repeat;
   -webkit-mask-clip:border-box,no-clip;mask-clip:border-box,no-clip}
+
+/* back of a dead character's card: no cross over the text, just a small red note under the name */
+.card.flipped .xx{display:none!important}
+.card.dead .back .bn::after{content:"dead";display:block;margin-top:1px;font-size:calc(var(--fs)*.72);font-style:italic;font-weight:500;color:#a8201a}

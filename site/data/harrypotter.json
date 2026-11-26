@@ -638,8 +638,8 @@
    "n": "Harry Potter",
    "r": "The boy who lived",
    "a": 0,
-   "x": 60,
-   "y": 40,
+   "x": 485,
+   "y": 420,
    "f": [
     [
      0,
@@ -677,8 +677,8 @@
    "n": "Ron Weasley",
    "r": "Harry's best friend",
    "a": 2,
-   "x": 200,
-   "y": 40,
+   "x": 504,
+   "y": 240,
    "f": [
     [
      2,
@@ -699,8 +699,8 @@
    "n": "Hermione Granger",
    "r": "Harry's friend",
    "a": 2,
-   "x": 340,
-   "y": 40,
+   "x": 936,
+   "y": 38,
    "f": [
     [
      2,
@@ -721,8 +721,8 @@
    "n": "Albus Dumbledore",
    "r": "Headmaster",
    "a": 0,
-   "x": 480,
-   "y": 40,
+   "x": 768,
+   "y": 267,
    "f": [
     [
      0,
@@ -760,8 +760,8 @@
    "n": "Rubeus Hagrid",
    "r": "Gamekeeper",
    "a": 0,
-   "x": 620,
-   "y": 40,
+   "x": 455,
+   "y": 975,
    "f": [
     [
      1,
@@ -782,8 +782,8 @@
    "n": "Lord Voldemort",
    "r": "Dark wizard",
    "a": 0,
-   "x": 760,
-   "y": 40,
+   "x": 374,
+   "y": 506,
    "f": [
     [
      0,
@@ -817,8 +817,8 @@
    "n": "Severus Snape",
    "r": "Potions master",
    "a": 3,
-   "x": 900,
-   "y": 40,
+   "x": 643,
+   "y": 595,
    "f": [
     [
      4,
@@ -852,8 +852,8 @@
    "n": "Draco Malfoy",
    "r": "Slytherin rival",
    "a": 2,
-   "x": 60,
-   "y": 240,
+   "x": 302,
+   "y": 121,
    "f": [
     [
      2,
@@ -874,8 +874,8 @@
    "n": "Minerva McGonagall",
    "r": "Head of Gryffindor",
    "a": 0,
-   "x": 200,
-   "y": 240,
+   "x": 1179,
+   "y": 147,
    "f": [
     [
      0,
@@ -892,8 +892,8 @@
    "n": "Neville Longbottom",
    "r": "Gryffindor",
    "a": 2,
-   "x": 340,
-   "y": 240,
+   "x": 35,
+   "y": 199,
    "f": [
     [
      2,
@@ -914,8 +914,8 @@
    "n": "Ginny Weasley",
    "r": "Ron's sister",
    "a": 2,
-   "x": 480,
-   "y": 240,
+   "x": 884,
+   "y": 544,
    "f": [
     [
      11,
@@ -932,8 +932,8 @@
    "n": "The Dursleys",
    "r": "Harry's relatives",
    "a": 0,
-   "x": 620,
-   "y": 240,
+   "x": 184,
+   "y": 1031,
    "f": [
     [
      0,
@@ -951,8 +951,8 @@
    "n": "Arthur & Molly Weasley",
    "r": "Ron's parents",
    "a": 2,
-   "x": 760,
-   "y": 240,
+   "x": 1013,
+   "y": 321,
    "f": [
     [
      2,
@@ -974,8 +974,8 @@
    "n": "Fred & George",
    "r": "Weasley twins",
    "a": 2,
-   "x": 900,
-   "y": 240,
+   "x": 216,
+   "y": -215,
    "f": [
     [
      2,
@@ -993,8 +993,8 @@
    "n": "Quirinus Quirrell",
    "r": "Defence teacher",
    "a": 3,
-   "x": 60,
-   "y": 440,
+   "x": 55,
+   "y": -18,
    "f": [
     [
      3,
@@ -1012,8 +1012,8 @@
    "n": "Dobby",
    "r": "House-elf",
    "a": 7,
-   "x": 200,
-   "y": 440,
+   "x": 162,
+   "y": 810,
    "f": [
     [
      7,
@@ -1035,8 +1035,8 @@
    "n": "Lucius Malfoy",
    "r": "Draco's father",
    "a": 10,
-   "x": 340,
-   "y": 440,
+   "x": 410,
+   "y": -70,
    "f": [
     [
      10,
@@ -1057,8 +1057,8 @@
    "n": "Sirius Black",
    "r": "Harry's godfather",
    "a": 13,
-   "x": 480,
-   "y": 440,
+   "x": 390,
+   "y": 722,
    "f": [
     [
      13,
@@ -1084,8 +1084,8 @@
    "n": "Remus Lupin",
    "r": "Defence teacher",
    "a": 14,
-   "x": 620,
-   "y": 440,
+   "x": 944,
+   "y": 749,
    "f": [
     [
      14,
@@ -1111,8 +1111,8 @@
    "n": "Peter Pettigrew",
    "r": "Wormtail",
    "a": 16,
-   "x": 760,
-   "y": 440,
+   "x": 69,
+   "y": 566,
    "f": [
     [
      16,
@@ -1134,8 +1134,8 @@
    "n": "Cedric Diggory",
    "r": "Hogwarts champion",
    "a": 20,
-   "x": 900,
-   "y": 440,
+   "x": 1166,
+   "y": 498,
    "f": [
     [
      20,
@@ -1153,8 +1153,8 @@
    "n": "Barty Crouch Jr",
    "r": "Death Eater",
    "a": 25,
-   "x": 60,
-   "y": 640,
+   "x": -92,
+   "y": 762,
    "f": [
     [
      25,
@@ -1171,8 +1171,8 @@
    "n": "Alastor Moody",
    "r": "Auror",
    "a": 25,
-   "x": 200,
-   "y": 640,
+   "x": 1200,
+   "y": 739,
    "f": [
     [
      25,
@@ -1190,8 +1190,8 @@
    "n": "Dolores Umbridge",
    "r": "Ministry official",
    "a": 29,
-   "x": 340,
-   "y": 640,
+   "x": 643,
+   "y": -177,
    "f": [
     [
      29,
@@ -1208,8 +1208,8 @@
    "n": "Luna Lovegood",
    "r": "Ravenclaw",
    "a": 30,
-   "x": 480,
-   "y": 640,
+   "x": -309,
+   "y": 598,
    "f": [
     [
      30,
@@ -1222,8 +1222,8 @@
    "n": "Nymphadora Tonks",
    "r": "Auror",
    "a": 28,
-   "x": 620,
-   "y": 640,
+   "x": 937,
+   "y": -177,
    "f": [
     [
      28,
@@ -1245,8 +1245,8 @@
    "n": "Bellatrix Lestrange",
    "r": "Death Eater",
    "a": 33,
-   "x": 760,
-   "y": 640,
+   "x": 190,
+   "y": 376,
    "f": [
     [
      33,
@@ -1268,8 +1268,8 @@
    "n": "Kreacher",
    "r": "Black family elf",
    "a": 28,
-   "x": 900,
-   "y": 640,
+   "x": 629,
+   "y": 1131,
    "f": [
     [
      28,
@@ -1282,8 +1282,8 @@
    "n": "Horace Slughorn",
    "r": "Potions teacher",
    "a": 36,
-   "x": 60,
-   "y": 840,
+   "x": 850,
+   "y": 962,
    "f": [
     [
      36,
@@ -1300,8 +1300,8 @@
    "n": "Nagini",
    "r": "Voldemort's snake",
    "a": 18,
-   "x": 200,
-   "y": 840,
+   "x": 686,
+   "y": 55,
    "f": [
     [
      18,
@@ -1327,8 +1327,8 @@
    "n": "Cornelius Fudge",
    "r": "Minister for Magic",
    "a": 10,
-   "x": 340,
-   "y": 840,
+   "x": -230,
+   "y": 226,
    "f": [
     [
      10,
@@ -1345,8 +1345,8 @@
    "n": "Griphook",
    "r": "Goblin",
    "a": 46,
-   "x": 480,
-   "y": 840,
+   "x": -196,
+   "y": -28,
    "f": [
     [
      46,
@@ -1359,8 +1359,8 @@
    "n": "Lily Potter",
    "r": "Harry's mother",
    "a": 0,
-   "x": 620,
-   "y": 840,
+   "x": -133,
+   "y": 442,
    "f": [
     [
      0,
@@ -1378,8 +1378,8 @@
    "n": "Horcruxes",
    "r": "Pieces of a soul",
    "a": 37,
-   "x": 760,
-   "y": 840,
+   "x": 634,
+   "y": 823,
    "f": [
     [
      37,

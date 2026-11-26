@@ -113,7 +113,9 @@ function cornerClick(id) {
   setTimeout(() => { flipped.has(id) ? flipped.delete(id) : flipped.add(id); renderCards(); d.classList.remove('turning'); }, 140);
 }
 /* couples the story has confirmed by this point (data: [a, b, from]) */
-const couplesAt = v => st.set.couples ? (S.couples || []).filter(([a, b, s]) => s <= v && byId(a).a <= v && byId(b).a <= v) : [];
+const aliveAt = (id, v) => { const c = byId(id); return !(c.dead != null && v >= c.dead); };
+// latest couple first, and only while both are alive (a widow(er) can be in a new couple later)
+const couplesAt = v => st.set.couples ? (S.couples || []).filter(([a, b, s]) => s <= v && byId(a).a <= v && byId(b).a <= v && aliveAt(a, v) && aliveAt(b, v)).sort((x, y) => y[2] - x[2]) : [];
 const partnerOf = (id, v = view) => { const p = couplesAt(v).find(([a, b]) => a === id || b === id); return p ? (p[0] === id ? p[1] : p[0]) : null; };
 /* dragging one half of a couple: it may move around its partner, but never more than a small gap away; further and the partner follows */
 function followPartner(id) {
@@ -588,11 +590,17 @@ function neighbours(id, v) { const n = new Set(); visLinks(v).forEach(([a, b]) =
 // maxMove: hard cap on how far a card may travel. init: optional starting positions for cards without one.
 function arrange(movable, { v = st.now, anchor = 0, maxMove = Infinity, iters = 220, spread = 0, init = {} } = {}) {
   const ids = visIds(v), mv = new Set(movable);
-  const N = ids.map(id => { const c = byId(id), s = cardSize(id), p = init[id] || st.pos[id] || { x: c.x, y: c.y };
-    return { id, w: s.w, h: s.h, x: p.x + s.w / 2, y: p.y + s.h / 2, ox: p.x + s.w / 2, oy: p.y + s.h / 2, m: mv.has(id), nb: [] }; });
+  // couples sit as one unit: the second card slightly overlaps the first, a little lower (like two photos pinned together)
+  const OV = .08, DY = .1, pairOf = {}, follower = new Set();
+  couplesAt(v).forEach(([a, b]) => { if (mv.has(a) && mv.has(b) && !follower.has(a) && !pairOf[a]) { pairOf[a] = b; follower.add(b); } });
+  const posOf = id => { const c = byId(id); return init[id] || st.pos[id] || { x: c.x, y: c.y }; };
+  const N = ids.filter(id => !follower.has(id)).map(id => { const s = cardSize(id), p = posOf(id); let w = s.w, h = s.h;
+    if (pairOf[id]) { const t = cardSize(pairOf[id]); w = s.w * (1 - OV) + t.w; h = Math.max(s.h, s.h * DY + t.h); }
+    return { id, w, h, cw: s.w, ch: s.h, x: p.x + w / 2, y: p.y + h / 2, ox: p.x + w / 2, oy: p.y + h / 2, m: mv.has(id), nb: [] }; });
   const ix = Object.fromEntries(N.map((n, i) => [n.id, i]));
-  visLinks(v).forEach(([a, b]) => { if (ix[a] != null && ix[b] != null) { N[ix[a]].nb.push(ix[b]); N[ix[b]].nb.push(ix[a]); } });
-  const CP = couplesAt(v).map(([a, b]) => [ix[a], ix[b]]).filter(([a, b]) => a != null && b != null);
+  Object.entries(pairOf).forEach(([a, b]) => { ix[b] = ix[a]; });              // links to the follower pull on the pair
+  visLinks(v).forEach(([a, b]) => { if (ix[a] != null && ix[b] != null && ix[a] !== ix[b]) { N[ix[a]].nb.push(ix[b]); N[ix[b]].nb.push(ix[a]); } });
+  const CP = couplesAt(v).map(([a, b]) => [ix[a], ix[b]]).filter(([a, b]) => a != null && b != null && a !== b);
   CP.forEach(([a, b]) => { for (let k = 0; k < 3; k++) { N[a].nb.push(b); N[b].nb.push(a); } }); // couples: much stronger pull
   const pad = 30, M = N.filter(n => n.m);
   // a big cast needs more room than the board's base area: grow it, keeping the shape
@@ -650,12 +658,19 @@ function arrange(movable, { v = st.now, anchor = 0, maxMove = Infinity, iters = 
     }
   });
   // a movable half of a couple settles right beside its partner if that spot is free
+  // only one half can move: tuck it against its fixed partner, slightly overlapping, if nothing else is in the way
   CP.forEach(([a, b]) => { [[N[a], N[b]], [N[b], N[a]]].some(([m, o]) => {
-    if (!m.m) return false;
-    const gap = (m.w + o.w) / 2 + pad, side = m.x < o.x ? -1 : 1;
-    for (const [x, y] of [[o.x + side * gap, o.y], [o.x - side * gap, o.y]]) if (!hits(m, x, y)) { m.x = x; m.y = y; return true; }
+    if (!m.m || o.m) return false;
+    const gap = (m.w + o.w) / 2 - Math.min(m.w, o.w) * OV, side = m.x < o.x ? -1 : 1;
+    const free = (x, y) => !N.some(q => q !== m && q !== o && Math.abs(q.x - x) < (q.w + m.w) / 2 + pad - 4 && Math.abs(q.y - y) < (q.h + m.h) / 2 + pad - 4);
+    for (const [x, y] of [[o.x + side * gap, o.y + o.h * DY], [o.x - side * gap, o.y + o.h * DY]]) if (free(x, y)) { m.x = x; m.y = y; return true; }
     return false; }); });
-  const out = {}; M.forEach(n => { out[n.id] = { x: Math.round(n.x - n.w / 2), y: Math.round(n.y - n.h / 2) }; });
+  const out = {};
+  M.forEach(n => {
+    const left = Math.round(n.x - n.w / 2), top = Math.round(n.y - n.h / 2);
+    out[n.id] = { x: left, y: top };
+    if (pairOf[n.id]) out[pairOf[n.id]] = { x: Math.round(left + n.cw * (1 - OV)), y: Math.round(top + n.ch * DY) };
+  });
   return out;
 }
 // glide cards to their new spots, then record one undo step
