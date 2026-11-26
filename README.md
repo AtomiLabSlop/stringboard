@@ -31,6 +31,10 @@ The files in `site/data/` contain the **whole story**, including endings. The bo
 ## Adding story data
 Titles are listed in `site/data/catalog.json` (`{ "id", "type": "game" | "series" | "movie" | "book", "title" }`). The type sets how people enter their progress: chapter (games), last episode watched like `S2E5` (series, stored as season×100+episode), minutes watched (movies) or page (books). Use the same numbers in each step's `ch`.
 
+**Sagas.** A film series or a book series can be one board: add `"parts": [{ "n": "Full name", "short": "Short name" }, …]` and `"unit": "Minute"` or `"Chapter"` to the story file. People pick the film or book and the minute or chapter inside it; positions are stored as part×1000+minute/chapter, so earlier parts always count as seen. Blade Runner (both films) and Harry Potter (all seven books) work this way.
+
+**Writing a new story.** The Breaking Bad, Blade Runner and Harry Potter files are generated from compact tables in `tools/stories/*.py`. Run `python3 tools/build_story.py` to rebuild them; it rounds every position *up* to the next step so nothing can show early, and creates an empty `<id>-images.json` for default images the first time.
+
 Story data lives in `site/data/<game>.json`:
 - `steps` – timeline steps `{ch, title, text, kw}` in story order; `kw` are matching keywords (any language, lower case, accents removed).
 - `chars` – cards: position in a 1100×1000 board space (`x`, `y`), name `n`, role `r`, the step they appear `a`, optional role changes `rs` and facts `f: [[step, text], …]`.

@@ -1,0 +1,141 @@
+{
+  "_help": "Default card images for Harry Potter (all seven books). Put a direct https link to an image you have the right to use in 'url' (png, jpg, webp or svg). Leave it empty to show the silhouette. 'credit' is optional and is shown in the card panel. The ids match the 'chars' in harrypotter.json.",
+  "images": {
+    "harry": {
+      "url": "",
+      "credit": ""
+    },
+    "ron": {
+      "url": "",
+      "credit": ""
+    },
+    "hermione": {
+      "url": "",
+      "credit": ""
+    },
+    "dumbledore": {
+      "url": "",
+      "credit": ""
+    },
+    "hagrid": {
+      "url": "",
+      "credit": ""
+    },
+    "voldemort": {
+      "url": "",
+      "credit": ""
+    },
+    "snape": {
+      "url": "",
+      "credit": ""
+    },
+    "draco": {
+      "url": "",
+      "credit": ""
+    },
+    "mcgonagall": {
+      "url": "",
+      "credit": ""
+    },
+    "neville": {
+      "url": "",
+      "credit": ""
+    },
+    "ginny": {
+      "url": "",
+      "credit": ""
+    },
+    "dursleys": {
+      "url": "",
+      "credit": ""
+    },
+    "weasleys": {
+      "url": "",
+      "credit": ""
+    },
+    "twins": {
+      "url": "",
+      "credit": ""
+    },
+    "quirrell": {
+      "url": "",
+      "credit": ""
+    },
+    "dobby": {
+      "url": "",
+      "credit": ""
+    },
+    "lucius": {
+      "url": "",
+      "credit": ""
+    },
+    "sirius": {
+      "url": "",
+      "credit": ""
+    },
+    "lupin": {
+      "url": "",
+      "credit": ""
+    },
+    "pettigrew": {
+      "url": "",
+      "credit": ""
+    },
+    "cedric": {
+      "url": "",
+      "credit": ""
+    },
+    "crouchjr": {
+      "url": "",
+      "credit": ""
+    },
+    "moody": {
+      "url": "",
+      "credit": ""
+    },
+    "umbridge": {
+      "url": "",
+      "credit": ""
+    },
+    "luna": {
+      "url": "",
+      "credit": ""
+    },
+    "tonks": {
+      "url": "",
+      "credit": ""
+    },
+    "bellatrix": {
+      "url": "",
+      "credit": ""
+    },
+    "kreacher": {
+      "url": "",
+      "credit": ""
+    },
+    "slughorn": {
+      "url": "",
+      "credit": ""
+    },
+    "nagini": {
+      "url": "",
+      "credit": ""
+    },
+    "fudge": {
+      "url": "",
+      "credit": ""
+    },
+    "griphook": {
+      "url": "",
+      "credit": ""
+    },
+    "lily": {
+      "url": "",
+      "credit": ""
+    },
+    "horcruxes": {
+      "url": "",
+      "credit": ""
+    }
+  }
+}

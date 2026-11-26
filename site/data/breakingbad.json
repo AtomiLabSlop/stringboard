@@ -1,0 +1,1599 @@
+{
+ "id": "breakingbad",
+ "title": "Breaking Bad",
+ "type": "series",
+ "background": "assets/bg/breakingbad.webp",
+ "matcher": {
+  "model": "Xenova/all-MiniLM-L6-v2",
+  "sizeMB": 23,
+  "language": "English"
+ },
+ "steps": [
+  {
+   "ch": 101,
+   "title": "Pilot",
+   "text": "Chemistry teacher Walter White learns he has terminal lung cancer. He teams up with his former student Jesse Pinkman to cook meth in an RV. A first deal goes wrong and Walt gasses Krazy-8 and Emilio.",
+   "kw": [
+    "cancer",
+    "rv",
+    "first cook",
+    "krazy-8",
+    "emilio",
+    "desert",
+    "pilot"
+   ]
+  },
+  {
+   "ch": 102,
+   "title": "Cat's in the Bag...",
+   "text": "Emilio is dead, but Krazy-8 survived and is locked in Jesse's basement. Jesse dissolves Emilio's body in a bathtub, which falls through the floor.",
+   "kw": [
+    "bathtub",
+    "acid",
+    "basement",
+    "body"
+   ]
+  },
+  {
+   "ch": 103,
+   "title": "...And the Bag's in the River",
+   "text": "After days of doubt, Walt kills Krazy-8 when he realises Krazy-8 hid a shard of a broken plate to stab him.",
+   "kw": [
+    "kill krazy-8",
+    "plate",
+    "shard",
+    "bike lock"
+   ]
+  },
+  {
+   "ch": 105,
+   "title": "Gray Matter",
+   "text": "Walt turns down Elliott and Gretchen's offer to pay for his treatment. He goes back to cooking with Jesse.",
+   "kw": [
+    "gray matter",
+    "elliott",
+    "gretchen",
+    "party",
+    "treatment"
+   ]
+  },
+  {
+   "ch": 106,
+   "title": "Crazy Handful of Nothin'",
+   "text": "Walt shaves his head, calls himself Heisenberg and blows up Tuco's office with fulminated mercury. Tuco agrees to buy their product.",
+   "kw": [
+    "heisenberg",
+    "shave",
+    "tuco",
+    "explosion",
+    "fulminated mercury"
+   ]
+  },
+  {
+   "ch": 107,
+   "title": "A No-Rough-Stuff-Type Deal",
+   "text": "Walt and Jesse steal a barrel of methylamine. At the junkyard deal Tuco beats his own man No-Doze to death.",
+   "kw": [
+    "methylamine",
+    "barrel",
+    "no-doze",
+    "junkyard",
+    "heist"
+   ]
+  },
+  {
+   "ch": 202,
+   "title": "Grilled",
+   "text": "Tuco kidnaps Walt and Jesse to a desert shack where his uncle Hector lives. Hank tracks Jesse's car there and shoots Tuco dead.",
+   "kw": [
+    "tuco",
+    "shack",
+    "hector",
+    "bell",
+    "hank shoots"
+   ]
+  },
+  {
+   "ch": 203,
+   "title": "Bit by a Dead Bee",
+   "text": "Walt fakes a fugue state to explain his disappearance. Jesse is out of his house and on his own.",
+   "kw": [
+    "fugue",
+    "hospital",
+    "naked",
+    "supermarket"
+   ]
+  },
+  {
+   "ch": 205,
+   "title": "Breakage",
+   "text": "Jesse puts his friends Badger, Skinny Pete and Combo on the street to sell. Hank has panic attacks after Tuco.",
+   "kw": [
+    "badger",
+    "skinny pete",
+    "combo",
+    "territory",
+    "dealers"
+   ]
+  },
+  {
+   "ch": 206,
+   "title": "Peekaboo",
+   "text": "Jesse goes to collect from two addicts, Spooge and his partner. She crushes Spooge's head with a stolen ATM.",
+   "kw": [
+    "spooge",
+    "atm",
+    "peekaboo",
+    "kid"
+   ]
+  },
+  {
+   "ch": 208,
+   "title": "Better Call Saul",
+   "text": "Badger is caught in a sting. Walt and Jesse hire the slippery lawyer Saul Goodman, who finds a way to get him out.",
+   "kw": [
+    "saul goodman",
+    "lawyer",
+    "badger arrested",
+    "sting",
+    "call saul"
+   ]
+  },
+  {
+   "ch": 209,
+   "title": "4 Days Out",
+   "text": "The RV's battery dies on a long cook in the desert. Walt builds a battery from scratch to get them home.",
+   "kw": [
+    "battery",
+    "stranded",
+    "four days",
+    "desert"
+   ]
+  },
+  {
+   "ch": 211,
+   "title": "Mandala",
+   "text": "Combo is shot by a rival dealer. Saul arranges a meeting with the careful distributor Gus Fring. Jesse and Jane use heroin, and Walt misses his daughter's birth to make a delivery.",
+   "kw": [
+    "combo shot",
+    "gus fring",
+    "los pollos hermanos",
+    "holly born",
+    "heroin"
+   ]
+  },
+  {
+   "ch": 212,
+   "title": "Phoenix",
+   "text": "Jane blackmails Walt over Jesse's share. Walt finds Jesse and Jane high and watches Jane choke to death without helping.",
+   "kw": [
+    "jane dies",
+    "choke",
+    "blackmail",
+    "money"
+   ]
+  },
+  {
+   "ch": 213,
+   "title": "ABQ",
+   "text": "Jane's grieving father Donald, an air traffic controller, causes two planes to collide over Albuquerque. Skyler figures out Walt has lied and moves to separate.",
+   "kw": [
+    "plane crash",
+    "wayfarer",
+    "air traffic",
+    "teddy bear",
+    "separation",
+    "rehab"
+   ]
+  },
+  {
+   "ch": 301,
+   "title": "No Más",
+   "text": "Walt tells Skyler he makes drugs. Two silent cousins from the cartel cross the border to kill Walt for Tuco's death.",
+   "kw": [
+    "cousins",
+    "skyler knows",
+    "divorce",
+    "cartel"
+   ]
+  },
+  {
+   "ch": 303,
+   "title": "I.F.T.",
+   "text": "Walt moves back into the house against Skyler's wishes. She starts an affair with her boss Ted Beneke.",
+   "kw": [
+    "ted beneke",
+    "affair",
+    "fucked ted"
+   ]
+  },
+  {
+   "ch": 306,
+   "title": "Sunset",
+   "text": "Walt starts cooking in Gus's hidden superlab under an industrial laundry, with Gale Boetticher as his assistant. Hank closes in on the RV, which is destroyed.",
+   "kw": [
+    "superlab",
+    "laundry",
+    "gale",
+    "rv destroyed",
+    "junkyard"
+   ]
+  },
+  {
+   "ch": 307,
+   "title": "One Minute",
+   "text": "Hank beats Jesse up. Later the cousins ambush Hank in a parking lot; Hank kills one and is badly wounded.",
+   "kw": [
+    "parking lot",
+    "ambush",
+    "hank shot",
+    "one minute warning"
+   ]
+  },
+  {
+   "ch": 308,
+   "title": "I See You",
+   "text": "Hank survives surgery. The surviving cousin is killed in his hospital bed.",
+   "kw": [
+    "hospital",
+    "surgery",
+    "cousin"
+   ]
+  },
+  {
+   "ch": 311,
+   "title": "Abiquiu",
+   "text": "Skyler joins the money laundering plan and pushes to buy a car wash. Jesse meets Andrea, a mother of a young son, Brock.",
+   "kw": [
+    "car wash",
+    "laundering",
+    "andrea",
+    "brock",
+    "nar-anon"
+   ]
+  },
+  {
+   "ch": 312,
+   "title": "Half Measures",
+   "text": "Jesse learns the dealers who used Andrea's little brother are Gus's men. Walt runs them over and shoots one to save Jesse.",
+   "kw": [
+    "half measures",
+    "tomas",
+    "dealers",
+    "run over",
+    "shoots"
+   ]
+  },
+  {
+   "ch": 313,
+   "title": "Full Measure",
+   "text": "Gus means to replace Walt with Gale. Walt has Jesse kill Gale to make himself irreplaceable.",
+   "kw": [
+    "gale killed",
+    "full measure",
+    "apartment"
+   ]
+  },
+  {
+   "ch": 401,
+   "title": "Box Cutter",
+   "text": "Gus slits Victor's throat with a box cutter in front of Walt and Jesse as a warning.",
+   "kw": [
+    "box cutter",
+    "victor",
+    "warning"
+   ]
+  },
+  {
+   "ch": 404,
+   "title": "Bullet Points",
+   "text": "Hank studies Gale's lab notebook and wonders who 'W.W.' is.",
+   "kw": [
+    "notebook",
+    "w.w.",
+    "lab notes",
+    "karaoke"
+   ]
+  },
+  {
+   "ch": 408,
+   "title": "Hermanos",
+   "text": "Gus's past comes out: the cartel killed his partner Max in front of him years ago, and Hector laughed.",
+   "kw": [
+    "max",
+    "hermanos",
+    "pool",
+    "flashback"
+   ]
+  },
+  {
+   "ch": 410,
+   "title": "Salud",
+   "text": "Jesse cooks for the cartel in Mexico. Gus poisons Don Eladio and his men with tainted tequila.",
+   "kw": [
+    "mexico",
+    "tequila",
+    "poison",
+    "don eladio",
+    "salud"
+   ]
+  },
+  {
+   "ch": 411,
+   "title": "Crawl Space",
+   "text": "Skyler gave Walt's money to Ted, who is hurt fleeing her people. Gus tells Walt he will kill his family.",
+   "kw": [
+    "crawl space",
+    "money gone",
+    "ted hurt",
+    "threat"
+   ]
+  },
+  {
+   "ch": 412,
+   "title": "End Times",
+   "text": "Brock is seriously ill and Jesse thinks Gus poisoned him with the ricin cigarette. Walt plants a bomb on Gus's car, but Gus senses it.",
+   "kw": [
+    "brock poisoned",
+    "ricin",
+    "car bomb",
+    "hospital"
+   ]
+  },
+  {
+   "ch": 413,
+   "title": "Face Off",
+   "text": "Walt and Hector set a bell-triggered bomb at the nursing home that kills Gus and Tyrus. They burn the lab. A plant on Walt's patio shows he poisoned Brock himself.",
+   "kw": [
+    "face off",
+    "bell",
+    "nursing home",
+    "gus dies",
+    "lily of the valley"
+   ]
+  },
+  {
+   "ch": 501,
+   "title": "Live Free or Die",
+   "text": "Walt, Jesse and Mike wipe Gus's laptop evidence at the police station with a huge magnet.",
+   "kw": [
+    "magnet",
+    "laptop",
+    "evidence room"
+   ]
+  },
+  {
+   "ch": 502,
+   "title": "Madrigal",
+   "text": "Mike is questioned about Gus. Lydia, a nervous Madrigal executive, tries to have Mike's men killed.",
+   "kw": [
+    "madrigal",
+    "lydia",
+    "mike",
+    "list"
+   ]
+  },
+  {
+   "ch": 503,
+   "title": "Hazard Pay",
+   "text": "Walt, Jesse and Mike restart the business, cooking in houses tented by the pest control firm Vamonos Pest, where Todd works.",
+   "kw": [
+    "vamonos pest",
+    "tents",
+    "todd",
+    "new business"
+   ]
+  },
+  {
+   "ch": 505,
+   "title": "Dead Freight",
+   "text": "They rob a train of methylamine. Todd shoots a boy who saw them.",
+   "kw": [
+    "train",
+    "heist",
+    "drew sharp",
+    "boy",
+    "spider"
+   ]
+  },
+  {
+   "ch": 507,
+   "title": "Say My Name",
+   "text": "Walt kills Mike by the river after Mike won't give up his men's names.",
+   "kw": [
+    "say my name",
+    "mike dies",
+    "river",
+    "names"
+   ]
+  },
+  {
+   "ch": 508,
+   "title": "Gliding Over All",
+   "text": "Todd's uncle Jack's crew kill Mike's men in prisons within two minutes. Walt quits. Hank finds a book inscribed to 'W.W.'",
+   "kw": [
+    "prison killings",
+    "leaves of grass",
+    "w.w.",
+    "quits"
+   ]
+  },
+  {
+   "ch": 509,
+   "title": "Blood Money",
+   "text": "Hank confronts Walt in his garage.",
+   "kw": [
+    "garage",
+    "confrontation",
+    "blood money"
+   ]
+  },
+  {
+   "ch": 511,
+   "title": "Confessions",
+   "text": "Walt records a fake confession blaming Hank. Jesse works out that Walt poisoned Brock.",
+   "kw": [
+    "fake confession",
+    "dvd",
+    "brock",
+    "gas can"
+   ]
+  },
+  {
+   "ch": 513,
+   "title": "To'hajiilee",
+   "text": "Hank and Gomez arrest Walt at his buried money. Jack's crew arrive and a shootout starts.",
+   "kw": [
+    "to'hajiilee",
+    "arrest",
+    "buried money",
+    "shootout"
+   ]
+  },
+  {
+   "ch": 514,
+   "title": "Ozymandias",
+   "text": "Jack kills Hank; Gomez is dead too. Jesse is taken prisoner to cook. Walt's family turns on him and he leaves town with the help of Ed, the disappearer.",
+   "kw": [
+    "ozymandias",
+    "hank dies",
+    "phone call",
+    "holly",
+    "disappear"
+   ]
+  },
+  {
+   "ch": 515,
+   "title": "Granite State",
+   "text": "Walt hides in New Hampshire. Todd shoots Andrea to keep Jesse in line.",
+   "kw": [
+    "new hampshire",
+    "cabin",
+    "andrea killed",
+    "escape attempt"
+   ]
+  },
+  {
+   "ch": 516,
+   "title": "Felina",
+   "text": "Walt returns, poisons Lydia with ricin, kills Jack's crew with a hidden machine gun and frees Jesse. Walt dies in the lab.",
+   "kw": [
+    "felina",
+    "machine gun",
+    "ricin",
+    "jesse free",
+    "end"
+   ]
+  }
+ ],
+ "chars": [
+  {
+   "id": "walt",
+   "n": "Walter White",
+   "r": "Chemistry teacher",
+   "a": 0,
+   "x": 60,
+   "y": 40,
+   "f": [
+    [
+     0,
+     "High school chemistry teacher with terminal lung cancer."
+    ],
+    [
+     0,
+     "Cooks meth to leave money for his family."
+    ],
+    [
+     4,
+     "Goes by 'Heisenberg'."
+    ],
+    [
+     13,
+     "Lets Jane die."
+    ],
+    [
+     22,
+     "Has Jesse kill Gale."
+    ],
+    [
+     29,
+     "Kills Gus with Hector's help; poisoned Brock himself."
+    ],
+    [
+     34,
+     "Kills Mike."
+    ],
+    [
+     39,
+     "Flees with the help of a disappearer."
+    ],
+    [
+     41,
+     "Comes back for one last reckoning and dies in a meth lab."
+    ]
+   ],
+   "main": true,
+   "dead": 41,
+   "rs": [
+    [
+     4,
+     "Heisenberg"
+    ]
+   ]
+  },
+  {
+   "id": "jesse",
+   "n": "Jesse Pinkman",
+   "r": "Walt's partner",
+   "a": 0,
+   "x": 200,
+   "y": 40,
+   "f": [
+    [
+     0,
+     "Walt's former student, a small-time dealer."
+    ],
+    [
+     8,
+     "Puts friends on the street to sell."
+    ],
+    [
+     12,
+     "Uses heroin with Jane."
+    ],
+    [
+     22,
+     "Shoots Gale."
+    ],
+    [
+     28,
+     "Thinks Gus poisoned Brock."
+    ],
+    [
+     37,
+     "Learns Walt poisoned Brock."
+    ],
+    [
+     39,
+     "Held captive by Jack's crew to cook."
+    ],
+    [
+     41,
+     "Freed by Walt and drives away."
+    ]
+   ],
+   "main": true
+  },
+  {
+   "id": "skyler",
+   "n": "Skyler White",
+   "r": "Walt's wife",
+   "a": 0,
+   "x": 340,
+   "y": 40,
+   "f": [
+    [
+     0,
+     "Walt's wife, pregnant."
+    ],
+    [
+     14,
+     "Catches Walt's lies and separates."
+    ],
+    [
+     16,
+     "Has an affair with Ted."
+    ],
+    [
+     20,
+     "Launders the money through a car wash."
+    ],
+    [
+     27,
+     "Gave Walt's money to Ted."
+    ],
+    [
+     39,
+     "Turns on Walt after Hank's death."
+    ]
+   ]
+  },
+  {
+   "id": "hank",
+   "n": "Hank Schrader",
+   "r": "DEA agent",
+   "a": 0,
+   "x": 480,
+   "y": 40,
+   "f": [
+    [
+     0,
+     "Walt's brother-in-law, a DEA agent."
+    ],
+    [
+     6,
+     "Shoots Tuco dead."
+    ],
+    [
+     18,
+     "Survives the cousins' ambush."
+    ],
+    [
+     24,
+     "Studies Gale's notebook."
+    ],
+    [
+     35,
+     "Realises Walt is Heisenberg."
+    ],
+    [
+     38,
+     "Arrests Walt."
+    ],
+    [
+     39,
+     "Killed by Jack."
+    ]
+   ],
+   "dead": 39
+  },
+  {
+   "id": "marie",
+   "n": "Marie Schrader",
+   "r": "Skyler's sister",
+   "a": 0,
+   "x": 620,
+   "y": 40,
+   "f": [
+    [
+     0,
+     "Skyler's sister, married to Hank."
+    ],
+    [
+     18,
+     "Nurses Hank through his recovery."
+    ]
+   ]
+  },
+  {
+   "id": "flynn",
+   "n": "Walter Jr.",
+   "r": "Walt's son",
+   "a": 0,
+   "x": 760,
+   "y": 40,
+   "f": [
+    [
+     0,
+     "Walt and Skyler's teenage son."
+    ],
+    [
+     39,
+     "Learns the truth about his father."
+    ]
+   ]
+  },
+  {
+   "id": "gomez",
+   "n": "Steve Gomez",
+   "r": "Hank's partner",
+   "a": 0,
+   "x": 900,
+   "y": 40,
+   "f": [
+    [
+     0,
+     "Hank's DEA partner."
+    ],
+    [
+     39,
+     "Killed in the shootout."
+    ]
+   ],
+   "dead": 39
+  },
+  {
+   "id": "krazy8",
+   "n": "Krazy-8",
+   "r": "Distributor",
+   "a": 0,
+   "x": 60,
+   "y": 240,
+   "f": [
+    [
+     0,
+     "Jesse's distributor."
+    ],
+    [
+     2,
+     "Killed by Walt in Jesse's basement."
+    ]
+   ],
+   "dead": 2
+  },
+  {
+   "id": "emilio",
+   "n": "Emilio",
+   "r": "Krazy-8's partner",
+   "a": 0,
+   "x": 200,
+   "y": 240,
+   "f": [
+    [
+     0,
+     "Gassed by Walt in the RV."
+    ],
+    [
+     1,
+     "His body is dissolved in acid."
+    ]
+   ],
+   "dead": 0
+  },
+  {
+   "id": "gretchen",
+   "n": "Gretchen & Elliott",
+   "r": "Gray Matter founders",
+   "a": 3,
+   "x": 340,
+   "y": 240,
+   "f": [
+    [
+     3,
+     "Walt's old friends who got rich from the company he left."
+    ],
+    [
+     3,
+     "Offer to pay for his treatment; he refuses."
+    ],
+    [
+     41,
+     "Walt forces them to pass his money to his son."
+    ]
+   ],
+   "grp": true
+  },
+  {
+   "id": "tuco",
+   "n": "Tuco Salamanca",
+   "r": "Violent distributor",
+   "a": 4,
+   "x": 480,
+   "y": 240,
+   "f": [
+    [
+     4,
+     "Buys Walt and Jesse's meth after the explosion."
+    ],
+    [
+     5,
+     "Beats No-Doze to death."
+    ],
+    [
+     6,
+     "Kidnaps Walt and Jesse; shot by Hank."
+    ]
+   ],
+   "dead": 6
+  },
+  {
+   "id": "hector",
+   "n": "Hector Salamanca",
+   "r": "Tuco's uncle",
+   "a": 6,
+   "x": 620,
+   "y": 240,
+   "f": [
+    [
+     6,
+     "Tuco's uncle; can't speak, talks with a bell."
+    ],
+    [
+     25,
+     "Laughed when the cartel killed Gus's partner."
+    ],
+    [
+     29,
+     "Sets off the bomb that kills Gus."
+    ]
+   ],
+   "dead": 29
+  },
+  {
+   "id": "badger",
+   "n": "Badger",
+   "r": "Jesse's friend",
+   "a": 8,
+   "x": 760,
+   "y": 240,
+   "f": [
+    [
+     8,
+     "Sells for Jesse."
+    ],
+    [
+     10,
+     "Caught in a sting; Saul gets him out."
+    ]
+   ]
+  },
+  {
+   "id": "skinny",
+   "n": "Skinny Pete",
+   "r": "Jesse's friend",
+   "a": 8,
+   "x": 900,
+   "y": 240,
+   "f": [
+    [
+     8,
+     "Sells for Jesse."
+    ],
+    [
+     41,
+     "Helps Walt scare Gretchen and Elliott."
+    ]
+   ]
+  },
+  {
+   "id": "combo",
+   "n": "Combo",
+   "r": "Jesse's friend",
+   "a": 8,
+   "x": 60,
+   "y": 440,
+   "f": [
+    [
+     8,
+     "Sells for Jesse."
+    ],
+    [
+     12,
+     "Shot by a rival gang's kid dealer."
+    ]
+   ],
+   "dead": 12
+  },
+  {
+   "id": "saul",
+   "n": "Saul Goodman",
+   "r": "Criminal lawyer",
+   "a": 10,
+   "x": 200,
+   "y": 440,
+   "f": [
+    [
+     10,
+     "Shady lawyer with TV ads."
+    ],
+    [
+     12,
+     "Connects Walt to Gus."
+    ],
+    [
+     39,
+     "Knows the man who makes people disappear."
+    ]
+   ]
+  },
+  {
+   "id": "jane",
+   "n": "Jane Margolis",
+   "r": "Jesse's landlord",
+   "a": 10,
+   "x": 340,
+   "y": 440,
+   "f": [
+    [
+     10,
+     "Jesse's landlord and girlfriend."
+    ],
+    [
+     12,
+     "Uses heroin with Jesse."
+    ],
+    [
+     13,
+     "Blackmails Walt; dies choking."
+    ]
+   ],
+   "dead": 13
+  },
+  {
+   "id": "donald",
+   "n": "Donald Margolis",
+   "r": "Jane's father",
+   "a": 10,
+   "x": 480,
+   "y": 440,
+   "f": [
+    [
+     10,
+     "Jane's father, an air traffic controller."
+    ],
+    [
+     14,
+     "His mistake causes the mid-air collision."
+    ]
+   ]
+  },
+  {
+   "id": "gus",
+   "n": "Gus Fring",
+   "r": "Distributor",
+   "a": 12,
+   "x": 620,
+   "y": 440,
+   "f": [
+    [
+     12,
+     "Owns Los Pollos Hermanos; a careful drug distributor."
+    ],
+    [
+     17,
+     "Builds the superlab for Walt."
+    ],
+    [
+     23,
+     "Kills Victor with a box cutter."
+    ],
+    [
+     25,
+     "The cartel killed his partner Max."
+    ],
+    [
+     26,
+     "Poisons the cartel bosses."
+    ],
+    [
+     29,
+     "Killed by Hector's bomb."
+    ]
+   ],
+   "dead": 29
+  },
+  {
+   "id": "mike",
+   "n": "Mike Ehrmantraut",
+   "r": "Gus's fixer",
+   "a": 14,
+   "x": 760,
+   "y": 440,
+   "f": [
+    [
+     14,
+     "Ex-cop who cleans up for Saul and Gus."
+    ],
+    [
+     21,
+     "Tells Walt about 'half measures'."
+    ],
+    [
+     25,
+     "Takes Jesse along on pickups."
+    ],
+    [
+     32,
+     "Partner in the new business."
+    ],
+    [
+     34,
+     "Killed by Walt."
+    ]
+   ],
+   "dead": 34
+  },
+  {
+   "id": "cousins",
+   "n": "The Cousins",
+   "r": "Cartel hitmen",
+   "a": 15,
+   "x": 900,
+   "y": 440,
+   "f": [
+    [
+     15,
+     "Hector's nephews, silent cartel killers."
+    ],
+    [
+     18,
+     "Ambush Hank; one is killed."
+    ],
+    [
+     19,
+     "The other dies in hospital."
+    ]
+   ],
+   "grp": true,
+   "dead": 19
+  },
+  {
+   "id": "ted",
+   "n": "Ted Beneke",
+   "r": "Skyler's boss",
+   "a": 16,
+   "x": 60,
+   "y": 640,
+   "f": [
+    [
+     16,
+     "Skyler's boss; they have an affair."
+    ],
+    [
+     27,
+     "Hurt fleeing the men Skyler sent with the money."
+    ]
+   ]
+  },
+  {
+   "id": "gale",
+   "n": "Gale Boetticher",
+   "r": "Lab assistant",
+   "a": 17,
+   "x": 200,
+   "y": 640,
+   "f": [
+    [
+     17,
+     "Walt's lab assistant, a gentle chemist."
+    ],
+    [
+     22,
+     "Shot by Jesse."
+    ],
+    [
+     24,
+     "His notebook leads Hank to 'W.W.'."
+    ]
+   ],
+   "dead": 22
+  },
+  {
+   "id": "andrea",
+   "n": "Andrea Cantillo",
+   "r": "Jesse's girlfriend",
+   "a": 20,
+   "x": 340,
+   "y": 640,
+   "f": [
+    [
+     20,
+     "Mother of Brock; meets Jesse in a support group."
+    ],
+    [
+     40,
+     "Killed by Todd."
+    ]
+   ],
+   "dead": 40
+  },
+  {
+   "id": "brock",
+   "n": "Brock",
+   "r": "Andrea's son",
+   "a": 20,
+   "x": 480,
+   "y": 640,
+   "f": [
+    [
+     20,
+     "Andrea's young son."
+    ],
+    [
+     28,
+     "Falls ill from poisoning."
+    ],
+    [
+     29,
+     "Walt poisoned him, not Gus."
+    ]
+   ]
+  },
+  {
+   "id": "victor",
+   "n": "Victor",
+   "r": "Gus's man",
+   "a": 17,
+   "x": 620,
+   "y": 640,
+   "f": [
+    [
+     17,
+     "Gus's watchful henchman."
+    ],
+    [
+     23,
+     "Killed by Gus with a box cutter."
+    ]
+   ],
+   "dead": 23
+  },
+  {
+   "id": "tyrus",
+   "n": "Tyrus",
+   "r": "Gus's man",
+   "a": 24,
+   "x": 760,
+   "y": 640,
+   "f": [
+    [
+     24,
+     "Gus's bodyguard."
+    ],
+    [
+     29,
+     "Killed with Gus."
+    ]
+   ],
+   "dead": 29
+  },
+  {
+   "id": "eladio",
+   "n": "Don Eladio",
+   "r": "Cartel boss",
+   "a": 25,
+   "x": 900,
+   "y": 640,
+   "f": [
+    [
+     25,
+     "Head of the cartel."
+    ],
+    [
+     26,
+     "Poisoned by Gus."
+    ]
+   ],
+   "dead": 26
+  },
+  {
+   "id": "lydia",
+   "n": "Lydia Rodarte-Quayle",
+   "r": "Madrigal executive",
+   "a": 31,
+   "x": 60,
+   "y": 840,
+   "f": [
+    [
+     31,
+     "Nervous executive at Madrigal."
+    ],
+    [
+     32,
+     "Supplies methylamine."
+    ],
+    [
+     41,
+     "Poisoned by Walt with ricin."
+    ]
+   ],
+   "dead": 41
+  },
+  {
+   "id": "todd",
+   "n": "Todd Alquist",
+   "r": "Pest control worker",
+   "a": 32,
+   "x": 200,
+   "y": 840,
+   "f": [
+    [
+     32,
+     "Works at Vamonos Pest."
+    ],
+    [
+     33,
+     "Shoots a boy after the train heist."
+    ],
+    [
+     40,
+     "Kills Andrea."
+    ],
+    [
+     41,
+     "Strangled by Jesse."
+    ]
+   ],
+   "dead": 41
+  },
+  {
+   "id": "jack",
+   "n": "Uncle Jack",
+   "r": "Neo-Nazi gang leader",
+   "a": 35,
+   "x": 340,
+   "y": 840,
+   "f": [
+    [
+     35,
+     "Todd's uncle; his crew kill Mike's men in prison."
+    ],
+    [
+     39,
+     "Kills Hank and takes Walt's money."
+    ],
+    [
+     41,
+     "Shot by Walt."
+    ]
+   ],
+   "dead": 41
+  },
+  {
+   "id": "ed",
+   "n": "Ed",
+   "r": "The disappearer",
+   "a": 39,
+   "x": 480,
+   "y": 840,
+   "f": [
+    [
+     39,
+     "Gives people new identities, for a price."
+    ],
+    [
+     40,
+     "Hides Walt in New Hampshire."
+    ]
+   ]
+  },
+  {
+   "id": "rv",
+   "n": "The RV",
+   "r": "Mobile meth lab",
+   "a": 0,
+   "x": 620,
+   "y": 840,
+   "f": [
+    [
+     0,
+     "Walt and Jesse's first lab."
+    ],
+    [
+     17,
+     "Crushed at a junkyard."
+    ]
+   ],
+   "note": true
+  }
+ ],
+ "links": [
+  [
+   "walt",
+   "jesse",
+   0
+  ],
+  [
+   "walt",
+   "skyler",
+   0
+  ],
+  [
+   "walt",
+   "hank",
+   0
+  ],
+  [
+   "walt",
+   "flynn",
+   0
+  ],
+  [
+   "skyler",
+   "marie",
+   0
+  ],
+  [
+   "hank",
+   "gomez",
+   0
+  ],
+  [
+   "jesse",
+   "krazy8",
+   0
+  ],
+  [
+   "krazy8",
+   "emilio",
+   0
+  ],
+  [
+   "walt",
+   "emilio",
+   0
+  ],
+  [
+   "walt",
+   "rv",
+   0
+  ],
+  [
+   "jesse",
+   "rv",
+   0
+  ],
+  [
+   "walt",
+   "krazy8",
+   2
+  ],
+  [
+   "walt",
+   "gretchen",
+   3
+  ],
+  [
+   "walt",
+   "tuco",
+   4
+  ],
+  [
+   "jesse",
+   "tuco",
+   4
+  ],
+  [
+   "tuco",
+   "hector",
+   6
+  ],
+  [
+   "hank",
+   "tuco",
+   6
+  ],
+  [
+   "jesse",
+   "badger",
+   8
+  ],
+  [
+   "jesse",
+   "skinny",
+   8
+  ],
+  [
+   "jesse",
+   "combo",
+   8
+  ],
+  [
+   "badger",
+   "saul",
+   10
+  ],
+  [
+   "walt",
+   "saul",
+   10
+  ],
+  [
+   "jesse",
+   "jane",
+   10
+  ],
+  [
+   "jane",
+   "donald",
+   10
+  ],
+  [
+   "saul",
+   "gus",
+   12
+  ],
+  [
+   "walt",
+   "gus",
+   12
+  ],
+  [
+   "walt",
+   "jane",
+   13
+  ],
+  [
+   "walt",
+   "donald",
+   13
+  ],
+  [
+   "saul",
+   "mike",
+   14
+  ],
+  [
+   "mike",
+   "gus",
+   14
+  ],
+  [
+   "cousins",
+   "hector",
+   15
+  ],
+  [
+   "cousins",
+   "walt",
+   15
+  ],
+  [
+   "skyler",
+   "ted",
+   16
+  ],
+  [
+   "walt",
+   "gale",
+   17
+  ],
+  [
+   "gus",
+   "gale",
+   17
+  ],
+  [
+   "gus",
+   "victor",
+   17
+  ],
+  [
+   "cousins",
+   "hank",
+   18
+  ],
+  [
+   "skyler",
+   "saul",
+   20
+  ],
+  [
+   "jesse",
+   "andrea",
+   20
+  ],
+  [
+   "andrea",
+   "brock",
+   20
+  ],
+  [
+   "jesse",
+   "gale",
+   22
+  ],
+  [
+   "gus",
+   "tyrus",
+   24
+  ],
+  [
+   "hank",
+   "gale",
+   24
+  ],
+  [
+   "jesse",
+   "mike",
+   25
+  ],
+  [
+   "gus",
+   "eladio",
+   25
+  ],
+  [
+   "gus",
+   "hector",
+   25
+  ],
+  [
+   "hector",
+   "eladio",
+   25
+  ],
+  [
+   "walt",
+   "brock",
+   29
+  ],
+  [
+   "mike",
+   "lydia",
+   31
+  ],
+  [
+   "walt",
+   "lydia",
+   32
+  ],
+  [
+   "walt",
+   "todd",
+   32
+  ],
+  [
+   "todd",
+   "jack",
+   35
+  ],
+  [
+   "lydia",
+   "jack",
+   35
+  ],
+  [
+   "walt",
+   "jack",
+   38
+  ],
+  [
+   "hank",
+   "jack",
+   39
+  ],
+  [
+   "jesse",
+   "todd",
+   39
+  ],
+  [
+   "saul",
+   "ed",
+   39
+  ],
+  [
+   "walt",
+   "ed",
+   39
+  ],
+  [
+   "todd",
+   "andrea",
+   40
+  ]
+ ],
+ "couples": [
+  [
+   "walt",
+   "skyler",
+   0
+  ],
+  [
+   "hank",
+   "marie",
+   0
+  ],
+  [
+   "jesse",
+   "jane",
+   10
+  ],
+  [
+   "jesse",
+   "andrea",
+   20
+  ]
+ ]
+}

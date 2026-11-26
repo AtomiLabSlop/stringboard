@@ -184,6 +184,21 @@
       "background": "assets/bg/expedition33.webp"
     },
     {
+      "id": "breakingbad",
+      "type": "series",
+      "title": "Breaking Bad",
+      "theme": {
+        "colors": [
+          "#1d2a14",
+          "#4c6b2a",
+          "#c9b44a",
+          "#e8d98a"
+        ],
+        "motif": "dunes"
+      },
+      "background": "assets/bg/breakingbad.webp"
+    },
+    {
       "id": "dark",
       "type": "series",
       "title": "Dark",
@@ -344,6 +359,21 @@
       "background": "assets/bg/andor.webp"
     },
     {
+      "id": "bladerunner",
+      "type": "movie",
+      "title": "Blade Runner (both films)",
+      "theme": {
+        "colors": [
+          "#0c0f1a",
+          "#3a1a3a",
+          "#c2410c",
+          "#f59e0b"
+        ],
+        "motif": "city"
+      },
+      "background": "assets/bg/bladerunner.webp"
+    },
+    {
       "id": "memento",
       "type": "movie",
       "title": "Memento",
@@ -454,6 +484,21 @@
         "motif": "dunes"
       },
       "background": "assets/bg/dune.webp"
+    },
+    {
+      "id": "harrypotter",
+      "type": "book",
+      "title": "Harry Potter (all seven books)",
+      "theme": {
+        "colors": [
+          "#120d1a",
+          "#2c1f3d",
+          "#6b4a1f",
+          "#e0b04a"
+        ],
+        "motif": "stars"
+      },
+      "background": "assets/bg/harrypotter.webp"
     },
     {
       "id": "asoiaf",

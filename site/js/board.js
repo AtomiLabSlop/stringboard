@@ -209,7 +209,7 @@ function renderStrings() {
 function renderTimeline() {
   const tl = $('#tl'); tl.max = st.now; tl.value = view;
   const s = S.steps[view];
-  $('#capT').textContent = (view === st.now ? 'Now · ' : '') + 'Chapter ' + s.ch + ' · ' + s.title + '.';
+  $('#capT').textContent = (view === st.now ? 'Now · ' : '') + SB.posLabel(S, s.ch) + ' · ' + s.title + '.';
   $('#capD').textContent = s.text;
   $('#tlPrev').disabled = view <= 0; $('#tlNext').disabled = view >= st.now;
 }
@@ -678,13 +678,17 @@ function placeNew(ids, v) {
 
 /* ---------- timeline + progress update ---------- */
 $('#tl').addEventListener('sl-input', e => { view = +e.target.value; renderTimeline(); renderCards(); flashCap(); if (openCard) openCardPanel(openCard); });
-$('#updBtn').addEventListener('click', () => { const ty = SB.typeOf(S), U = SB.UNITS[ty]; $('#uCh').label = U.label; $('#uCh').placeholder = U.placeholder; $('#uProg').hidden = true; $('#uCh').value = SB.fmtPos(ty, S.steps[st.now].ch); $('#uTxt').value = ''; $('#uMsg').textContent = ''; $('#uMsg').className = 'status'; $('#upd').show(); });
+$('#updBtn').addEventListener('click', () => {
+  const ty = SB.typeOf(S), U = SB.unitsOf(S), cur = S.steps[st.now].ch; $('#uCh').label = U.label; $('#uCh').placeholder = U.placeholder; $('#uProg').hidden = true;
+  $('#uPart').hidden = !SB.isSaga(S);
+  if (SB.isSaga(S)) { const up = $('#uPart'); up.label = U.partLabel; up.innerHTML = ''; S.parts.forEach((p, i) => { const o = document.createElement('sl-option'); o.value = String(i + 1); o.textContent = p.n; up.append(o); }); up.value = String(Math.floor(cur / 1000)); }
+  $('#uCh').value = SB.isSaga(S) ? String(cur % 1000) : SB.fmtPos(ty, cur); $('#uTxt').value = ''; $('#uMsg').textContent = ''; $('#uMsg').className = 'status'; $('#upd').show(); });
 $('#uCancel').addEventListener('click', () => $('#upd').hide());
 $('#uGo').addEventListener('click', async () => {
   if ($('#uGo').loading) return;
   const msg = $('#uMsg'), v = String($('#uCh').value ?? '').trim();
-  const ty = SB.typeOf(S), pos = SB.parsePos(ty, v);
-  if (!pos) { msg.textContent = 'Enter your position, e.g. ' + SB.UNITS[ty].placeholder.replace(/^.*e\.g\. /, '') + '.'; msg.className = 'status no'; return; }
+  const ty = SB.typeOf(S), pos = SB.posOf(S, v, +$('#uPart').value);
+  if (!pos) { msg.textContent = 'Enter your position, e.g. ' + SB.unitsOf(S).placeholder.replace(/^.*e\.g\. /, '') + '.'; msg.className = 'status no'; return; }
   const ch = Math.min(pos, SB.maxChapter(S)), cur = S.steps[st.now].ch;
   const base = ch > cur ? SB.basePos(S, ch) : st.now;
   let m = -1;
@@ -939,7 +943,7 @@ document.addEventListener('keydown', e => {
   if (st.lay !== 1) { // smarter default: arrange every card you haven't placed yourself
     requestAnimationFrame(() => { const free = visIds(st.now).filter(id => !st.pos[id]);
       if (free.length) Object.assign(st.pos, arrange(free, { spread: 900 }));
-      st.lay = 1; renderCards(); hist.last = snap(st); save(); });
+      st.lay = 1; renderCards(); hist.last = snap(st); save(); requestAnimationFrame(() => $('#zFit').click()); });
   }
   save();
 })();

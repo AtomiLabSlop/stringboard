@@ -116,6 +116,26 @@ window.SB = (() => {
     }
     return /^\d{1,4}$/.test(v) && +v >= 1 ? +v : 0;
   }
+  /* Sagas (several films or books as one story): data.parts = [{ n, short }], data.unit = 'Minute' | 'Chapter'.
+     A position is part * 1000 + minute/chapter, so the whole saga is one timeline. */
+  const isSaga = S => !!(S && Array.isArray(S.parts));
+  function unitsOf(S) {
+    if (!isSaga(S)) return UNITS[typeOf(S)];
+    const min = S.unit === 'Minute';
+    return { label: min ? 'Minutes watched' : 'Chapter', placeholder: min ? 'e.g. 45' : 'e.g. 12', upTo: true, partLabel: S.partLabel || (min ? 'Film' : 'Book'),
+      help: min ? 'Pick the film you are watching and how many minutes in you are. The board shows everything up to that point, including the earlier films.'
+                : 'Pick the book you are reading and the chapter you have finished. The board shows everything up to the end of that chapter, including the earlier books.' };
+  }
+  function posOf(S, str, part) {
+    if (!isSaga(S)) return parsePos(typeOf(S), str);
+    const v = String(str || '').trim();
+    return part >= 1 && part <= S.parts.length && /^\d{1,3}$/.test(v) && +v >= 1 ? part * 1000 + +v : 0;
+  }
+  /* how a step's position reads in the chapter box: "Chapter 3", "S2E5", "Blade Runner 2049", "Goblet of Fire · Ch. 12" */
+  function posLabel(S, ch) {
+    if (isSaga(S)) { const p = S.parts[Math.floor(ch / 1000) - 1]; return p ? p.short + (S.unit === 'Chapter' ? ' · Ch. ' + (ch % 1000) : '') : ''; }
+    const ty = typeOf(S); return ty === 'series' ? fmtPos('series', ch) : ty === 'game' ? 'Chapter ' + ch : ty === 'book' ? 'Page ' + ch : 'Minute ' + ch;
+  }
   function fmtPos(type, n) { return type === 'series' ? `S${Math.floor(n / 100)}E${n % 100}` : String(n); }
   /* index of the step the board should open at for position n */
   function basePos(S, n) { return UNITS[typeOf(S)].upTo ? chapterEnd(S, n) : chapterStart(S, n); }
@@ -123,5 +143,5 @@ window.SB = (() => {
   const KEY = g => 'stringboard:' + g + ':v1';
   function getState(g) { try { return JSON.parse(localStorage.getItem(KEY(g))) || {}; } catch (e) { return {}; } }
   function setState(g, st) { try { localStorage.setItem(KEY(g), JSON.stringify(st)); return true; } catch (e) { return false; } }
-  return { norm, load, applyBackground, UNITS, typeOf, parsePos, fmtPos, basePos, catalog, loadImages, smartMatch, modelCached, fmtMB, maxChapter, chapterStart, chapterEnd, match, getState, setState };
+  return { norm, load, applyBackground, UNITS, typeOf, parsePos, fmtPos, isSaga, unitsOf, posOf, posLabel, basePos, catalog, loadImages, smartMatch, modelCached, fmtMB, maxChapter, chapterStart, chapterEnd, match, getState, setState };
 })();

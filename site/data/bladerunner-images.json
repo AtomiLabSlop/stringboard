@@ -1,0 +1,93 @@
+{
+  "_help": "Default card images for Blade Runner (both films). Put a direct https link to an image you have the right to use in 'url' (png, jpg, webp or svg). Leave it empty to show the silhouette. 'credit' is optional and is shown in the card panel. The ids match the 'chars' in bladerunner.json.",
+  "images": {
+    "deckard": {
+      "url": "",
+      "credit": ""
+    },
+    "rachael": {
+      "url": "",
+      "credit": ""
+    },
+    "roy": {
+      "url": "",
+      "credit": ""
+    },
+    "leon": {
+      "url": "",
+      "credit": ""
+    },
+    "zhora": {
+      "url": "",
+      "credit": ""
+    },
+    "pris": {
+      "url": "",
+      "credit": ""
+    },
+    "tyrell": {
+      "url": "",
+      "credit": ""
+    },
+    "sebastian": {
+      "url": "",
+      "credit": ""
+    },
+    "gaff": {
+      "url": "",
+      "credit": ""
+    },
+    "bryant": {
+      "url": "",
+      "credit": ""
+    },
+    "holden": {
+      "url": "",
+      "credit": ""
+    },
+    "chew": {
+      "url": "",
+      "credit": ""
+    },
+    "k": {
+      "url": "",
+      "credit": ""
+    },
+    "joi": {
+      "url": "",
+      "credit": ""
+    },
+    "joshi": {
+      "url": "",
+      "credit": ""
+    },
+    "sapper": {
+      "url": "",
+      "credit": ""
+    },
+    "wallace": {
+      "url": "",
+      "credit": ""
+    },
+    "luv": {
+      "url": "",
+      "credit": ""
+    },
+    "ana": {
+      "url": "",
+      "credit": ""
+    },
+    "mariette": {
+      "url": "",
+      "credit": ""
+    },
+    "freysa": {
+      "url": "",
+      "credit": ""
+    },
+    "horse": {
+      "url": "",
+      "credit": ""
+    }
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "_help": "Default card images for Breaking Bad. Put a direct https link to an image you have the right to use in 'url' (png, jpg, webp or svg). Leave it empty to show the silhouette. 'credit' is optional and is shown in the card panel. The ids match the 'chars' in breakingbad.json.",
+  "images": {
+    "walt": {
+      "url": "",
+      "credit": ""
+    },
+    "jesse": {
+      "url": "",
+      "credit": ""
+    },
+    "skyler": {
+      "url": "",
+      "credit": ""
+    },
+    "hank": {
+      "url": "",
+      "credit": ""
+    },
+    "marie": {
+      "url": "",
+      "credit": ""
+    },
+    "flynn": {
+      "url": "",
+      "credit": ""
+    },
+    "gomez": {
+      "url": "",
+      "credit": ""
+    },
+    "krazy8": {
+      "url": "",
+      "credit": ""
+    },
+    "emilio": {
+      "url": "",
+      "credit": ""
+    },
+    "gretchen": {
+      "url": "",
+      "credit": ""
+    },
+    "tuco": {
+      "url": "",
+      "credit": ""
+    },
+    "hector": {
+      "url": "",
+      "credit": ""
+    },
+    "badger": {
+      "url": "",
+      "credit": ""
+    },
+    "skinny": {
+      "url": "",
+      "credit": ""
+    },
+    "combo": {
+      "url": "",
+      "credit": ""
+    },
+    "saul": {
+      "url": "",
+      "credit": ""
+    },
+    "jane": {
+      "url": "",
+      "credit": ""
+    },
+    "donald": {
+      "url": "",
+      "credit": ""
+    },
+    "gus": {
+      "url": "",
+      "credit": ""
+    },
+    "mike": {
+      "url": "",
+      "credit": ""
+    },
+    "cousins": {
+      "url": "",
+      "credit": ""
+    },
+    "ted": {
+      "url": "",
+      "credit": ""
+    },
+    "gale": {
+      "url": "",
+      "credit": ""
+    },
+    "andrea": {
+      "url": "",
+      "credit": ""
+    },
+    "brock": {
+      "url": "",
+      "credit": ""
+    },
+    "victor": {
+      "url": "",
+      "credit": ""
+    },
+    "tyrus": {
+      "url": "",
+      "credit": ""
+    },
+    "eladio": {
+      "url": "",
+      "credit": ""
+    },
+    "lydia": {
+      "url": "",
+      "credit": ""
+    },
+    "todd": {
+      "url": "",
+      "credit": ""
+    },
+    "jack": {
+      "url": "",
+      "credit": ""
+    },
+    "ed": {
+      "url": "",
+      "credit": ""
+    },
+    "rv": {
+      "url": "",
+      "credit": ""
+    }
+  }
+}

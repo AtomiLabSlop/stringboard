@@ -1,0 +1,1728 @@
+{
+ "id": "harrypotter",
+ "title": "Harry Potter (all seven books)",
+ "type": "book",
+ "background": "assets/bg/harrypotter.webp",
+ "unit": "Chapter",
+ "partLabel": "Book",
+ "parts": [
+  {
+   "n": "1. Philosopher's Stone",
+   "short": "Philosopher's Stone"
+  },
+  {
+   "n": "2. Chamber of Secrets",
+   "short": "Chamber of Secrets"
+  },
+  {
+   "n": "3. Prisoner of Azkaban",
+   "short": "Prisoner of Azkaban"
+  },
+  {
+   "n": "4. Goblet of Fire",
+   "short": "Goblet of Fire"
+  },
+  {
+   "n": "5. Order of the Phoenix",
+   "short": "Order of the Phoenix"
+  },
+  {
+   "n": "6. Half-Blood Prince",
+   "short": "Half-Blood Prince"
+  },
+  {
+   "n": "7. Deathly Hallows",
+   "short": "Deathly Hallows"
+  }
+ ],
+ "matcher": {
+  "model": "Xenova/all-MiniLM-L6-v2",
+  "sizeMB": 23,
+  "language": "English"
+ },
+ "steps": [
+  {
+   "ch": 1001,
+   "title": "The Boy Who Lived",
+   "text": "Baby Harry survives Voldemort's attack and is left with his aunt and uncle, the Dursleys.",
+   "kw": [
+    "dursleys",
+    "privet drive",
+    "scar",
+    "baby",
+    "doorstep"
+   ]
+  },
+  {
+   "ch": 1004,
+   "title": "The Keeper of the Keys",
+   "text": "On his eleventh birthday the giant Hagrid tells Harry he is a wizard.",
+   "kw": [
+    "hagrid",
+    "you're a wizard",
+    "letter",
+    "birthday",
+    "hut on the rock"
+   ]
+  },
+  {
+   "ch": 1006,
+   "title": "Platform Nine and Three-Quarters",
+   "text": "On the Hogwarts Express Harry befriends Ron Weasley, meets Hermione Granger and turns down Draco Malfoy.",
+   "kw": [
+    "train",
+    "platform",
+    "ron",
+    "hermione",
+    "draco",
+    "chocolate frog"
+   ]
+  },
+  {
+   "ch": 1007,
+   "title": "The Sorting Hat",
+   "text": "Harry, Ron and Hermione are sorted into Gryffindor.",
+   "kw": [
+    "sorting hat",
+    "gryffindor",
+    "feast"
+   ]
+  },
+  {
+   "ch": 1010,
+   "title": "Hallowe'en",
+   "text": "After Harry and Ron save Hermione from a troll, the three become friends.",
+   "kw": [
+    "troll",
+    "halloween",
+    "bathroom",
+    "friends"
+   ]
+  },
+  {
+   "ch": 1013,
+   "title": "Nicolas Flamel",
+   "text": "The friends learn the three-headed dog guards the Philosopher's Stone, made by Nicolas Flamel.",
+   "kw": [
+    "flamel",
+    "philosopher's stone",
+    "fluffy",
+    "elixir"
+   ]
+  },
+  {
+   "ch": 1017,
+   "title": "The Man with Two Faces",
+   "text": "Quirrell, not Snape, wanted the Stone; Voldemort lives on the back of his head. Quirrell dies and the Stone is destroyed.",
+   "kw": [
+    "quirrell",
+    "two faces",
+    "mirror",
+    "stone destroyed"
+   ]
+  },
+  {
+   "ch": 2002,
+   "title": "Dobby's Warning",
+   "text": "The house-elf Dobby warns Harry not to go back to Hogwarts.",
+   "kw": [
+    "dobby",
+    "pudding",
+    "warning",
+    "house-elf"
+   ]
+  },
+  {
+   "ch": 2009,
+   "title": "The Writing on the Wall",
+   "text": "The caretaker's cat is found petrified: the Chamber of Secrets has been opened.",
+   "kw": [
+    "chamber of secrets",
+    "mrs norris",
+    "petrified",
+    "writing"
+   ]
+  },
+  {
+   "ch": 2011,
+   "title": "The Duelling Club",
+   "text": "Harry speaks Parseltongue and the school suspects he is Slytherin's heir.",
+   "kw": [
+    "duelling club",
+    "parseltongue",
+    "snake",
+    "heir"
+   ]
+  },
+  {
+   "ch": 2014,
+   "title": "Cornelius Fudge",
+   "text": "Hagrid is sent to Azkaban and Dumbledore is removed from the school.",
+   "kw": [
+    "fudge",
+    "azkaban",
+    "hagrid arrested",
+    "lucius"
+   ]
+  },
+  {
+   "ch": 2017,
+   "title": "The Heir of Slytherin",
+   "text": "Ginny was taken into the Chamber. Tom Riddle's diary memory is Voldemort; Harry kills the basilisk and destroys the diary.",
+   "kw": [
+    "tom riddle",
+    "diary",
+    "basilisk",
+    "sword",
+    "fawkes"
+   ]
+  },
+  {
+   "ch": 2018,
+   "title": "Dobby's Reward",
+   "text": "Harry tricks Lucius Malfoy into freeing Dobby.",
+   "kw": [
+    "sock",
+    "freed",
+    "lucius"
+   ]
+  },
+  {
+   "ch": 3003,
+   "title": "The Knight Bus",
+   "text": "Sirius Black, said to be Voldemort's follower, has escaped from Azkaban.",
+   "kw": [
+    "sirius black",
+    "escaped",
+    "knight bus",
+    "azkaban"
+   ]
+  },
+  {
+   "ch": 3005,
+   "title": "The Dementor",
+   "text": "Dementors guard the school. Remus Lupin is the new Defence teacher.",
+   "kw": [
+    "dementor",
+    "lupin",
+    "train",
+    "chocolate"
+   ]
+  },
+  {
+   "ch": 3010,
+   "title": "The Marauder's Map",
+   "text": "Harry learns Black was his parents' friend and is said to have betrayed them.",
+   "kw": [
+    "marauder's map",
+    "betrayed",
+    "godfather",
+    "hogsmeade"
+   ]
+  },
+  {
+   "ch": 3019,
+   "title": "The Servant of Lord Voldemort",
+   "text": "Ron's rat is Peter Pettigrew, the real traitor. Sirius is innocent and is Harry's godfather.",
+   "kw": [
+    "scabbers",
+    "pettigrew",
+    "shrieking shack",
+    "innocent",
+    "wormtail"
+   ]
+  },
+  {
+   "ch": 3021,
+   "title": "Hermione's Secret",
+   "text": "With a Time-Turner, Harry and Hermione save Sirius and Buckbeak. Pettigrew escapes.",
+   "kw": [
+    "time-turner",
+    "buckbeak",
+    "patronus",
+    "escape"
+   ]
+  },
+  {
+   "ch": 4001,
+   "title": "The Riddle House",
+   "text": "Voldemort, Wormtail and Nagini plot in an old house; they kill a caretaker who overhears.",
+   "kw": [
+    "riddle house",
+    "frank bryce",
+    "nagini",
+    "plot"
+   ]
+  },
+  {
+   "ch": 4009,
+   "title": "The Dark Mark",
+   "text": "After the Quidditch World Cup, someone casts the Dark Mark into the sky.",
+   "kw": [
+    "world cup",
+    "dark mark",
+    "winky",
+    "krum"
+   ]
+  },
+  {
+   "ch": 4017,
+   "title": "The Four Champions",
+   "text": "The Goblet of Fire picks Harry as a fourth Triwizard champion, next to Cedric, Fleur and Krum.",
+   "kw": [
+    "goblet of fire",
+    "champions",
+    "cedric",
+    "fleur",
+    "krum"
+   ]
+  },
+  {
+   "ch": 4020,
+   "title": "The First Task",
+   "text": "Harry gets past a dragon.",
+   "kw": [
+    "dragon",
+    "first task",
+    "horntail",
+    "accio"
+   ]
+  },
+  {
+   "ch": 4023,
+   "title": "The Yule Ball",
+   "text": "The Yule Ball; Hagrid is revealed to be half-giant.",
+   "kw": [
+    "yule ball",
+    "dance",
+    "half-giant",
+    "parvati"
+   ]
+  },
+  {
+   "ch": 4028,
+   "title": "The Madness of Mr Crouch",
+   "text": "Barty Crouch Sr appears raving in the forest, then vanishes.",
+   "kw": [
+    "crouch",
+    "forest",
+    "madness",
+    "krum stunned"
+   ]
+  },
+  {
+   "ch": 4032,
+   "title": "Flesh, Blood and Bone",
+   "text": "The cup is a Portkey to a graveyard. Wormtail kills Cedric, and Voldemort returns to a body using Harry's blood.",
+   "kw": [
+    "graveyard",
+    "cedric dies",
+    "voldemort returns",
+    "portkey"
+   ]
+  },
+  {
+   "ch": 4035,
+   "title": "Veritaserum",
+   "text": "'Moody' is Barty Crouch Jr in disguise; he killed his father and set up Harry's path.",
+   "kw": [
+    "veritaserum",
+    "crouch junior",
+    "fake moody",
+    "polyjuice"
+   ]
+  },
+  {
+   "ch": 4036,
+   "title": "The Parting of the Ways",
+   "text": "Fudge refuses to believe Voldemort is back.",
+   "kw": [
+    "fudge",
+    "denial",
+    "order",
+    "parting"
+   ]
+  },
+  {
+   "ch": 5001,
+   "title": "Dudley Demented",
+   "text": "Dementors attack Harry and Dudley in Little Whinging.",
+   "kw": [
+    "dementors",
+    "dudley",
+    "underage magic",
+    "alley"
+   ]
+  },
+  {
+   "ch": 5004,
+   "title": "Number Twelve, Grimmauld Place",
+   "text": "The Order of the Phoenix meets at Sirius's family house.",
+   "kw": [
+    "grimmauld place",
+    "order of the phoenix",
+    "kreacher",
+    "tonks"
+   ]
+  },
+  {
+   "ch": 5012,
+   "title": "Professor Umbridge",
+   "text": "Ministry official Dolores Umbridge takes over Defence teaching.",
+   "kw": [
+    "umbridge",
+    "detention",
+    "quill",
+    "ministry"
+   ]
+  },
+  {
+   "ch": 5018,
+   "title": "Dumbledore's Army",
+   "text": "Harry teaches a secret defence group.",
+   "kw": [
+    "dumbledore's army",
+    "room of requirement",
+    "da",
+    "coins"
+   ]
+  },
+  {
+   "ch": 5022,
+   "title": "St Mungo's",
+   "text": "Harry dreams a snake attacks Mr Weasley, and it's real.",
+   "kw": [
+    "snake",
+    "arthur",
+    "st mungo's",
+    "vision"
+   ]
+  },
+  {
+   "ch": 5027,
+   "title": "The Centaur and the Sneak",
+   "text": "The DA is betrayed; Dumbledore escapes rather than be arrested.",
+   "kw": [
+    "betrayed",
+    "marietta",
+    "dumbledore escapes",
+    "fawkes"
+   ]
+  },
+  {
+   "ch": 5035,
+   "title": "Beyond the Veil",
+   "text": "A trap at the Department of Mysteries. Bellatrix kills Sirius.",
+   "kw": [
+    "department of mysteries",
+    "veil",
+    "sirius dies",
+    "prophecy"
+   ]
+  },
+  {
+   "ch": 5037,
+   "title": "The Lost Prophecy",
+   "text": "Dumbledore tells Harry the prophecy: one must kill the other.",
+   "kw": [
+    "prophecy",
+    "neither can live",
+    "dumbledore",
+    "neville"
+   ]
+  },
+  {
+   "ch": 6002,
+   "title": "Spinner's End",
+   "text": "Snape makes an Unbreakable Vow to help Draco with a task from Voldemort.",
+   "kw": [
+    "spinner's end",
+    "unbreakable vow",
+    "narcissa",
+    "bellatrix"
+   ]
+  },
+  {
+   "ch": 6009,
+   "title": "The Half-Blood Prince",
+   "text": "Harry's second-hand potions book has notes from the 'Half-Blood Prince'.",
+   "kw": [
+    "half-blood prince",
+    "potions book",
+    "slughorn",
+    "notes"
+   ]
+  },
+  {
+   "ch": 6023,
+   "title": "Horcruxes",
+   "text": "Voldemort split his soul into Horcruxes. Two are already destroyed: the diary and the ring.",
+   "kw": [
+    "horcrux",
+    "soul",
+    "memory",
+    "slughorn",
+    "seven"
+   ]
+  },
+  {
+   "ch": 6024,
+   "title": "Sectumsempra",
+   "text": "Harry nearly kills Draco with a spell from the Prince's book. Harry and Ginny get together.",
+   "kw": [
+    "sectumsempra",
+    "bathroom",
+    "ginny",
+    "kiss"
+   ]
+  },
+  {
+   "ch": 6027,
+   "title": "The Lightning-Struck Tower",
+   "text": "On the tower, Draco can't do it; Snape kills Dumbledore.",
+   "kw": [
+    "tower",
+    "snape kills",
+    "dumbledore dies",
+    "death eaters"
+   ]
+  },
+  {
+   "ch": 6028,
+   "title": "Flight of the Prince",
+   "text": "Snape is the Half-Blood Prince. The locket they fought for is a fake left by 'R.A.B.'",
+   "kw": [
+    "prince",
+    "r.a.b.",
+    "fake locket",
+    "chase"
+   ]
+  },
+  {
+   "ch": 7005,
+   "title": "Fallen Warrior",
+   "text": "The Order moves Harry with seven decoys. Hedwig and Mad-Eye Moody die.",
+   "kw": [
+    "seven potters",
+    "hedwig",
+    "mad-eye",
+    "escape"
+   ]
+  },
+  {
+   "ch": 7009,
+   "title": "A Place to Hide",
+   "text": "The Ministry falls during Bill and Fleur's wedding; the trio go on the run.",
+   "kw": [
+    "wedding",
+    "ministry falls",
+    "on the run",
+    "tottenham"
+   ]
+  },
+  {
+   "ch": 7013,
+   "title": "The Muggle-born Registration Commission",
+   "text": "Disguised, the trio steal the locket Horcrux from Umbridge.",
+   "kw": [
+    "locket",
+    "ministry",
+    "polyjuice",
+    "umbridge"
+   ]
+  },
+  {
+   "ch": 7019,
+   "title": "The Silver Doe",
+   "text": "Ron returns and destroys the locket with the sword of Gryffindor.",
+   "kw": [
+    "silver doe",
+    "sword",
+    "frozen pool",
+    "locket destroyed"
+   ]
+  },
+  {
+   "ch": 7023,
+   "title": "Malfoy Manor",
+   "text": "Captured and taken to Malfoy Manor; Dobby rescues them and is killed by Bellatrix.",
+   "kw": [
+    "malfoy manor",
+    "dobby dies",
+    "bellatrix",
+    "cellar"
+   ]
+  },
+  {
+   "ch": 7026,
+   "title": "Gringotts",
+   "text": "They break into Bellatrix's vault for the cup and escape on a dragon.",
+   "kw": [
+    "gringotts",
+    "cup",
+    "dragon",
+    "griphook"
+   ]
+  },
+  {
+   "ch": 7031,
+   "title": "The Battle of Hogwarts",
+   "text": "The battle begins. Ron and Hermione kiss. Fred, Lupin and Tonks die.",
+   "kw": [
+    "battle",
+    "diadem",
+    "fred",
+    "kiss",
+    "room of requirement"
+   ]
+  },
+  {
+   "ch": 7032,
+   "title": "The Elder Wand",
+   "text": "Voldemort has Nagini kill Snape, believing that will make the Elder Wand his.",
+   "kw": [
+    "elder wand",
+    "shrieking shack",
+    "snape dies",
+    "nagini"
+   ]
+  },
+  {
+   "ch": 7033,
+   "title": "The Prince's Tale",
+   "text": "Snape's memories: he loved Lily, worked for Dumbledore, and Harry himself is a Horcrux.",
+   "kw": [
+    "prince's tale",
+    "always",
+    "lily",
+    "horcrux",
+    "memories"
+   ]
+  },
+  {
+   "ch": 7035,
+   "title": "King's Cross",
+   "text": "Harry lets Voldemort strike him and wakes in a white place with Dumbledore.",
+   "kw": [
+    "king's cross",
+    "forest",
+    "resurrection stone",
+    "limbo"
+   ]
+  },
+  {
+   "ch": 7036,
+   "title": "The Flaw in the Plan",
+   "text": "Neville kills Nagini, Molly kills Bellatrix, and Voldemort's curse rebounds and kills him.",
+   "kw": [
+    "flaw in the plan",
+    "nagini killed",
+    "voldemort dies",
+    "elder wand"
+   ]
+  },
+  {
+   "ch": 7037,
+   "title": "Nineteen Years Later",
+   "text": "Platform nine and three-quarters, nineteen years on.",
+   "kw": [
+    "epilogue",
+    "nineteen years",
+    "albus severus"
+   ]
+  }
+ ],
+ "chars": [
+  {
+   "id": "harry",
+   "n": "Harry Potter",
+   "r": "The boy who lived",
+   "a": 0,
+   "x": 60,
+   "y": 40,
+   "f": [
+    [
+     0,
+     "Survived Voldemort's curse as a baby."
+    ],
+    [
+     3,
+     "Sorted into Gryffindor."
+    ],
+    [
+     9,
+     "Can speak Parseltongue."
+    ],
+    [
+     20,
+     "Made a Triwizard champion."
+    ],
+    [
+     30,
+     "Leads Dumbledore's Army."
+    ],
+    [
+     49,
+     "Is himself a Horcrux."
+    ],
+    [
+     51,
+     "Defeats Voldemort."
+    ]
+   ],
+   "main": true
+  },
+  {
+   "id": "ron",
+   "n": "Ron Weasley",
+   "r": "Harry's best friend",
+   "a": 2,
+   "x": 200,
+   "y": 40,
+   "f": [
+    [
+     2,
+     "Meets Harry on the train."
+    ],
+    [
+     44,
+     "Returns and destroys the locket."
+    ],
+    [
+     47,
+     "Kisses Hermione."
+    ]
+   ]
+  },
+  {
+   "id": "hermione",
+   "n": "Hermione Granger",
+   "r": "Harry's friend",
+   "a": 2,
+   "x": 340,
+   "y": 40,
+   "f": [
+    [
+     2,
+     "Brilliant Muggle-born witch."
+    ],
+    [
+     4,
+     "Becomes friends after the troll."
+    ],
+    [
+     17,
+     "Used a Time-Turner all year."
+    ]
+   ]
+  },
+  {
+   "id": "dumbledore",
+   "n": "Albus Dumbledore",
+   "r": "Headmaster",
+   "a": 0,
+   "x": 480,
+   "y": 40,
+   "f": [
+    [
+     0,
+     "Headmaster of Hogwarts."
+    ],
+    [
+     10,
+     "Removed from the school for a while."
+    ],
+    [
+     32,
+     "Escapes arrest."
+    ],
+    [
+     34,
+     "Tells Harry the prophecy."
+    ],
+    [
+     37,
+     "Teaches Harry about Horcruxes."
+    ],
+    [
+     39,
+     "Killed by Snape."
+    ],
+    [
+     49,
+     "Had planned his own death with Snape."
+    ]
+   ],
+   "dead": 39
+  },
+  {
+   "id": "hagrid",
+   "n": "Rubeus Hagrid",
+   "r": "Gamekeeper",
+   "a": 0,
+   "x": 620,
+   "y": 40,
+   "f": [
+    [
+     1,
+     "Tells Harry he's a wizard."
+    ],
+    [
+     10,
+     "Sent to Azkaban."
+    ],
+    [
+     22,
+     "Revealed to be half-giant."
+    ]
+   ]
+  },
+  {
+   "id": "voldemort",
+   "n": "Lord Voldemort",
+   "r": "Dark wizard",
+   "a": 0,
+   "x": 760,
+   "y": 40,
+   "f": [
+    [
+     0,
+     "Killed Harry's parents."
+    ],
+    [
+     6,
+     "Lives on the back of Quirrell's head."
+    ],
+    [
+     11,
+     "Was once the student Tom Riddle."
+    ],
+    [
+     24,
+     "Returns to a body."
+    ],
+    [
+     37,
+     "Split his soul into Horcruxes."
+    ],
+    [
+     51,
+     "Killed by his own rebounding curse."
+    ]
+   ],
+   "dead": 51
+  },
+  {
+   "id": "snape",
+   "n": "Severus Snape",
+   "r": "Potions master",
+   "a": 3,
+   "x": 900,
+   "y": 40,
+   "f": [
+    [
+     4,
+     "Seems to hate Harry."
+    ],
+    [
+     6,
+     "Was protecting Harry all along."
+    ],
+    [
+     39,
+     "Kills Dumbledore."
+    ],
+    [
+     40,
+     "Is the Half-Blood Prince."
+    ],
+    [
+     48,
+     "Killed by Nagini."
+    ],
+    [
+     49,
+     "Loved Lily and worked for Dumbledore."
+    ]
+   ],
+   "dead": 48
+  },
+  {
+   "id": "draco",
+   "n": "Draco Malfoy",
+   "r": "Slytherin rival",
+   "a": 2,
+   "x": 60,
+   "y": 240,
+   "f": [
+    [
+     2,
+     "Harry turns down his friendship."
+    ],
+    [
+     35,
+     "Given a task by Voldemort."
+    ],
+    [
+     39,
+     "Can't kill Dumbledore."
+    ]
+   ]
+  },
+  {
+   "id": "mcgonagall",
+   "n": "Minerva McGonagall",
+   "r": "Head of Gryffindor",
+   "a": 0,
+   "x": 200,
+   "y": 240,
+   "f": [
+    [
+     0,
+     "Transfiguration teacher."
+    ],
+    [
+     47,
+     "Leads the castle's defence."
+    ]
+   ]
+  },
+  {
+   "id": "neville",
+   "n": "Neville Longbottom",
+   "r": "Gryffindor",
+   "a": 2,
+   "x": 340,
+   "y": 240,
+   "f": [
+    [
+     2,
+     "Shy and forgetful."
+    ],
+    [
+     34,
+     "The prophecy could have meant him."
+    ],
+    [
+     51,
+     "Kills Nagini."
+    ]
+   ]
+  },
+  {
+   "id": "ginny",
+   "n": "Ginny Weasley",
+   "r": "Ron's sister",
+   "a": 2,
+   "x": 480,
+   "y": 240,
+   "f": [
+    [
+     11,
+     "Taken into the Chamber by Riddle's diary."
+    ],
+    [
+     38,
+     "Gets together with Harry."
+    ]
+   ]
+  },
+  {
+   "id": "dursleys",
+   "n": "The Dursleys",
+   "r": "Harry's relatives",
+   "a": 0,
+   "x": 620,
+   "y": 240,
+   "f": [
+    [
+     0,
+     "Vernon, Petunia and Dudley; they mistreat Harry."
+    ],
+    [
+     27,
+     "Dudley is attacked by dementors."
+    ]
+   ],
+   "grp": true
+  },
+  {
+   "id": "weasleys",
+   "n": "Arthur & Molly Weasley",
+   "r": "Ron's parents",
+   "a": 2,
+   "x": 760,
+   "y": 240,
+   "f": [
+    [
+     2,
+     "A big, warm, poor wizarding family."
+    ],
+    [
+     31,
+     "Arthur is attacked by Nagini."
+    ],
+    [
+     51,
+     "Molly kills Bellatrix."
+    ]
+   ],
+   "grp": true
+  },
+  {
+   "id": "twins",
+   "n": "Fred & George",
+   "r": "Weasley twins",
+   "a": 2,
+   "x": 900,
+   "y": 240,
+   "f": [
+    [
+     2,
+     "Pranksters."
+    ],
+    [
+     47,
+     "Fred is killed in the battle."
+    ]
+   ],
+   "grp": true
+  },
+  {
+   "id": "quirrell",
+   "n": "Quirinus Quirrell",
+   "r": "Defence teacher",
+   "a": 3,
+   "x": 60,
+   "y": 440,
+   "f": [
+    [
+     3,
+     "Stammering Defence teacher."
+    ],
+    [
+     6,
+     "Carried Voldemort; dies."
+    ]
+   ],
+   "dead": 6
+  },
+  {
+   "id": "dobby",
+   "n": "Dobby",
+   "r": "House-elf",
+   "a": 7,
+   "x": 200,
+   "y": 440,
+   "f": [
+    [
+     7,
+     "Malfoy family's elf who tries to protect Harry."
+    ],
+    [
+     12,
+     "Freed."
+    ],
+    [
+     45,
+     "Killed by Bellatrix."
+    ]
+   ],
+   "dead": 45
+  },
+  {
+   "id": "lucius",
+   "n": "Lucius Malfoy",
+   "r": "Draco's father",
+   "a": 10,
+   "x": 340,
+   "y": 440,
+   "f": [
+    [
+     10,
+     "Gets Dumbledore removed."
+    ],
+    [
+     11,
+     "Slipped Riddle's diary to Ginny."
+    ],
+    [
+     33,
+     "Leads the Death Eaters at the Ministry."
+    ]
+   ]
+  },
+  {
+   "id": "sirius",
+   "n": "Sirius Black",
+   "r": "Harry's godfather",
+   "a": 13,
+   "x": 480,
+   "y": 440,
+   "f": [
+    [
+     13,
+     "Escaped prisoner, said to be Voldemort's man."
+    ],
+    [
+     16,
+     "Innocent; Harry's godfather."
+    ],
+    [
+     28,
+     "Lends his house to the Order."
+    ],
+    [
+     33,
+     "Killed by Bellatrix."
+    ]
+   ],
+   "dead": 33
+  },
+  {
+   "id": "lupin",
+   "n": "Remus Lupin",
+   "r": "Defence teacher",
+   "a": 14,
+   "x": 620,
+   "y": 440,
+   "f": [
+    [
+     14,
+     "Kind Defence teacher."
+    ],
+    [
+     16,
+     "A werewolf and an old friend of Harry's father."
+    ],
+    [
+     41,
+     "Together with Tonks."
+    ],
+    [
+     47,
+     "Dies in the battle."
+    ]
+   ],
+   "dead": 47
+  },
+  {
+   "id": "pettigrew",
+   "n": "Peter Pettigrew",
+   "r": "Wormtail",
+   "a": 16,
+   "x": 760,
+   "y": 440,
+   "f": [
+    [
+     16,
+     "Hid for years as Ron's rat; betrayed Harry's parents."
+    ],
+    [
+     24,
+     "Brings Voldemort back."
+    ],
+    [
+     45,
+     "Dies at Malfoy Manor."
+    ]
+   ],
+   "dead": 45
+  },
+  {
+   "id": "cedric",
+   "n": "Cedric Diggory",
+   "r": "Hogwarts champion",
+   "a": 20,
+   "x": 900,
+   "y": 440,
+   "f": [
+    [
+     20,
+     "Hufflepuff Triwizard champion."
+    ],
+    [
+     24,
+     "Killed by Wormtail."
+    ]
+   ],
+   "dead": 24
+  },
+  {
+   "id": "crouchjr",
+   "n": "Barty Crouch Jr",
+   "r": "Death Eater",
+   "a": 25,
+   "x": 60,
+   "y": 640,
+   "f": [
+    [
+     25,
+     "Impersonated Moody all year."
+    ],
+    [
+     26,
+     "Kissed by a dementor."
+    ]
+   ]
+  },
+  {
+   "id": "moody",
+   "n": "Alastor Moody",
+   "r": "Auror",
+   "a": 25,
+   "x": 200,
+   "y": 640,
+   "f": [
+    [
+     25,
+     "The real Moody was locked in a trunk all year."
+    ],
+    [
+     41,
+     "Dies moving Harry."
+    ]
+   ],
+   "dead": 41
+  },
+  {
+   "id": "umbridge",
+   "n": "Dolores Umbridge",
+   "r": "Ministry official",
+   "a": 29,
+   "x": 340,
+   "y": 640,
+   "f": [
+    [
+     29,
+     "Takes over Hogwarts for the Ministry."
+    ],
+    [
+     43,
+     "Runs the Muggle-born commission."
+    ]
+   ]
+  },
+  {
+   "id": "luna",
+   "n": "Luna Lovegood",
+   "r": "Ravenclaw",
+   "a": 30,
+   "x": 480,
+   "y": 640,
+   "f": [
+    [
+     30,
+     "Dreamy Ravenclaw in the DA."
+    ]
+   ]
+  },
+  {
+   "id": "tonks",
+   "n": "Nymphadora Tonks",
+   "r": "Auror",
+   "a": 28,
+   "x": 620,
+   "y": 640,
+   "f": [
+    [
+     28,
+     "Young Auror in the Order who changes her looks."
+    ],
+    [
+     41,
+     "Together with Lupin."
+    ],
+    [
+     47,
+     "Dies in the battle."
+    ]
+   ],
+   "dead": 47
+  },
+  {
+   "id": "bellatrix",
+   "n": "Bellatrix Lestrange",
+   "r": "Death Eater",
+   "a": 33,
+   "x": 760,
+   "y": 640,
+   "f": [
+    [
+     33,
+     "Kills Sirius."
+    ],
+    [
+     45,
+     "Kills Dobby."
+    ],
+    [
+     51,
+     "Killed by Molly Weasley."
+    ]
+   ],
+   "dead": 51
+  },
+  {
+   "id": "kreacher",
+   "n": "Kreacher",
+   "r": "Black family elf",
+   "a": 28,
+   "x": 900,
+   "y": 640,
+   "f": [
+    [
+     28,
+     "Bitter elf of the Black house."
+    ]
+   ]
+  },
+  {
+   "id": "slughorn",
+   "n": "Horace Slughorn",
+   "r": "Potions teacher",
+   "a": 36,
+   "x": 60,
+   "y": 840,
+   "f": [
+    [
+     36,
+     "Returns to teach Potions."
+    ],
+    [
+     37,
+     "Gives up the true Horcrux memory."
+    ]
+   ]
+  },
+  {
+   "id": "nagini",
+   "n": "Nagini",
+   "r": "Voldemort's snake",
+   "a": 18,
+   "x": 200,
+   "y": 840,
+   "f": [
+    [
+     18,
+     "Voldemort's snake."
+    ],
+    [
+     31,
+     "Attacks Mr Weasley."
+    ],
+    [
+     48,
+     "Kills Snape."
+    ],
+    [
+     51,
+     "Killed by Neville."
+    ]
+   ],
+   "dead": 51
+  },
+  {
+   "id": "fudge",
+   "n": "Cornelius Fudge",
+   "r": "Minister for Magic",
+   "a": 10,
+   "x": 340,
+   "y": 840,
+   "f": [
+    [
+     10,
+     "Minister for Magic."
+    ],
+    [
+     26,
+     "Refuses to believe Voldemort is back."
+    ]
+   ]
+  },
+  {
+   "id": "griphook",
+   "n": "Griphook",
+   "r": "Goblin",
+   "a": 46,
+   "x": 480,
+   "y": 840,
+   "f": [
+    [
+     46,
+     "Helps break into Gringotts, then betrays them."
+    ]
+   ]
+  },
+  {
+   "id": "lily",
+   "n": "Lily Potter",
+   "r": "Harry's mother",
+   "a": 0,
+   "x": 620,
+   "y": 840,
+   "f": [
+    [
+     0,
+     "Died protecting Harry."
+    ],
+    [
+     49,
+     "Snape loved her."
+    ]
+   ],
+   "dead": 0
+  },
+  {
+   "id": "horcruxes",
+   "n": "Horcruxes",
+   "r": "Pieces of a soul",
+   "a": 37,
+   "x": 760,
+   "y": 840,
+   "f": [
+    [
+     37,
+     "Diary and ring already destroyed."
+    ],
+    [
+     44,
+     "Locket destroyed."
+    ],
+    [
+     47,
+     "Cup and diadem destroyed."
+    ],
+    [
+     51,
+     "Last one, Nagini, destroyed."
+    ]
+   ],
+   "note": true
+  }
+ ],
+ "links": [
+  [
+   "harry",
+   "dursleys",
+   0
+  ],
+  [
+   "harry",
+   "dumbledore",
+   0
+  ],
+  [
+   "harry",
+   "voldemort",
+   0
+  ],
+  [
+   "harry",
+   "lily",
+   0
+  ],
+  [
+   "voldemort",
+   "lily",
+   0
+  ],
+  [
+   "harry",
+   "hagrid",
+   1
+  ],
+  [
+   "harry",
+   "ron",
+   2
+  ],
+  [
+   "harry",
+   "hermione",
+   2
+  ],
+  [
+   "harry",
+   "draco",
+   2
+  ],
+  [
+   "ron",
+   "weasleys",
+   2
+  ],
+  [
+   "ron",
+   "twins",
+   2
+  ],
+  [
+   "ron",
+   "ginny",
+   2
+  ],
+  [
+   "harry",
+   "neville",
+   2
+  ],
+  [
+   "harry",
+   "snape",
+   4
+  ],
+  [
+   "harry",
+   "mcgonagall",
+   3
+  ],
+  [
+   "ron",
+   "hermione",
+   4
+  ],
+  [
+   "quirrell",
+   "voldemort",
+   6
+  ],
+  [
+   "harry",
+   "quirrell",
+   6
+  ],
+  [
+   "harry",
+   "dobby",
+   7
+  ],
+  [
+   "lucius",
+   "draco",
+   10
+  ],
+  [
+   "lucius",
+   "dobby",
+   10
+  ],
+  [
+   "fudge",
+   "hagrid",
+   10
+  ],
+  [
+   "ginny",
+   "voldemort",
+   11
+  ],
+  [
+   "lucius",
+   "ginny",
+   11
+  ],
+  [
+   "harry",
+   "sirius",
+   16
+  ],
+  [
+   "sirius",
+   "lupin",
+   16
+  ],
+  [
+   "sirius",
+   "pettigrew",
+   16
+  ],
+  [
+   "pettigrew",
+   "ron",
+   16
+  ],
+  [
+   "harry",
+   "lupin",
+   14
+  ],
+  [
+   "voldemort",
+   "nagini",
+   18
+  ],
+  [
+   "voldemort",
+   "pettigrew",
+   18
+  ],
+  [
+   "harry",
+   "cedric",
+   20
+  ],
+  [
+   "pettigrew",
+   "cedric",
+   24
+  ],
+  [
+   "crouchjr",
+   "moody",
+   25
+  ],
+  [
+   "crouchjr",
+   "voldemort",
+   25
+  ],
+  [
+   "fudge",
+   "dumbledore",
+   26
+  ],
+  [
+   "sirius",
+   "kreacher",
+   28
+  ],
+  [
+   "tonks",
+   "lupin",
+   28
+  ],
+  [
+   "harry",
+   "umbridge",
+   29
+  ],
+  [
+   "harry",
+   "luna",
+   30
+  ],
+  [
+   "nagini",
+   "weasleys",
+   31
+  ],
+  [
+   "bellatrix",
+   "sirius",
+   33
+  ],
+  [
+   "bellatrix",
+   "voldemort",
+   33
+  ],
+  [
+   "neville",
+   "bellatrix",
+   33
+  ],
+  [
+   "snape",
+   "draco",
+   35
+  ],
+  [
+   "snape",
+   "bellatrix",
+   35
+  ],
+  [
+   "harry",
+   "slughorn",
+   36
+  ],
+  [
+   "slughorn",
+   "voldemort",
+   37
+  ],
+  [
+   "dumbledore",
+   "horcruxes",
+   37
+  ],
+  [
+   "voldemort",
+   "horcruxes",
+   37
+  ],
+  [
+   "harry",
+   "ginny",
+   38
+  ],
+  [
+   "snape",
+   "dumbledore",
+   39
+  ],
+  [
+   "draco",
+   "dumbledore",
+   39
+  ],
+  [
+   "umbridge",
+   "horcruxes",
+   43
+  ],
+  [
+   "ron",
+   "horcruxes",
+   44
+  ],
+  [
+   "bellatrix",
+   "dobby",
+   45
+  ],
+  [
+   "griphook",
+   "harry",
+   46
+  ],
+  [
+   "nagini",
+   "snape",
+   48
+  ],
+  [
+   "snape",
+   "lily",
+   49
+  ],
+  [
+   "neville",
+   "nagini",
+   51
+  ],
+  [
+   "weasleys",
+   "bellatrix",
+   51
+  ]
+ ],
+ "couples": [
+  [
+   "harry",
+   "ginny",
+   38
+  ],
+  [
+   "ron",
+   "hermione",
+   47
+  ],
+  [
+   "lupin",
+   "tonks",
+   41
+  ]
+ ]
+}

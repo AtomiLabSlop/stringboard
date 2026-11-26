@@ -1,0 +1,992 @@
+{
+ "id": "bladerunner",
+ "title": "Blade Runner (both films)",
+ "type": "movie",
+ "background": "assets/bg/bladerunner.webp",
+ "unit": "Minute",
+ "partLabel": "Film",
+ "parts": [
+  {
+   "n": "Blade Runner (1982, Final Cut)",
+   "short": "Blade Runner"
+  },
+  {
+   "n": "Blade Runner 2049 (2017)",
+   "short": "Blade Runner 2049"
+  }
+ ],
+ "matcher": {
+  "model": "Xenova/all-MiniLM-L6-v2",
+  "sizeMB": 23,
+  "language": "English"
+ },
+ "steps": [
+  {
+   "ch": 1008,
+   "title": "The test",
+   "text": "Los Angeles, 2019. During a Voight-Kampff test, the replicant Leon shoots the blade runner Holden.",
+   "kw": [
+    "voight-kampff",
+    "leon",
+    "holden",
+    "test",
+    "tortoise"
+   ]
+  },
+  {
+   "ch": 1016,
+   "title": "Brought back in",
+   "text": "Ex-cop Rick Deckard is pulled back in by Bryant and Gaff. Four Nexus-6 replicants have come to Earth: Roy, Leon, Zhora and Pris.",
+   "kw": [
+    "deckard",
+    "bryant",
+    "gaff",
+    "noodle bar",
+    "nexus-6",
+    "briefing"
+   ]
+  },
+  {
+   "ch": 1024,
+   "title": "Tyrell's owl",
+   "text": "At the Tyrell Corporation Deckard tests Tyrell's assistant Rachael and finds she is a replicant who doesn't know it.",
+   "kw": [
+    "tyrell",
+    "rachael",
+    "owl",
+    "replicant test"
+   ]
+  },
+  {
+   "ch": 1029,
+   "title": "Chew's eyes",
+   "text": "Roy and Leon frighten the eye maker Chew, who points them to J.F. Sebastian.",
+   "kw": [
+    "chew",
+    "eyes",
+    "eye maker",
+    "cold"
+   ]
+  },
+  {
+   "ch": 1034,
+   "title": "Leon's room",
+   "text": "Deckard searches Leon's hotel room and finds photographs and a scale.",
+   "kw": [
+    "hotel",
+    "photos",
+    "scale",
+    "leon's room"
+   ]
+  },
+  {
+   "ch": 1039,
+   "title": "Sebastian",
+   "text": "Pris meets the lonely genetic designer J.F. Sebastian and moves into his building.",
+   "kw": [
+    "pris",
+    "sebastian",
+    "bradbury",
+    "toys"
+   ]
+  },
+  {
+   "ch": 1046,
+   "title": "Memories",
+   "text": "Rachael brings Deckard a childhood photo. He tells her her memories are implants from Tyrell's niece.",
+   "kw": [
+    "photo",
+    "implants",
+    "memories",
+    "spider"
+   ]
+  },
+  {
+   "ch": 1058,
+   "title": "Zhora",
+   "text": "Deckard tracks Zhora to a club through the snake scale and shoots her as she runs through the streets.",
+   "kw": [
+    "zhora",
+    "snake",
+    "club",
+    "shot",
+    "glass"
+   ]
+  },
+  {
+   "ch": 1062,
+   "title": "Leon",
+   "text": "Leon attacks Deckard; Rachael shoots Leon dead.",
+   "kw": [
+    "leon dies",
+    "rachael shoots",
+    "street"
+   ]
+  },
+  {
+   "ch": 1068,
+   "title": "Rachael",
+   "text": "Rachael stays at Deckard's apartment. They fall for each other.",
+   "kw": [
+    "piano",
+    "kiss",
+    "apartment",
+    "love"
+   ]
+  },
+  {
+   "ch": 1084,
+   "title": "Tyrell",
+   "text": "Roy uses Sebastian to reach Tyrell, asks for more life, and kills Tyrell when he can't give it. Sebastian dies too.",
+   "kw": [
+    "more life",
+    "chess",
+    "tyrell dies",
+    "father"
+   ]
+  },
+  {
+   "ch": 1095,
+   "title": "Pris",
+   "text": "Deckard enters Sebastian's apartment and kills Pris.",
+   "kw": [
+    "pris dies",
+    "dolls",
+    "apartment"
+   ]
+  },
+  {
+   "ch": 1108,
+   "title": "Tears in rain",
+   "text": "Roy hunts Deckard through the building, then saves him from a fall and dies on the roof.",
+   "kw": [
+    "tears in rain",
+    "roof",
+    "dove",
+    "roy dies",
+    "rain"
+   ]
+  },
+  {
+   "ch": 1117,
+   "title": "Unicorn",
+   "text": "Gaff leaves an origami unicorn at Deckard's door. Deckard leaves with Rachael.",
+   "kw": [
+    "origami",
+    "unicorn",
+    "elevator",
+    "leave"
+   ]
+  },
+  {
+   "ch": 2016,
+   "title": "Sapper",
+   "text": "2049. Replicant blade runner K retires Sapper Morton and finds a box buried under a tree.",
+   "kw": [
+    "k",
+    "sapper",
+    "farm",
+    "box",
+    "tree",
+    "grubs"
+   ]
+  },
+  {
+   "ch": 2026,
+   "title": "The bones",
+   "text": "The box holds a replicant woman who died giving birth. Lt. Joshi orders K to erase the child.",
+   "kw": [
+    "bones",
+    "birth",
+    "joshi",
+    "miracle",
+    "child"
+   ]
+  },
+  {
+   "ch": 2034,
+   "title": "Wallace",
+   "text": "Niander Wallace wants the secret of replicant birth. His enforcer Luv learns the woman was Rachael.",
+   "kw": [
+    "wallace",
+    "luv",
+    "archive",
+    "rachael's voice"
+   ]
+  },
+  {
+   "ch": 2042,
+   "title": "Luv",
+   "text": "Luv steals the bones from police headquarters and kills a technician.",
+   "kw": [
+    "stolen",
+    "bones",
+    "coco",
+    "police"
+   ]
+  },
+  {
+   "ch": 2052,
+   "title": "6-10-21",
+   "text": "K finds the date carved on the tree matches a memory of his own.",
+   "kw": [
+    "date",
+    "6-10-21",
+    "carved",
+    "horse memory"
+   ]
+  },
+  {
+   "ch": 2078,
+   "title": "The orphanage",
+   "text": "At a San Diego orphanage K finds a wooden horse where his memory said it would be.",
+   "kw": [
+    "orphanage",
+    "wooden horse",
+    "furnace",
+    "san diego"
+   ]
+  },
+  {
+   "ch": 2088,
+   "title": "Dr. Ana Stelline",
+   "text": "Memory maker Ana Stelline tells K the memory is real. K believes he is the child.",
+   "kw": [
+    "ana stelline",
+    "memory maker",
+    "bubble",
+    "real memory"
+   ]
+  },
+  {
+   "ch": 2094,
+   "title": "Joi and Mariette",
+   "text": "K's hologram companion Joi hires Mariette to be with him.",
+   "kw": [
+    "joi",
+    "mariette",
+    "hologram",
+    "sync"
+   ]
+  },
+  {
+   "ch": 2112,
+   "title": "Las Vegas",
+   "text": "K tracks the horse to ruined Las Vegas and finds Deckard.",
+   "kw": [
+    "las vegas",
+    "casino",
+    "dog",
+    "elvis"
+   ]
+  },
+  {
+   "ch": 2122,
+   "title": "Captured",
+   "text": "Luv kills Joshi, crushes Joi's emitter and takes Deckard.",
+   "kw": [
+    "joshi dies",
+    "joi destroyed",
+    "deckard taken",
+    "crash"
+   ]
+  },
+  {
+   "ch": 2128,
+   "title": "Freysa",
+   "text": "Freysa's resistance saves K and tells him the child was a girl. He is not the one.",
+   "kw": [
+    "freysa",
+    "resistance",
+    "girl",
+    "not you"
+   ]
+  },
+  {
+   "ch": 2136,
+   "title": "Wallace and Deckard",
+   "text": "Wallace tempts Deckard with a new Rachael. Deckard refuses.",
+   "kw": [
+    "new rachael",
+    "green eyes",
+    "refuses"
+   ]
+  },
+  {
+   "ch": 2150,
+   "title": "The sea wall",
+   "text": "K stops Luv's convoy at the sea wall and drowns her, saving Deckard.",
+   "kw": [
+    "sea wall",
+    "luv dies",
+    "drown",
+    "waves"
+   ]
+  },
+  {
+   "ch": 2160,
+   "title": "Snow",
+   "text": "K brings Deckard to meet his daughter Ana, then lies down on the steps in the snow.",
+   "kw": [
+    "snow",
+    "daughter",
+    "steps",
+    "end",
+    "ana"
+   ]
+  }
+ ],
+ "chars": [
+  {
+   "id": "deckard",
+   "n": "Rick Deckard",
+   "r": "Blade runner",
+   "a": 1,
+   "x": 60,
+   "y": 40,
+   "f": [
+    [
+     1,
+     "Retired blade runner brought back to hunt four replicants."
+    ],
+    [
+     7,
+     "Retires Zhora."
+    ],
+    [
+     9,
+     "Falls for Rachael."
+    ],
+    [
+     12,
+     "Spared by Roy."
+    ],
+    [
+     13,
+     "Leaves with Rachael."
+    ],
+    [
+     22,
+     "Living alone in Las Vegas for 30 years."
+    ],
+    [
+     25,
+     "Refuses Wallace's copy of Rachael."
+    ],
+    [
+     27,
+     "Meets his daughter."
+    ]
+   ],
+   "main": true
+  },
+  {
+   "id": "rachael",
+   "n": "Rachael",
+   "r": "Tyrell's assistant",
+   "a": 2,
+   "x": 223,
+   "y": 40,
+   "f": [
+    [
+     2,
+     "A replicant with implanted memories."
+    ],
+    [
+     8,
+     "Shoots Leon to save Deckard."
+    ],
+    [
+     15,
+     "Died giving birth; the buried bones are hers."
+    ]
+   ],
+   "dead": 15
+  },
+  {
+   "id": "roy",
+   "n": "Roy Batty",
+   "r": "Replicant leader",
+   "a": 1,
+   "x": 386,
+   "y": 40,
+   "f": [
+    [
+     1,
+     "Combat model and leader of the four replicants."
+    ],
+    [
+     10,
+     "Kills Tyrell."
+    ],
+    [
+     12,
+     "Saves Deckard and dies."
+    ]
+   ],
+   "dead": 12
+  },
+  {
+   "id": "leon",
+   "n": "Leon Kowalski",
+   "r": "Replicant",
+   "a": 0,
+   "x": 549,
+   "y": 40,
+   "f": [
+    [
+     0,
+     "Shoots Holden during a test."
+    ],
+    [
+     4,
+     "Keeps photographs as memories."
+    ],
+    [
+     8,
+     "Shot by Rachael."
+    ]
+   ],
+   "dead": 8
+  },
+  {
+   "id": "zhora",
+   "n": "Zhora",
+   "r": "Replicant",
+   "a": 1,
+   "x": 712,
+   "y": 40,
+   "f": [
+    [
+     1,
+     "Trained as an assassin."
+    ],
+    [
+     7,
+     "Works as a snake dancer; retired by Deckard."
+    ]
+   ],
+   "dead": 7
+  },
+  {
+   "id": "pris",
+   "n": "Pris",
+   "r": "Replicant",
+   "a": 1,
+   "x": 875,
+   "y": 40,
+   "f": [
+    [
+     5,
+     "Gets close to J.F. Sebastian."
+    ],
+    [
+     11,
+     "Killed by Deckard."
+    ]
+   ],
+   "dead": 11
+  },
+  {
+   "id": "tyrell",
+   "n": "Eldon Tyrell",
+   "r": "Replicant maker",
+   "a": 2,
+   "x": 60,
+   "y": 240,
+   "f": [
+    [
+     2,
+     "Head of the Tyrell Corporation."
+    ],
+    [
+     10,
+     "Killed by Roy."
+    ]
+   ],
+   "dead": 10
+  },
+  {
+   "id": "sebastian",
+   "n": "J.F. Sebastian",
+   "r": "Genetic designer",
+   "a": 5,
+   "x": 223,
+   "y": 240,
+   "f": [
+    [
+     5,
+     "Lonely designer who ages too fast."
+    ],
+    [
+     10,
+     "Killed after Roy reaches Tyrell."
+    ]
+   ],
+   "dead": 10
+  },
+  {
+   "id": "gaff",
+   "n": "Gaff",
+   "r": "Police officer",
+   "a": 1,
+   "x": 386,
+   "y": 240,
+   "f": [
+    [
+     1,
+     "Bryant's man who folds origami."
+    ],
+    [
+     13,
+     "Leaves the unicorn: he spared Rachael."
+    ]
+   ]
+  },
+  {
+   "id": "bryant",
+   "n": "Bryant",
+   "r": "Police captain",
+   "a": 1,
+   "x": 549,
+   "y": 240,
+   "f": [
+    [
+     1,
+     "Deckard's old boss."
+    ]
+   ]
+  },
+  {
+   "id": "holden",
+   "n": "Holden",
+   "r": "Blade runner",
+   "a": 0,
+   "x": 712,
+   "y": 240,
+   "f": [
+    [
+     0,
+     "Shot by Leon during the test."
+    ]
+   ]
+  },
+  {
+   "id": "chew",
+   "n": "Hannibal Chew",
+   "r": "Eye maker",
+   "a": 3,
+   "x": 875,
+   "y": 240,
+   "f": [
+    [
+     3,
+     "Made the replicants' eyes; tells Roy about Sebastian."
+    ]
+   ]
+  },
+  {
+   "id": "k",
+   "n": "K",
+   "r": "Replicant blade runner",
+   "a": 14,
+   "x": 60,
+   "y": 440,
+   "f": [
+    [
+     14,
+     "Newer replicant who hunts old models."
+    ],
+    [
+     18,
+     "A memory of his own matches the date."
+    ],
+    [
+     20,
+     "Believes he is the child."
+    ],
+    [
+     24,
+     "Learns he is not."
+    ],
+    [
+     26,
+     "Saves Deckard from Luv."
+    ],
+    [
+     27,
+     "Brings Deckard to his daughter."
+    ]
+   ],
+   "main": true
+  },
+  {
+   "id": "joi",
+   "n": "Joi",
+   "r": "K's hologram",
+   "a": 14,
+   "x": 223,
+   "y": 440,
+   "f": [
+    [
+     14,
+     "K's holographic companion."
+    ],
+    [
+     23,
+     "Destroyed by Luv."
+    ]
+   ],
+   "dead": 23
+  },
+  {
+   "id": "joshi",
+   "n": "Lt. Joshi",
+   "r": "K's boss",
+   "a": 14,
+   "x": 386,
+   "y": 440,
+   "f": [
+    [
+     15,
+     "Orders K to destroy all traces of the child."
+    ],
+    [
+     23,
+     "Killed by Luv."
+    ]
+   ],
+   "dead": 23
+  },
+  {
+   "id": "sapper",
+   "n": "Sapper Morton",
+   "r": "Old replicant",
+   "a": 14,
+   "x": 549,
+   "y": 440,
+   "f": [
+    [
+     14,
+     "A Nexus-8 farmer; retired by K."
+    ]
+   ],
+   "dead": 14
+  },
+  {
+   "id": "wallace",
+   "n": "Niander Wallace",
+   "r": "Replicant maker",
+   "a": 16,
+   "x": 712,
+   "y": 440,
+   "f": [
+    [
+     16,
+     "Bought Tyrell's company; wants replicants that can give birth."
+    ],
+    [
+     25,
+     "Offers Deckard a new Rachael."
+    ]
+   ]
+  },
+  {
+   "id": "luv",
+   "n": "Luv",
+   "r": "Wallace's enforcer",
+   "a": 16,
+   "x": 875,
+   "y": 440,
+   "f": [
+    [
+     17,
+     "Steals the bones."
+    ],
+    [
+     23,
+     "Kills Joshi and takes Deckard."
+    ],
+    [
+     26,
+     "Drowned by K."
+    ]
+   ],
+   "dead": 26
+  },
+  {
+   "id": "ana",
+   "n": "Dr. Ana Stelline",
+   "r": "Memory maker",
+   "a": 20,
+   "x": 60,
+   "y": 640,
+   "f": [
+    [
+     20,
+     "Designs memories for replicants."
+    ],
+    [
+     27,
+     "Deckard and Rachael's daughter."
+    ]
+   ]
+  },
+  {
+   "id": "mariette",
+   "n": "Mariette",
+   "r": "Resistance member",
+   "a": 21,
+   "x": 223,
+   "y": 640,
+   "f": [
+    [
+     21,
+     "Spends a night with K; works for Freysa."
+    ]
+   ]
+  },
+  {
+   "id": "freysa",
+   "n": "Freysa",
+   "r": "Resistance leader",
+   "a": 24,
+   "x": 386,
+   "y": 640,
+   "f": [
+    [
+     24,
+     "Leads the replicant resistance; saw the child born."
+    ]
+   ]
+  },
+  {
+   "id": "horse",
+   "n": "The wooden horse",
+   "r": "Childhood toy",
+   "a": 18,
+   "x": 549,
+   "y": 640,
+   "f": [
+    [
+     18,
+     "From the memory K thinks is his."
+    ],
+    [
+     19,
+     "Found at the orphanage."
+    ]
+   ],
+   "note": true
+  }
+ ],
+ "links": [
+  [
+   "leon",
+   "holden",
+   0
+  ],
+  [
+   "deckard",
+   "bryant",
+   1
+  ],
+  [
+   "deckard",
+   "gaff",
+   1
+  ],
+  [
+   "roy",
+   "leon",
+   1
+  ],
+  [
+   "roy",
+   "zhora",
+   1
+  ],
+  [
+   "roy",
+   "pris",
+   1
+  ],
+  [
+   "deckard",
+   "rachael",
+   2
+  ],
+  [
+   "rachael",
+   "tyrell",
+   2
+  ],
+  [
+   "roy",
+   "chew",
+   3
+  ],
+  [
+   "deckard",
+   "leon",
+   4
+  ],
+  [
+   "pris",
+   "sebastian",
+   5
+  ],
+  [
+   "deckard",
+   "zhora",
+   7
+  ],
+  [
+   "rachael",
+   "leon",
+   8
+  ],
+  [
+   "roy",
+   "sebastian",
+   10
+  ],
+  [
+   "roy",
+   "tyrell",
+   10
+  ],
+  [
+   "sebastian",
+   "tyrell",
+   10
+  ],
+  [
+   "deckard",
+   "pris",
+   11
+  ],
+  [
+   "deckard",
+   "roy",
+   12
+  ],
+  [
+   "gaff",
+   "rachael",
+   13
+  ],
+  [
+   "k",
+   "sapper",
+   14
+  ],
+  [
+   "k",
+   "joi",
+   14
+  ],
+  [
+   "k",
+   "joshi",
+   14
+  ],
+  [
+   "rachael",
+   "deckard",
+   15
+  ],
+  [
+   "wallace",
+   "luv",
+   16
+  ],
+  [
+   "luv",
+   "rachael",
+   16
+  ],
+  [
+   "luv",
+   "k",
+   17
+  ],
+  [
+   "k",
+   "horse",
+   18
+  ],
+  [
+   "k",
+   "ana",
+   20
+  ],
+  [
+   "ana",
+   "horse",
+   20
+  ],
+  [
+   "k",
+   "mariette",
+   21
+  ],
+  [
+   "k",
+   "deckard",
+   22
+  ],
+  [
+   "luv",
+   "joshi",
+   23
+  ],
+  [
+   "luv",
+   "joi",
+   23
+  ],
+  [
+   "luv",
+   "deckard",
+   23
+  ],
+  [
+   "mariette",
+   "freysa",
+   24
+  ],
+  [
+   "k",
+   "freysa",
+   24
+  ],
+  [
+   "wallace",
+   "deckard",
+   25
+  ],
+  [
+   "ana",
+   "deckard",
+   27
+  ],
+  [
+   "ana",
+   "rachael",
+   27
+  ]
+ ],
+ "couples": [
+  [
+   "deckard",
+   "rachael",
+   9
+  ],
+  [
+   "k",
+   "joi",
+   14
+  ]
+ ]
+}
