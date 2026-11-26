@@ -208,9 +208,12 @@ function renderTimeline() {
 /* chapter box: pops up for 5 s when you move through the story; chevron opens the details, pin keeps it up */
 let capT = null, capPinned = false, capOpen = false;
 const capBox = $('#capBox');
+// line the box up with the slider track: same left edge, same width
+function placeCap() { const t = $('#tl').getBoundingClientRect(), p = $('.tl').getBoundingClientRect(); capBox.style.left = (t.left - p.left) + 'px'; capBox.style.width = t.width + 'px'; }
+addEventListener('resize', placeCap);
 function flashCap() {
-  capBox.classList.add('on'); clearTimeout(capT);
-  if (!capPinned) capT = setTimeout(() => { if (!capBox.matches(':hover')) capHide(); else flashCap(); }, 5000);
+  placeCap(); capBox.classList.add('on'); clearTimeout(capT);
+  if (!capPinned) capT = setTimeout(() => { if (!capBox.matches(':hover')) capHide(); else flashCap(); }, 4000);
 }
 function capHide() { if (capPinned) return; capBox.classList.remove('on'); setDetails(false); }
 function setDetails(open) {

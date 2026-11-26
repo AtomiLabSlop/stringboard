@@ -384,3 +384,10 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .nbt:hover{width:30px;filter:none}
 .nbt.on{width:32px;filter:none}
 .nbt.add{min-height:30px;background:#e9e6df;color:#5b564f;font:600 16px/1 var(--sl-font-sans);align-items:center}
+
+/* chapter box v2: sits under the slider at its width, a bit lower, more see-through; pin in the top-right corner */
+.capfloat{top:calc(100% + 42px);max-width:none;background:rgba(24,22,24,.6)}
+.capfloat.open{width:auto}
+.capfloat .caprow{padding-right:0;width:100%;box-sizing:border-box}
+.capfloat #capPin{margin-left:auto;align-self:flex-start;margin-top:-3px}
+.capfloat #capD{margin-right:8px}
