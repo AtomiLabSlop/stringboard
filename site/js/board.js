@@ -82,6 +82,7 @@ function buildCards() {
     d.querySelector('img').addEventListener('error', e => { e.target.dataset.failed = e.target.getAttribute('src') || ''; e.target.parentNode.classList.remove('has'); });
     d.querySelector('img').addEventListener('load', e => { delete e.target.dataset.failed; });
     cardsEl.append(d); els[c.id] = d;
+    d.addEventListener('pointerdown', () => { chain = null; });
     dragify(d, () => st.pos[c.id] || { x: c.x, y: c.y }, p => { moveGroup(c.id, p); st.pos[c.id] = p; followPartner(c.id); }, () => { if (flipped.has(c.id) || expanded.has(c.id)) cornerClick(c.id); });
     d.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCardPanel(c.id); } });
   });
@@ -130,11 +131,23 @@ function enforcePairs(v = view) {
     const pa = st.pos[a] || { x: byId(a).x, y: byId(a).y }, pb = st.pos[b] || { x: byId(b).x, y: byId(b).y };
     const n = touch(pa, { w: A.offsetWidth, h: A.offsetHeight }, pb, { w: B.offsetWidth, h: B.offsetHeight }); if (n) st.pos[b] = n; });
 }
-/* dragging one half of a couple: it may move around its partner, but never more than a small gap away; further and the partner follows */
+/* dragging a family card pulls the rest along like a chain: every card trails the one before it in the chain
+   (Walter -> Skyler -> Walter Jr.), on a rope as long as their distance when the drag began, and still overlaps it by 5px */
+let chain = null;
+const centre = id => { const b = cardBox(id); return { x: b.x + b.w / 2, y: b.y + b.h / 2 }; };
 function followPartner(id) {
-  partnersOf(id).forEach(o => { const A = els[id], B = els[o]; if (!B || B.hidden) return;
-    const n = touch(st.pos[id], { w: A.offsetWidth, h: A.offsetHeight }, st.pos[o] || { x: byId(o).x, y: byId(o).y }, { w: B.offsetWidth, h: B.offsetHeight });
-    if (n) { st.pos[o] = n; B.style.left = n.x + 'px'; B.style.top = n.y + 'px'; } });
+  if (!chain || chain.id !== id) {
+    const order = [id];
+    for (let k = 0; k < order.length; k++) partnersOf(order[k]).forEach(o => { if (!order.includes(o) && shown(o)) order.push(o); });
+    chain = { id, links: order.slice(1).map((o, k) => { const a = centre(order[k]), b = centre(o); return [order[k], o, Math.max(40, Math.hypot(b.x - a.x, b.y - a.y))]; }) };
+  }
+  chain.links.forEach(([lead, o, L]) => {
+    const A = els[lead], B = els[o], a = centre(lead), b = centre(o), d = Math.hypot(b.x - a.x, b.y - a.y);
+    let p = st.pos[o] || { x: byId(o).x, y: byId(o).y };
+    if (d > L) p = { x: Math.round(p.x - (b.x - a.x) * (1 - L / d)), y: Math.round(p.y - (b.y - a.y) * (1 - L / d)) };
+    p = touch(st.pos[lead] || { x: byId(lead).x, y: byId(lead).y }, { w: A.offsetWidth, h: A.offsetHeight }, p, { w: B.offsetWidth, h: B.offsetHeight }, 14) || p;
+    st.pos[o] = p; B.style.left = p.x + 'px'; B.style.top = p.y + 'px';
+  });
 }
 /* ---------- groups: overlapping cards the user has tied together. st.groups = [[id, id, …], …] ---------- */
 const cardBox = id => { const d = els[id], c = byId(id), p = st.pos[id] || { x: c.x, y: c.y }; return { x: p.x, y: p.y, w: d.offsetWidth, h: d.offsetHeight }; };
