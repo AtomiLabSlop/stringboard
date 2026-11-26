@@ -321,14 +321,14 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 @property --curl{syntax:'<length>';inherits:true;initial-value:0px}
 /* the lifted corner is cut out as a hole (even-odd), so the card's own shadow around it stays soft and unbroken */
 .card{--curl:0px;transition:box-shadow .2s,transform .14s ease-in,--curl .22s cubic-bezier(.3,.7,.3,1);
-  clip-path:polygon(evenodd,-80px -80px,calc(100% + 80px) -80px,calc(100% + 80px) calc(100% + 80px),100% 100%,
-    100% calc(100% - var(--curl)),calc(100% - var(--curl)*.136) calc(100% - var(--curl)*.736),calc(100% - var(--curl)*.304) calc(100% - var(--curl)*.504),
-    calc(100% - var(--curl)*.504) calc(100% - var(--curl)*.304),calc(100% - var(--curl)*.736) calc(100% - var(--curl)*.136),calc(100% - var(--curl)) 100%,
-    100% 100%,calc(100% + 80px) calc(100% + 80px),-80px calc(100% + 80px))}
+  clip-path:polygon(evenodd,-80px -80px,calc(100% + 80px) -80px,calc(100% + 80px) calc(100% + 80px),calc(100% + 4px) calc(100% + 4px),
+    calc(100% + 4px) calc(100% - var(--curl)),100% calc(100% - var(--curl)),calc(100% - var(--curl)*.136) calc(100% - var(--curl)*.736),calc(100% - var(--curl)*.304) calc(100% - var(--curl)*.504),
+    calc(100% - var(--curl)*.504) calc(100% - var(--curl)*.304),calc(100% - var(--curl)*.736) calc(100% - var(--curl)*.136),calc(100% - var(--curl)) 100%,calc(100% - var(--curl)) calc(100% + 4px),
+    calc(100% + 4px) calc(100% + 4px),calc(100% + 80px) calc(100% + 80px),-80px calc(100% + 80px))}
 .card.m-back.hot,.card.m-peek.hot{--curl:42px}
 .card.flipped,.card.open{--curl:24px}
 .card.flipped.hot,.card.open.hot{--curl:42px}
-.card .corner{position:absolute;right:0;bottom:0;width:40px;height:40px;border:0;padding:0;background:none;cursor:pointer;z-index:4;display:none}
+.card .corner{position:absolute;right:0;bottom:0;width:56px;height:56px;pointer-events:none;border:0;padding:0;background:none;cursor:pointer;z-index:4;display:none}
 .card.m-back .corner,.card.m-peek .corner,.card.flipped .corner,.card.open .corner{display:block}
 .card .curl{position:absolute;right:0;bottom:0;width:var(--curl);height:var(--curl);overflow:visible;pointer-events:none;z-index:4;filter:drop-shadow(-3px -1px 3px rgba(0,0,0,.22)) drop-shadow(-.5px -.5px .5px rgba(0,0,0,.15))}
 .card .curl .s0{stop-color:color-mix(in srgb,var(--bgc),#000 26%)}
@@ -411,6 +411,6 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .nbslot.empty .nbthumb{visibility:hidden}
 
 /* the card's shadow under a lifted corner fades away with it (mask outside the card only; inside, clip-path makes the crisp cut) */
-.card{-webkit-mask:linear-gradient(#000 0 0) border-box no-repeat,radial-gradient(circle at calc(100% - 80px) calc(100% - 80px),transparent calc(var(--curl)*.55),#000 calc(var(--curl)*1.45)) -80px -80px/calc(100% + 160px) calc(100% + 160px) no-repeat;
-  mask:linear-gradient(#000 0 0) border-box no-repeat,radial-gradient(circle at calc(100% - 80px) calc(100% - 80px),transparent calc(var(--curl)*.55),#000 calc(var(--curl)*1.45)) -80px -80px/calc(100% + 160px) calc(100% + 160px) no-repeat;
+.card{-webkit-mask:linear-gradient(#000 0 0) border-box no-repeat,radial-gradient(circle at calc(100% - 80px) calc(100% - 80px),transparent calc(var(--curl)*1.05),#000 calc(var(--curl)*2)) -80px -80px/calc(100% + 160px) calc(100% + 160px) no-repeat;
+  mask:linear-gradient(#000 0 0) border-box no-repeat,radial-gradient(circle at calc(100% - 80px) calc(100% - 80px),transparent calc(var(--curl)*1.05),#000 calc(var(--curl)*2)) -80px -80px/calc(100% + 160px) calc(100% + 160px) no-repeat;
   -webkit-mask-clip:border-box,no-clip;mask-clip:border-box,no-clip}

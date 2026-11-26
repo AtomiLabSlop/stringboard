@@ -77,7 +77,6 @@ function buildCards() {
       `<stop offset="0" class="s0"/><stop offset=".12" class="s1"/><stop offset=".42" class="s2"/><stop offset=".78" class="s3"/><stop offset="1" class="s4"/></linearGradient></defs>` +
       `<path d="M100 0 C82 36 36 66 -16 84 Q-8 95 0 100 Q70 70 100 0Z" fill="url(#cg-${c.id})"/><path d="M100 0 Q70 70 0 100" fill="none" stroke="rgba(0,0,0,.12)" stroke-width="1"/></svg>` +
       `<button class="corner" type="button" tabindex="-1" aria-label="Turn card over"></button><button class="cset" type="button" tabindex="-1" aria-label="Card settings"><sl-icon name="sliders2"></sl-icon></button>`;
-    d.querySelector('.corner').addEventListener('click', e => { e.stopPropagation(); cornerClick(c.id); });
     d.querySelector('.cset').addEventListener('click', e => { e.stopPropagation(); openCardPanel(c.id); });
     d.addEventListener('pointerenter', () => hotCard(d));
     d.querySelector('img').addEventListener('error', e => { e.target.dataset.failed = e.target.getAttribute('src') || ''; e.target.parentNode.classList.remove('has'); });
@@ -91,6 +90,14 @@ const byId = id => S.chars.find(c => c.id === id);
 /* hand-drawn red cross for characters who died, a little wider than the photo */
 const XSVG = `<svg class="xx" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g filter="url(#inkRough)" fill="none" stroke="#a8201a" stroke-width="7.5" stroke-linecap="round" opacity=".92"><path d="M4 7 C30 32 62 66 97 94"/><path d="M95 5 C68 34 40 60 6 96"/><path d="M12 14 C34 36 58 60 88 86" stroke-width="3" opacity=".5"/></g></svg>`;
 const flipped = new Set(), expanded = new Set();
+/* turning a card over: the whole corner square counts, including the cut-out hole where the pointer would otherwise hit the board */
+document.addEventListener('pointerdown', e => {
+  if (e.button > 0) return;
+  const d = document.querySelector('#cards .card.hot'); if (!d || !d.querySelector('.corner') || getComputedStyle(d.querySelector('.corner')).display === 'none') return;
+  const r = d.querySelector('.corner').getBoundingClientRect();
+  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+  e.preventDefault(); e.stopPropagation(); cornerClick(d.dataset.id);
+}, true);
 /* the lifted corner leaves a hole the pointer falls through; keep the card "hot" while the pointer is anywhere inside its box */
 function hotCard(d) {
   if (d.classList.contains('hot')) return; d.classList.add('hot');
