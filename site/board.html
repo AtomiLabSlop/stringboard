@@ -16,10 +16,12 @@
 <header class="top card-surface">
   <a class="home" href="index.html"><sl-icon name="house" aria-hidden="true"></sl-icon><span>Home</span></a>
   <div class="tl">
-    <div class="cap" id="cap"><b id="capT"></b><button class="details" id="capMore" type="button" aria-expanded="false" aria-controls="capPop">Show details</button></div>
     <div class="tlrow"><span>Start</span><sl-range id="tl" min="0" step="1" tooltip="none" label="Story timeline"></sl-range><span>Now</span>
       <span class="tlstep"><sl-icon-button id="tlPrev" name="chevron-left" label="Previous event"></sl-icon-button><sl-icon-button id="tlNext" name="chevron-right" label="Next event"></sl-icon-button></span></div>
-    <div class="cappop" id="capPop" role="region" aria-label="Event details" hidden><p id="capD"></p><sl-icon-button id="capClose" name="x-lg" label="Hide details"></sl-icon-button></div>
+    <div class="capfloat">
+      <div class="cap" id="cap"><b id="capT"></b><button class="details" id="capMore" type="button" aria-expanded="false" aria-controls="capPop">Show details</button></div>
+      <div class="cappop" id="capPop" role="region" aria-label="Event details" hidden><p id="capD"></p><sl-icon-button id="capClose" name="x-lg" label="Hide details"></sl-icon-button></div>
+    </div>
   </div>
   <div class="hw">
     <sl-button id="updBtn" outline><sl-icon slot="prefix" name="flag"></sl-icon>Update progress</sl-button>
@@ -37,9 +39,9 @@
   <div class="frame" id="frame">
     <div class="fprint" aria-hidden="true"><span>AtomiLabSlop</span> <b>String Board</b></div>
     <div class="board" id="board">
+      <div class="mapstage" id="mapStage" aria-hidden="true"><img class="map" id="map" src="assets/map.jpg" alt="" draggable="false"></div>
       <div class="lampbg" aria-hidden="true"></div>
       <div class="stage" id="stage">
-        <img class="map" id="map" src="assets/map.jpg" alt="" draggable="false">
         <svg class="ink" id="ink" viewBox="0 0 1100 1000"></svg>
         <div id="cards"></div>
         <svg class="strings" id="strings" viewBox="0 0 1100 1000"></svg>
@@ -315,6 +317,11 @@
     </ul>
   </div>
   <p class="fine"><a href="https://github.com/AtomiLabSlop/stringboard" target="_blank" rel="noopener">Stringboard on GitHub</a> · <a href="https://atomilab.fi" target="_blank" rel="noopener">atomilab.fi</a></p>
+  <section class="support">
+    <h3>Support me</h3>
+    <p>If you find my open-source projects useful, you can support the time and care that goes into maintaining and improving them by buying me a coffee. It’s entirely optional, but always appreciated :)</p>
+    <a href="https://www.buymeacoffee.com/atomilabslop" target="_blank" rel="noopener"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" width="200"></a>
+  </section>
 </sl-dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
