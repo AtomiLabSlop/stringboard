@@ -273,14 +273,20 @@
       <div class="pad" data-color="yellow" title="Drag a note onto the board"><i class="top"></i></div>
       <div class="pad blue" data-color="blue" title="Drag a note onto the board"><i class="top"></i></div>
     </div>
-    <button class="nbtab" id="nbTab" type="button" aria-label="Open notebook" aria-expanded="false" title="Notebook"><span class="nbcover"></span><span class="nbpaper"></span><span class="nbrings"></span></button>
+    <div class="nbslot"><button class="nbtab" id="nbTab" type="button" aria-label="Open notebook" aria-expanded="false" title="Notebook"><span class="nbbook"></span><span class="nbedge"></span><i style="--c:#8f817a;--y:8px"></i><i style="--c:#a9b8c6;--y:22px"></i><i style="--c:#7c2b2e;--y:36px"></i></button></div>
   </div>
 </footer>
 <section class="notebook" id="nb" aria-label="Notebook" hidden>
-  <div class="nbtop"><span class="nbrings"></span>
-    <sl-icon-button id="nbPin" name="pin-angle" label="Keep the notebook open"></sl-icon-button>
-    <sl-icon-button id="nbClose" name="x-lg" label="Close notebook"></sl-icon-button></div>
-  <textarea id="nbText" spellcheck="false" placeholder="Case notes, theories, names to remember…"></textarea>
+  <div class="nbpage">
+    <div class="nbhead">
+      <input id="nbName" maxlength="18" spellcheck="false" aria-label="Tab name" placeholder="Name this tab">
+      <sl-icon-button id="nbDel" name="trash3" label="Delete this tab"></sl-icon-button>
+      <sl-icon-button id="nbPin" name="pin-angle" label="Keep the notebook open"></sl-icon-button>
+      <sl-icon-button id="nbClose" name="x-lg" label="Close notebook"></sl-icon-button>
+    </div>
+    <textarea id="nbText" spellcheck="false" placeholder="Case notes, theories, names to remember…"></textarea>
+  </div>
+  <div class="nbtabs" id="nbTabs" role="tablist" aria-label="Notebook tabs" aria-orientation="vertical"></div>
 </section>
 </div>
 
