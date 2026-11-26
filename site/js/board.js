@@ -877,6 +877,9 @@ function nbSync() {
     b.onclick = () => { nb.cur = i; save(); nbSync(); $('#nbText').focus(); };
     box.append(b);
   });
+  // the closed notebook in the tray is a small copy of the open one
+  $('#nbMiniName').textContent = tab.n || 'Untitled'; $('#nbMiniText').textContent = tab.t;
+  $('#nbMiniTabs').replaceChildren(...nb.tabs.map((tb, i) => { const s = document.createElement('i'); s.style.background = NB_COL[tb.c % NB_COL.length]; if (i === nb.cur) s.className = 'on'; return s; }));
   if (nb.tabs.length < 6) {
     const add = document.createElement('button'); add.type = 'button'; add.className = 'nbt add'; add.setAttribute('aria-label', 'Add a tab'); add.textContent = '+';
     add.onclick = () => { const c = [0, 1, 2, 3, 4, 5].find(k => !nb.tabs.some(x => x.c === k)) ?? nb.tabs.length; nb.tabs.push({ n: 'New tab', t: '', c }); nb.cur = nb.tabs.length - 1; save(); nbSync(); $('#nbName').select(); };
@@ -884,14 +887,14 @@ function nbSync() {
   }
 }
 function nbOpen(open) {
-  $('#nb').hidden = !open; $('#nbTab').setAttribute('aria-expanded', open); $('#nbTab').classList.toggle('out', open);
+  $('#nb').hidden = !open; $('#nbTab').setAttribute('aria-expanded', open); $('#nbTab').classList.toggle('out', open); $('.nbslot').classList.toggle('empty', open);
   if (open) { nbSync(); requestAnimationFrame(() => $('#nbText').focus()); }
 }
 $('#nbTab').addEventListener('click', () => nbOpen($('#nb').hidden));
 $('#nbClose').addEventListener('click', () => nbOpen(false));
 $('#nbPin').addEventListener('click', () => { nbPinned = !nbPinned; $('#nbPin').name = nbPinned ? 'pin-fill' : 'pin-angle'; $('#nbPin').label = nbPinned ? 'Unpin notebook' : 'Keep the notebook open'; $('#nb').classList.toggle('pinned', nbPinned); });
-$('#nbText').addEventListener('input', e => { const nb = nbData(); nb.tabs[nb.cur].t = e.target.value; save(); });
-$('#nbName').addEventListener('input', e => { const nb = nbData(); nb.tabs[nb.cur].n = e.target.value; save(); const s = $('#nbTabs .nbt.on span'); if (s) s.textContent = e.target.value || 'Untitled'; });
+$('#nbText').addEventListener('input', e => { const nb = nbData(); nb.tabs[nb.cur].t = e.target.value; $('#nbMiniText').textContent = e.target.value; save(); });
+$('#nbName').addEventListener('input', e => { const nb = nbData(); nb.tabs[nb.cur].n = e.target.value; save(); const s = $('#nbTabs .nbt.on span'); if (s) s.textContent = e.target.value || 'Untitled'; $('#nbMiniName').textContent = e.target.value || 'Untitled'; });
 $('#nbName').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('#nbText').focus(); } });
 $('#nbDel').addEventListener('click', () => {
   const nb = nbData(); if (nb.tabs.length < 2) return;
