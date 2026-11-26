@@ -79,6 +79,7 @@ function buildCards() {
       `<button class="corner" type="button" tabindex="-1" aria-label="Turn card over"></button><button class="cset" type="button" tabindex="-1" aria-label="Card settings"><sl-icon name="sliders2"></sl-icon></button>`;
     d.querySelector('.corner').addEventListener('click', e => { e.stopPropagation(); cornerClick(c.id); });
     d.querySelector('.cset').addEventListener('click', e => { e.stopPropagation(); openCardPanel(c.id); });
+    d.addEventListener('pointerenter', () => hotCard(d));
     d.querySelector('img').addEventListener('error', e => { e.target.dataset.failed = e.target.getAttribute('src') || ''; e.target.parentNode.classList.remove('has'); });
     d.querySelector('img').addEventListener('load', e => { delete e.target.dataset.failed; });
     cardsEl.append(d); els[c.id] = d;
@@ -89,7 +90,13 @@ function buildCards() {
 const byId = id => S.chars.find(c => c.id === id);
 /* hand-drawn red cross for characters who died, a little wider than the photo */
 const XSVG = `<svg class="xx" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g filter="url(#inkRough)" fill="none" stroke="#a8201a" stroke-width="7.5" stroke-linecap="round" opacity=".92"><path d="M4 7 C30 32 62 66 97 94"/><path d="M95 5 C68 34 40 60 6 96"/><path d="M12 14 C34 36 58 60 88 86" stroke-width="3" opacity=".5"/></g></svg>`;
-const flipped = new Set(), expanded = new Set();          // view-only: which cards are turned over / opened up
+const flipped = new Set(), expanded = new Set();
+/* the lifted corner leaves a hole the pointer falls through; keep the card "hot" while the pointer is anywhere inside its box */
+function hotCard(d) {
+  if (d.classList.contains('hot')) return; d.classList.add('hot');
+  const off = e => { const r = d.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) { d.classList.remove('hot'); document.removeEventListener('pointermove', off); } };
+  document.addEventListener('pointermove', off);
+}          // view-only: which cards are turned over / opened up
 const factsMode = id => (st.cards[id] || {}).facts || st.set.facts;
 function cornerClick(id) {
   const m = factsMode(id), d = els[id];
@@ -346,7 +353,7 @@ function openCardPanel(id) {
     $('#cpBg').append(b);
   });
   $('#cpLayer').value = cu.over ? 'over' : 'under';
-  $('#cpFactsMode').value = cu.facts || '';
+  $('#cpFactsMode').value = factsMode(id);
   $('#cpImgWrap').hidden = !!c.note;
   const def = IMGS[id]; $('#cpCredit').hidden = !(def && def.credit && !cu.img); $('#cpCredit').textContent = def && def.credit ? 'Default image: ' + def.credit : '';
   const kind = cu.img ? (cu.img.startsWith('data:') ? 'file' : 'url') : 'default';
@@ -438,7 +445,7 @@ document.addEventListener('paste', e => {
 });
 $('#cpN').addEventListener('sl-input', e => { const c = byId(openCard); custom(openCard).n = e.target.value && e.target.value !== c.n ? e.target.value : undefined; $('#cpName').textContent = e.target.value || c.n; save(); renderCards(); });
 $('#cpR').addEventListener('sl-input', e => { const c = byId(openCard); custom(openCard).r = e.target.value && e.target.value !== roleAt(c, view) ? e.target.value : undefined; save(); renderCards(); });
-$('#cpFactsMode').addEventListener('sl-change', e => { if (!openCard) return; custom(openCard).facts = e.target.value || undefined; save(); renderCards(); });
+$('#cpFactsMode').addEventListener('sl-change', e => { if (!openCard) return; custom(openCard).facts = e.target.value === st.set.facts ? undefined : e.target.value; save(); renderCards(); });
 $('#cpLayer').addEventListener('sl-change', e => { if (!openCard) return; custom(openCard).over = e.target.value === 'over' || undefined; bringToFront(openCard); save(); renderCards(); });
 $('#cpReset').addEventListener('click', () => { delete st.cards[openCard]; delete st.pos[openCard]; save(); renderCards(); openCardPanel(openCard); });
 
