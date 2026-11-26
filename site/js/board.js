@@ -170,7 +170,7 @@ function rigidSets(v = view) {
   return Object.values(sets).filter(ids => ids.length > 1).map(ids => ({ ids, key: ids.slice().sort().join(','),
     user: vg.some(g => g.some(x => ids.includes(x))), fam: bonds.some(({ a }) => ids.includes(a)) }));
 }
-var modifyKey = null, hoverKey = null, grpLayer = null;   // var: used by renders that can run before this point
+var modifyKey = null, hoverKey = null, grpLayer = null, grpFill = null;   // var: used by renders that can run before this point
 function moveGroup(id, np) {
   const set = rigidSets().find(g => g.ids.includes(id)); if (!set || set.key === modifyKey) return;   // in Modify, cards move one by one
   const c = byId(id), old = st.pos[id] || { x: c.x, y: c.y }, dx = np.x - old.x, dy = np.y - old.y; if (!dx && !dy) return;
@@ -190,7 +190,8 @@ function groupRect(ids) {
 const GRP_SHOW = ['hover', 'line', 'fill'], GRP_SHOW_NAME = { hover: 'Outline on hover', line: 'Dashed outline always', fill: 'Soft fill always' };
 /* outlines for every group / family; buttons (Modify, Ungroup, look) appear on hover */
 function drawGroups() {
-  if (!grpLayer) { grpLayer = document.createElement('div'); grpLayer.className = 'grplayer'; stage.insertBefore(grpLayer, $('#notes')); }
+  if (!grpLayer) { grpLayer = document.createElement('div'); grpLayer.className = 'grplayer'; stage.insertBefore(grpLayer, $('#notes'));
+    grpFill = document.createElement('div'); grpFill.className = 'grpfills'; stage.insertBefore(grpFill, cardsEl); }   // fills sit under the cards
   const sets = mode ? [] : rigidSets().filter(g => g.ids.filter(shown).length > 1), show = st.set.grpShow || 'hover', seen = new Set();
   if (modifyKey && !sets.some(g => g.key === modifyKey)) modifyKey = null;
   grpLayer.style.setProperty('--inv', 1 / scale);
@@ -199,7 +200,7 @@ function drawGroups() {
     let el = grpLayer.querySelector(`[data-key="${g.key}"]`);
     if (!el) {
       el = document.createElement('div'); el.className = 'grpbox'; el.dataset.key = g.key;
-      el.innerHTML = '<div class="gtools"><button type="button" class="gmod"></button><button type="button" class="gun"><sl-icon name="x-lg"></sl-icon>Ungroup</button>'
+      el.innerHTML = '<svg class="gline" aria-hidden="true"><rect class="d" width="100%" height="100%" rx="12"/><rect class="l" width="100%" height="100%" rx="12"/></svg><div class="gtools"><button type="button" class="gmod"></button><button type="button" class="gun"><sl-icon name="x-lg"></sl-icon>Ungroup</button>'
         + '<button type="button" class="glook" aria-label="How groups show"><sl-icon name="eye"></sl-icon></button></div>';
       el.querySelector('.gmod').addEventListener('click', e => { e.stopPropagation(); toggleModify(g.key); });
       el.querySelector('.gun').addEventListener('click', e => { e.stopPropagation(); ungroup(el.dataset.key); });
@@ -208,7 +209,9 @@ function drawGroups() {
       grpLayer.append(el);
     }
     const r = groupRect(g.ids), mod = g.key === modifyKey, hot = g.key === hoverKey || mod;
-    Object.assign(el.style, { left: r.x + 'px', top: r.y + 'px', width: r.w + 'px', height: r.h + 'px' });
+    let f = grpFill.querySelector(`[data-key="${g.key}"]`); if (!f) { f = document.createElement('div'); f.className = 'grpfill'; f.dataset.key = g.key; grpFill.append(f); }
+    Object.assign(el.style, { left: r.x + 'px', top: r.y + 'px', width: r.w + 'px', height: r.h + 'px' }); f.style.cssText = el.style.cssText;
+    f.className = 'grpfill' + (mod ? ' mod' : hot ? ' hot' : show === 'fill' ? ' on' : '');
     el.classList.toggle('on', hot || show !== 'hover'); el.classList.toggle('hot', hot); el.classList.toggle('mod', mod);
     el.classList.toggle('fill', show === 'fill' && !hot); el.classList.toggle('fam', g.fam && !g.user);
     el.querySelector('.gmod').innerHTML = mod ? '<sl-icon name="check-lg"></sl-icon>Done' : '<sl-icon name="arrows-move"></sl-icon>Modify';
@@ -216,7 +219,7 @@ function drawGroups() {
     el.querySelector('.gun').hidden = !g.user;
     el.querySelector('.glook').title = 'Showing: ' + GRP_SHOW_NAME[show].toLowerCase() + '. Click to change.';
   });
-  grpLayer.querySelectorAll('.grpbox').forEach(el => { if (!seen.has(el.dataset.key)) el.remove(); });
+  [...grpLayer.children, ...grpFill.children].forEach(el => { if (!seen.has(el.dataset.key)) el.remove(); });
 }
 function toggleModify(key) {
   if (modifyKey === key) { modifyKey = null; enforcePairs(); renderCards(); save(); }   // Done: couples still overlap a little

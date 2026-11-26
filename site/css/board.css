@@ -426,12 +426,25 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 
 /* groups and families: outline (on hover, or always), buttons in the top-right corner */
 .grplayer{position:absolute;inset:0;z-index:950;pointer-events:none}
-.grpbox{position:absolute;display:none;border-radius:12px;pointer-events:none}
-.grpbox.on{display:block;border:calc(2px * var(--inv,1)) dashed rgba(255,246,222,.75);filter:drop-shadow(0 0 1px rgba(0,0,0,.55))}
-.grpbox.on:not(.hot){border-color:rgba(255,246,222,.4);filter:none}
-.grpbox.fill{border:0;background:rgba(255,246,222,.12);box-shadow:inset 0 0 0 1px rgba(255,246,222,.12)}
-.grpbox.hot{border-color:rgba(255,246,222,.95);background:rgba(255,246,222,.06)}
-.grpbox.mod{border-color:#e6b84a;background:rgba(230,184,74,.08)}
+.grpbox{position:absolute;display:none;border-radius:12px;pointer-events:none;background:transparent}
+.grpbox.on{display:block}
+/* two-tone dashes (dark + light) so the outline reads on light and dark boards alike */
+.gline{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.gline rect{fill:none;stroke-width:calc(2px * var(--inv,1));stroke-dasharray:calc(7px * var(--inv,1)) calc(7px * var(--inv,1))}
+.gline .d{stroke:rgba(20,14,8,.75)}
+.gline .l{stroke:rgba(255,248,230,.95);stroke-dashoffset:calc(7px * var(--inv,1))}
+.grpbox.on:not(.hot) .gline{opacity:.55}
+.grpbox.mod .gline .l{stroke:#f2c14e}
+/* soft fill (under the cards): light on dark boards, dark on light ones */
+.grpfills{position:absolute;inset:0;z-index:5;pointer-events:none}
+.grpfill{position:absolute;display:none;border-radius:12px;pointer-events:none}
+.grpfill.on,.grpfill.hot,.grpfill.mod{display:block}
+.board{--gfill:rgba(255,246,222,.16);--gfill-hot:rgba(255,246,222,.09)}
+.board.bg-gloss,.board.bg-cork{--gfill:rgba(40,24,8,.16);--gfill-hot:rgba(40,24,8,.08)}
+.grpfill.on{background:var(--gfill)}
+.grpfill.hot{background:var(--gfill-hot)}
+.grpfill.mod{background:rgba(242,193,78,.14)}
+.grpbox.fill .gline{display:none}
 .gtools{display:none;pointer-events:auto;position:absolute;right:-1px;top:0;transform:translateY(-100%) scale(var(--inv,1));transform-origin:100% 100%;gap:1px;background:rgba(24,22,20,.9);border:1px solid rgba(255,244,214,.3);border-radius:7px 7px 0 0;overflow:hidden}
 .grpbox.hot .gtools{display:flex}
 .gtools button{display:flex;align-items:center;gap:5px;font:600 11px/1 var(--sl-font-sans);letter-spacing:.02em;color:#f6efe0;background:none;border:0;padding:6px 9px;cursor:pointer;white-space:nowrap}
