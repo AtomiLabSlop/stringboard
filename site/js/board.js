@@ -126,10 +126,19 @@ function touch(aPos, A, bPos, B, ov = 5) {
   if (Math.min(ab, y + B.h) - Math.max(at, y) < ov) y = y + B.h / 2 > (at + ab) / 2 ? ab - ov : at + ov - B.h;
   return x === bPos.x && y === bPos.y ? null : { x: Math.round(x), y: Math.round(y) };
 }
+/* a bonded card may tuck under its partner, but never so far that it disappears: at most about a third of it is covered */
+function unbury(aPos, A, bPos, B) {
+  const dx = bPos.x + B.w / 2 - aPos.x - A.w / 2, dy = bPos.y + B.h / 2 - aPos.y - A.h / 2, mw = (A.w + B.w) / 2 * .65, mh = (A.h + B.h) / 2 * .65;
+  if (Math.abs(dx) >= mw || Math.abs(dy) >= mh) return null;
+  return Math.abs(dx) / mw >= Math.abs(dy) / mh
+    ? { x: Math.round(bPos.x + (dx < 0 ? -1 : 1) * mw - dx), y: bPos.y }
+    : { x: bPos.x, y: Math.round(bPos.y + (dy < 0 ? -1 : 1) * mh - dy) };
+}
 function enforcePairs(v = view) {
   bondsAt(v).forEach(({ a, b }) => { const A = els[a], B = els[b]; if (!A || !B || A.hidden || B.hidden) return;
     const pa = st.pos[a] || { x: byId(a).x, y: byId(a).y }, pb = st.pos[b] || { x: byId(b).x, y: byId(b).y };
-    const n = touch(pa, { w: A.offsetWidth, h: A.offsetHeight }, pb, { w: B.offsetWidth, h: B.offsetHeight }); if (n) st.pos[b] = n; });
+    const sa = { w: A.offsetWidth, h: A.offsetHeight }, sb = { w: B.offsetWidth, h: B.offsetHeight };
+    const u = unbury(pa, sa, pb, sb) || pb, n = touch(pa, sa, u, sb) || u; if (n !== pb) st.pos[b] = n; });
 }
 /* dragging a family card pulls the rest along like a chain: every card trails the one before it in the chain
    (Walter -> Skyler -> Walter Jr.), on a rope as long as their distance when the drag began, and still overlaps it by 5px */
@@ -139,12 +148,24 @@ function followPartner(id) {
   if (!chain || chain.id !== id) {
     const order = [id];
     for (let k = 0; k < order.length; k++) partnersOf(order[k]).forEach(o => { if (!order.includes(o) && shown(o)) order.push(o); });
-    chain = { id, links: order.slice(1).map((o, k) => { const a = centre(order[k]), b = centre(o); return [order[k], o, Math.max(40, Math.hypot(b.x - a.x, b.y - a.y))]; }) };
+    order.slice().reverse().forEach(bringToFront);   // the chain lies on top, in order: dragged card, then the next …
+    chain = { id, links: order.slice(1).map((o, k) => { const a = centre(order[k]), b = centre(o); return [order[k], o, Math.max(40, Math.hypot(b.x - a.x, b.y - a.y)), order.slice(0, k + 1)]; }) };
   }
-  chain.links.forEach(([lead, o, L]) => {
+  chain.links.forEach(([lead, o, L, before]) => {
     const A = els[lead], B = els[o], a = centre(lead), b = centre(o), d = Math.hypot(b.x - a.x, b.y - a.y);
     let p = st.pos[o] || { x: byId(o).x, y: byId(o).y };
     if (d > L) p = { x: Math.round(p.x - (b.x - a.x) * (1 - L / d)), y: Math.round(p.y - (b.y - a.y) * (1 - L / d)) };
+    const sz = x => ({ w: els[x].offsetWidth, h: els[x].offsetHeight }), at = x => st.pos[x] || { x: byId(x).x, y: byId(x).y };
+    // never hidden under any card earlier in the chain: if it would be, it takes the nearest free spot around its leader
+    const ok = q => before.every(x => !unbury(at(x), sz(x), q, sz(o)));
+    if (!ok(p)) {
+      const la = at(lead), SA = sz(lead), SB = sz(o), q0 = p, spots = [];
+      [[.8, 0], [-.8, 0], [.8, .35], [-.8, .35], [.8, -.35], [-.8, -.35], [0, .8], [0, -.8], [.55, .75], [-.55, .75], [.55, -.75], [-.55, -.75]].forEach(([fx, fy]) => {
+        const q = { x: Math.round(la.x + (SA.w - SB.w) / 2 + fx * (SA.w + SB.w) / 2), y: Math.round(la.y + (SA.h - SB.h) / 2 + fy * (SA.h + SB.h) / 2) };
+        if (ok(q)) spots.push(q); });
+      if (spots.length) p = spots.sort((m, n) => Math.hypot(m.x - q0.x, m.y - q0.y) - Math.hypot(n.x - q0.x, n.y - q0.y))[0];
+      else before.forEach(x => { p = unbury(at(x), sz(x), p, sz(o)) || p; });
+    }
     p = touch(st.pos[lead] || { x: byId(lead).x, y: byId(lead).y }, { w: A.offsetWidth, h: A.offsetHeight }, p, { w: B.offsetWidth, h: B.offsetHeight }, 14) || p;
     st.pos[o] = p; B.style.left = p.x + 'px'; B.style.top = p.y + 'px';
   });
