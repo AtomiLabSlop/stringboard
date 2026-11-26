@@ -237,3 +237,5 @@ LINKS = [
 ]
 
 COUPLES = [("walt", "skyler", 101), ("hank", "marie", 101), ("jesse", "jane", 208), ("jesse", "andrea", 311)]
+
+KIDS = [("walt", "flynn", 101), ("skyler", "flynn", 101), ("andrea", "brock", 311)]

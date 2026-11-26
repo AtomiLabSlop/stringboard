@@ -64,7 +64,10 @@ def build(mod):
     for a, b, *_ in couples:
         assert a in ids and b in ids, (a, b)
     out = dict(mod.META)
-    out.update({"matcher": MATCHER, "steps": steps, "chars": chars, "links": links, "couples": couples})
+    kids = [[p_, c_, idx(s_)] for p_, c_, s_ in getattr(mod, 'KIDS', [])]   # parent, child, from
+    for a, b, _ in kids:
+        assert a in ids and b in ids, (a, b)
+    out.update({"matcher": MATCHER, "steps": steps, "chars": chars, "links": links, "couples": couples, "kids": kids})
     sid = mod.META['id']
     with open(os.path.join(DATA, sid + '.json'), 'w') as f:
         json.dump(out, f, ensure_ascii=False, indent=1)

@@ -8,7 +8,7 @@ const COL = { red: '#9b2423', yellow: '#b98b2e', green: '#4f5d3a', blue: '#2b456
 const COL_NAME = { red: 'Oxblood', yellow: 'Ochre', green: 'Olive', blue: 'Ink blue', white: 'Bone', black: 'Graphite', line: 'Fishing line' };
 const LINE = 'rgba(226,232,236,.55)'; // fishing line: clear nylon, strings only
 const CARD_BG = { white: '#f5f2eb', cream: '#e9dfcb', tan: '#b49873', sage: '#a7ae9a', slate: '#3e4247', black: '#1d1c1a' };
-const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'authentic', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', penSize: 'fine', cardBg: null, lamp: false, strW: 'normal', strSee: false, couples: true, facts: 'back' };
+const DEF = { cardSize: 1, imgSize: 1, shape: 'rect', rounded: false, cardRounded: false, style: 'authentic', font: 'sans', fontSize: 1, tilt: 3, bg: 'cork', frame: 'darkwood', strColor: 'red', tension: .25, pinColor: 'red', penColor: 'red', penSize: 'fine', cardBg: null, lamp: false, strW: 'normal', strSee: false, couples: true, kids: true, facts: 'back' };
 const STR_W = { thin: 1.3, normal: 2, thick: 3.2 };
 
 let IMGS = {};
@@ -115,7 +115,7 @@ function cornerClick(id) {
 /* couples the story has confirmed by this point (data: [a, b, from]) */
 /* couples: [a, b, from, until?]. A couple stays a couple after a death; a break-up (until) ends it, and the cards then say "Ex of …" */
 const couplesAt = v => st.set.couples ? (S.couples || []).filter(([a, b, s, e]) => s <= v && (e == null || v < e) && byId(a).a <= v && byId(b).a <= v).sort((x, y) => y[2] - x[2]) : [];
-const partnersOf = (id, v = view) => couplesAt(v).filter(([a, b]) => a === id || b === id).map(([a, b]) => a === id ? b : a);
+const partnersOf = (id, v = view) => bondsAt(v).filter(({ a, b }) => a === id || b === id).map(({ a, b }) => a === id ? b : a);
 const partnerOf = (id, v = view) => partnersOf(id, v)[0] || null;
 const exesOf = (id, v = view) => (S.couples || []).filter(([a, b, s, e]) => e != null && e <= v && (a === id || b === id)).map(([a, b]) => a === id ? b : a);
 /* the two cards of a couple always overlap by at least 5px somewhere along their edges; returns the partner's new spot or null */
@@ -126,7 +126,7 @@ function touch(aPos, A, bPos, B, ov = 5) {
   return x === bPos.x && y === bPos.y ? null : { x: Math.round(x), y: Math.round(y) };
 }
 function enforcePairs(v = view) {
-  couplesAt(v).forEach(([a, b]) => { const A = els[a], B = els[b]; if (!A || !B || A.hidden || B.hidden) return;
+  bondsAt(v).forEach(({ a, b }) => { const A = els[a], B = els[b]; if (!A || !B || A.hidden || B.hidden) return;
     const pa = st.pos[a] || { x: byId(a).x, y: byId(a).y }, pb = st.pos[b] || { x: byId(b).x, y: byId(b).y };
     const n = touch(pa, { w: A.offsetWidth, h: A.offsetHeight }, pb, { w: B.offsetWidth, h: B.offsetHeight }); if (n) st.pos[b] = n; });
 }
@@ -204,7 +204,7 @@ function pinOf(id) {
 }
 function renderStrings() {
   const s = st.set, line = s.strColor === 'line', col = line ? LINE : COL[s.strColor], base = STR_W[s.strW] || 2;
-  const pairs = new Set(couplesAt(view).map(([a, b]) => [a, b].sort().join('|')));
+  const pairs = new Set(bondsAt(view).map(({ a, b }) => [a, b].sort().join('|')));
   let out = '', pins = new Set();
   S.links.forEach(([a, b, step]) => {
     if (step > view || byId(a).a > view || byId(b).a > view) return;
@@ -502,7 +502,7 @@ function syncSettings() {
   $('#sCardRound').checked = s.cardRounded;
   $('#sRound').checked = s.rounded; $('#sRound').disabled = s.shape === 'circle';
   ['shape', 'style', 'font', 'bg', 'frame', 'strW', 'facts'].forEach(k => { $('#g-' + k).value = s[k]; });
-  $('#sSee').checked = s.strSee; $('#sCouples').checked = s.couples;
+  $('#sSee').checked = s.strSee; $('#sCouples').checked = s.couples; $('#sKids').checked = s.kids;
   const cb = $('#swCardBg'); cb.innerHTML = '';
   Object.entries({ default: null, ...CARD_BG }).forEach(([k, v]) => {
     const b = document.createElement('button'); b.type = 'button';
@@ -529,7 +529,8 @@ $('#g-facts').addEventListener('sl-change', e => {             // board-wide cho
   if (e.target.value !== 'back') toast('Cards grew taller and may overlap. Tidy them up?', 'Tidy up', arrangeAll);
 });
 $('#sSee').addEventListener('sl-change', e => { st.set.strSee = e.target.checked; save(); renderStrings(); });
-$('#sCouples').addEventListener('sl-change', e => { st.set.couples = e.target.checked; save(); renderStrings(); });
+$('#sCouples').addEventListener('sl-change', e => { st.set.couples = e.target.checked; save(); renderStrings(); if (e.target.checked) toast('Couples will sit together. Arrange the board now?', 'Auto-arrange', arrangeAll); });
+$('#sKids').addEventListener('sl-change', e => { st.set.kids = e.target.checked; save(); renderStrings(); if (e.target.checked) toast('Children will sit with a parent. Arrange the board now?', 'Auto-arrange', arrangeAll); });
 $('#infoBtn').addEventListener('click', () => {
   const p = $('#info'), open = p.hidden; closePanel('cardPanel'); p.hidden = !open; $('#infoBtn').setAttribute('aria-expanded', open);
 });
@@ -599,101 +600,118 @@ function cardSize(id) {
 function neighbours(id, v) { const n = new Set(); visLinks(v).forEach(([a, b]) => { if (a === id) n.add(b); if (b === id) n.add(a); }); return [...n]; }
 // movable: ids allowed to move. anchor: pull back toward the starting spot (0 = free, higher = gentler changes).
 // maxMove: hard cap on how far a card may travel. init: optional starting positions for cards without one.
-function arrange(movable, { v = st.now, anchor = 0, maxMove = Infinity, iters = 220, spread = 0, init = {} } = {}) {
-  const ids = visIds(v), mv = new Set(movable);
-  // couples sit as one unit: partners slightly overlap the main card, a little lower (like photos pinned together); right side first, then left
-  const OV = .08, DY = .1, pairOf = {}, follower = new Set();
-  couplesAt(v).forEach(([a, b]) => {
-    if (!mv.has(a) || !mv.has(b) || follower.has(a) || follower.has(b) || pairOf[b]) return;
-    (pairOf[a] = pairOf[a] || []).length < 2 && (pairOf[a].push(b), follower.add(b)); });
+/* bonds keep cards physically together: couples, and (optionally) children with a parent. kind: 'couple' | 'child' */
+const kidsAt = v => st.set.kids ? (S.kids || []).filter(([p, c, s]) => s <= v && byId(p).a <= v && byId(c).a <= v) : [];
+const bondsAt = v => [...couplesAt(v).map(([a, b]) => ({ a, b, kind: 'couple' })),
+  ...kidsAt(v).filter(([p, c], i, arr) => arr.findIndex(x => x[1] === c) === i).map(([p, c]) => ({ a: p, b: c, kind: 'child' }))];
+
+/* Auto-arrange. Cards bonded together (couples, children) move as one family unit, laid out like photos pinned
+   together: each next card overlaps the previous one a little and sits a bit lower. The most connected unit goes in
+   the middle and the others settle around it by how they're tied, so strings stay short; overlaps are pushed apart
+   along the line between the cards (not along a grid), which keeps the layout loose and organic. */
+function arrange(movable, { v = st.now, anchor = 0, maxMove = Infinity, iters = 260, spread = 0, init = {} } = {}) {
+  const ids = visIds(v), mv = new Set(movable), OV = .08, DY = .1, pad = 34;
   const posOf = id => { const c = byId(id); return init[id] || st.pos[id] || { x: c.x, y: c.y }; };
-  const unit = id => { // offsets of the main card and its partners inside the unit's box
-    const s = cardSize(id), fs = (pairOf[id] || []).map(f => ({ f, ...cardSize(f) })), R = fs[0], L = fs[1];
-    const lx = L ? L.w * (1 - OV) : 0, parts = [{ id, dx: lx, dy: 0 }];
-    if (R) parts.push({ id: R.f, dx: lx + s.w * (1 - OV), dy: s.h * DY });
-    if (L) parts.push({ id: L.f, dx: 0, dy: s.h * DY });
-    const w = Math.max(...parts.map(p => p.dx + cardSize(p.id).w)), h = Math.max(...parts.map(p => p.dy + cardSize(p.id).h));
-    return { w, h, parts };
+  const links = visLinks(v), deg = {}; links.forEach(([a, b]) => { deg[a] = (deg[a] || 0) + 1; deg[b] = (deg[b] || 0) + 1; });
+  // --- family units (union of bonds) ---
+  const bonds = bondsAt(v), root = {}; const find = x => root[x] == null || root[x] === x ? x : (root[x] = find(root[x]));
+  bonds.forEach(({ a, b }) => { root[find(a)] = find(b); });
+  const groups = {}; ids.forEach(id => (groups[find(id)] = groups[find(id)] || []).push(id));
+  const U = Object.values(groups).map(members => {
+    // lay the unit out: start from its best-connected card, then add bonded cards to the right (second partner to the left)
+    const head = members.slice().sort((x, y) => (byId(y).main ? 99 : 0) + (deg[y] || 0) - (byId(x).main ? 99 : 0) - (deg[x] || 0))[0];
+    const off = { [head]: { dx: 0, dy: 0 } }, order = [head], right = {}, left = {};
+    for (let k = 0; k < order.length; k++) {
+      const cur = order[k];
+      bonds.filter(bd => (bd.a === cur || bd.b === cur) && members.includes(bd.a === cur ? bd.b : bd.a)).forEach(bd => {
+        const o = bd.a === cur ? bd.b : bd.a; if (off[o]) return;
+        if (bd.kind === 'child') { // a child joins at the right end of the family, a step lower
+          const r = order.slice().sort((x, y) => (off[y].dx + cardSize(y).w) - (off[x].dx + cardSize(x).w))[0], sr = cardSize(r);
+          off[o] = { dx: off[r].dx + sr.w * (1 - OV), dy: off[r].dy + sr.h * DY }; right[r] = 1; left[o] = 1; order.push(o); return;
+        }
+        const sc = cardSize(cur), so = cardSize(o), oc = off[cur];
+        if (!right[cur]) { off[o] = { dx: oc.dx + sc.w * (1 - OV), dy: oc.dy + sc.h * (bd.kind === 'child' ? DY * 1.6 : DY) }; right[cur] = 1; left[o] = 1; }
+        else if (!left[cur]) { off[o] = { dx: oc.dx - so.w * (1 - OV), dy: oc.dy + sc.h * DY }; left[cur] = 1; right[o] = 1; }
+        else { off[o] = { dx: oc.dx + sc.w * .3, dy: oc.dy + sc.h * (1 - OV) }; }
+        order.push(o);
+      });
+    }
+    const mx = Math.min(...order.map(id => off[id].dx)), my = Math.min(...order.map(id => off[id].dy));
+    order.forEach(id => { off[id].dx -= mx; off[id].dy -= my; });
+    const w = Math.max(...order.map(id => off[id].dx + cardSize(id).w)), h = Math.max(...order.map(id => off[id].dy + cardSize(id).h));
+    const p = posOf(head), x = p.x - off[head].dx + w / 2, y = p.y - off[head].dy + h / 2;
+    return { head, members: order, off, w, h, x, y, ox: x, oy: y, m: order.some(id => mv.has(id)), nb: [], deg: order.reduce((s, id) => s + (deg[id] || 0), 0) };
+  });
+  const uOf = {}; U.forEach((u, i) => u.members.forEach(id => { uOf[id] = i; }));
+  links.forEach(([a, b]) => { const i = uOf[a], k = uOf[b]; if (i != null && k != null && i !== k) { U[i].nb.push(k); U[k].nb.push(i); } });
+  const M = U.filter(u => u.m);
+  const need = U.reduce((s, u) => s + (u.w + pad) * (u.h + pad), 0) * 3.2, g = Math.max(1, Math.sqrt(need / (VW * VH))), BW = VW * g, BH = VH * g;
+  // --- a fresh layout starts from rings around the hub (breadth-first by strings), not from old spots ---
+  if (spread) {
+    const hub = U.indexOf(U.slice().sort((a, b) => b.deg - a.deg)[0]), depth = { [hub]: 0 }, q = [hub];
+    while (q.length) { const i = q.shift(); U[i].nb.forEach(k => { if (depth[k] == null) { depth[k] = depth[i] + 1; q.push(k); } }); }
+    const rings = {}; U.forEach((u, i) => { const d = depth[i] ?? (Math.max(0, ...Object.values(depth)) + 1); (rings[d] = rings[d] || []).push(i); });
+    Object.entries(rings).forEach(([d, list]) => {
+      // keep each card near the ones it hangs off: sort a ring by the angle of its parents in the previous ring
+      const ang = i => { const ps = U[i].nb.filter(k => depth[k] === d - 1 && U[k].a0 != null); return ps.length ? ps.reduce((s, k) => s + U[k].a0, 0) / ps.length : hash(U[i].head) * 6.28; };
+      list.sort((x, y) => ang(x) - ang(y)).forEach((i, n) => {
+        const a = d == 0 ? 0 : ang(i) + (n - (list.length - 1) / 2) * .9 / Math.max(1, d), r = d * 300 * st.set.cardSize;
+        U[i].a0 = a; U[i].x = BW / 2 + Math.cos(a) * r * 1.25; U[i].y = BH / 2 + Math.sin(a) * r * .85;
+      });
+    });
+  }
+  const clamp = u => {
+    const dx = u.x - u.ox, dy = u.y - u.oy, d = Math.hypot(dx, dy);
+    if (d > maxMove) { u.x = u.ox + dx / d * maxMove; u.y = u.oy + dy / d * maxMove; }
+    u.x = Math.min(BW - u.w / 2 - 8, Math.max(u.w / 2 + 8, u.x)); u.y = Math.min(BH - u.h / 2 - 8, Math.max(u.h / 2 + 8, u.y));
   };
-  const units = {};
-  const N = ids.filter(id => !follower.has(id)).map(id => { const s = cardSize(id), p = posOf(id); let w = s.w, h = s.h;
-    if (pairOf[id]) { const u = units[id] = unit(id); w = u.w; h = u.h; }
-    const px = p.x - (units[id] ? units[id].parts[0].dx : 0);
-    return { id, w, h, cw: s.w, ch: s.h, x: px + w / 2, y: p.y + h / 2, ox: px + w / 2, oy: p.y + h / 2, m: mv.has(id), nb: [] }; });
-  const ix = Object.fromEntries(N.map((n, i) => [n.id, i]));
-  Object.entries(pairOf).forEach(([a, fs]) => fs.forEach(b => { ix[b] = ix[a]; })); // links to a partner pull on the whole unit
-  visLinks(v).forEach(([a, b]) => { if (ix[a] != null && ix[b] != null && ix[a] !== ix[b]) { N[ix[a]].nb.push(ix[b]); N[ix[b]].nb.push(ix[a]); } });
-  const CP = couplesAt(v).map(([a, b]) => [ix[a], ix[b]]).filter(([a, b]) => a != null && b != null && a !== b);
-  CP.forEach(([a, b]) => { for (let k = 0; k < 3; k++) { N[a].nb.push(b); N[b].nb.push(a); } }); // couples: much stronger pull
-  const pad = 30, M = N.filter(n => n.m);
-  // a big cast needs more room than the board's base area: grow it, keeping the shape
-  const need = N.reduce((s, n) => s + (n.w + pad) * (n.h + pad), 0) * 1.5, g = Math.max(1, Math.sqrt(need / (VW * VH))), BW = VW * g, BH = VH * g;
-  const clamp = n => {
-    const dx = n.x - n.ox, dy = n.y - n.oy, d = Math.hypot(dx, dy);
-    if (d > maxMove) { n.x = n.ox + dx / d * maxMove; n.y = n.oy + dy / d * maxMove; }
-    n.x = Math.min(BW - n.w / 2 - 8, Math.max(n.w / 2 + 8, n.x)); n.y = Math.min(BH - n.h / 2 - 8, Math.max(n.h / 2 + 8, n.y));
-  };
-  const separate = () => { // push overlapping cards apart along the shorter way out
-    for (let i = 0; i < N.length; i++) for (let j = i + 1; j < N.length; j++) {
-      const A = N[i], B = N[j]; if (!A.m && !B.m) continue;
-      let dx = B.x - A.x, dy = B.y - A.y; if (!dx && !dy) { dx = hash(A.id + B.id) || .5; dy = hash(B.id + A.id); }
-      const ox = (A.w + B.w) / 2 + pad - Math.abs(dx), oy = (A.h + B.h) / 2 + pad - Math.abs(dy);
-      if (ox <= 0 || oy <= 0) continue;
-      const wa = A.m ? (B.m ? .5 : 1) : 0, wb = B.m ? (A.m ? .5 : 1) : 0;
-      if (ox < oy) { const s = Math.sign(dx) * ox; A.x -= s * wa; B.x += s * wb; } else { const s = Math.sign(dy) * oy; A.y -= s * wa; B.y += s * wb; }
+  const overlap = (A, B) => [(A.w + B.w) / 2 + pad - Math.abs(B.x - A.x), (A.h + B.h) / 2 + pad - Math.abs(B.y - A.y)];
+  const separate = () => { // push overlapping units apart along the line between their centres
+    for (let i = 0; i < U.length; i++) for (let k = i + 1; k < U.length; k++) {
+      const A = U[i], B = U[k]; if (!A.m && !B.m) continue;
+      const [ox, oy] = overlap(A, B); if (ox <= 0 || oy <= 0) continue;
+      let dx = B.x - A.x, dy = B.y - A.y; if (!dx && !dy) { dx = hash(A.head + B.head) || .5; dy = hash(B.head + A.head); }
+      const d = Math.hypot(dx, dy), push = Math.min(ox, oy) * .6 + 1, wa = A.m ? (B.m ? .5 : 1) : 0, wb = B.m ? (A.m ? .5 : 1) : 0;
+      A.x -= dx / d * push * wa; A.y -= dy / d * push * wa; B.x += dx / d * push * wb; B.y += dy / d * push * wb;
     }
   };
-  // Fruchterman–Reingold: linked cards attract, every card gently pushes the others away
-  const K = 170 * st.set.cardSize;
+  // springs pull tied units together, all units repel a little, then overlaps are resolved
+  const K = 190 * st.set.cardSize;
   for (let it = 0; it < iters; it++) {
-    const temp = 40 * (1 - it / iters) + 2, fx = new Float64Array(N.length), fy = new Float64Array(N.length);
-    for (let i = 0; i < N.length; i++) for (let j = i + 1; j < N.length; j++) {
-      const A = N[i], B = N[j]; if (!A.m && !B.m) continue;
-      const dx = B.x - A.x || .1, dy = B.y - A.y, d2 = Math.max(dx * dx + dy * dy, 100), d = Math.sqrt(d2);
-      if (d > 3 * K) continue;
-      const f = K * K / d2 * (spread ? 1 : .6);
-      fx[i] -= dx * f; fy[i] -= dy * f; fx[j] += dx * f; fy[j] += dy * f;
+    const temp = 36 * (1 - it / iters) + 2, fx = new Float64Array(U.length), fy = new Float64Array(U.length);
+    for (let i = 0; i < U.length; i++) for (let k = i + 1; k < U.length; k++) {
+      const A = U[i], B = U[k]; if (!A.m && !B.m) continue;
+      const dx = B.x - A.x || .1, dy = B.y - A.y, d2 = Math.max(dx * dx + dy * dy, 100), d = Math.sqrt(d2); if (d > 3 * K) continue;
+      const f = K * K / d2 * (spread ? .8 : .5); fx[i] -= dx * f; fy[i] -= dy * f; fx[k] += dx * f; fy[k] += dy * f;
     }
-    N.forEach((A, i) => A.nb.forEach(j => { if (j < i) return; const B = N[j], dx = B.x - A.x, dy = B.y - A.y, d = Math.hypot(dx, dy) || 1, f = d / K;
-      fx[i] += dx * f; fy[i] += dy * f; fx[j] -= dx * f; fy[j] -= dy * f; }));
-    N.forEach((n, i) => {
-      if (!n.m) return;
-      if (spread) { fx[i] += (BW / 2 - n.x) * .02; fy[i] += (BH / 2 - n.y) * .02; }
-      if (anchor) { fx[i] += (n.ox - n.x) * anchor * 4; fy[i] += (n.oy - n.y) * anchor * 4; }
-      const d = Math.hypot(fx[i], fy[i]) || 1, step = Math.min(d, temp);
-      n.x += fx[i] / d * step; n.y += fy[i] / d * step;
+    U.forEach((A, i) => A.nb.forEach(k => { if (k < i) return; const B = U[k], dx = B.x - A.x, dy = B.y - A.y, d = Math.hypot(dx, dy) || 1, f = d / K;
+      fx[i] += dx * f; fy[i] += dy * f; fx[k] -= dx * f; fy[k] -= dy * f; }));
+    U.forEach((u, i) => {
+      if (!u.m) return;
+      if (spread) { fx[i] += (BW / 2 - u.x) * .006; fy[i] += (BH / 2 - u.y) * .006; }
+      if (anchor) { fx[i] += (u.ox - u.x) * anchor * 4; fy[i] += (u.oy - u.y) * anchor * 4; }
+      const d = Math.hypot(fx[i], fy[i]) || 1, step = Math.min(d, temp); u.x += fx[i] / d * step; u.y += fy[i] / d * step;
     });
     separate(); M.forEach(clamp);
   }
-  for (let r = 0; r < 40; r++) { separate(); M.forEach(clamp); }
-  // anything still overlapping goes to the nearest free spot (spiral search outward)
-  const hits = (n, x, y) => N.some(o => o !== n && Math.abs(o.x - x) < (o.w + n.w) / 2 + pad - 4 && Math.abs(o.y - y) < (o.h + n.h) / 2 + pad - 4);
-  M.forEach(n => {
-    if (!hits(n, n.x, n.y)) return;
+  for (let r = 0; r < 60; r++) { separate(); M.forEach(clamp); }
+  // anything still overlapping goes to the nearest free spot (spiral outward)
+  const hits = (u, x, y) => U.some(o => o !== u && Math.abs(o.x - x) < (o.w + u.w) / 2 + pad - 6 && Math.abs(o.y - y) < (o.h + u.h) / 2 + pad - 6);
+  M.forEach(u => {
+    if (!hits(u, u.x, u.y)) return;
     for (let r = 20; r < 3000; r += 20) {
       let found = false;
       for (let a = 0; a < 360; a += 360 / Math.max(8, r / 12)) {
-        const x = n.x + r * Math.cos(a * Math.PI / 180), y = n.y + r * Math.sin(a * Math.PI / 180);
-        if (x < n.w / 2 + 8 || y < n.h / 2 + 8 || hits(n, x, y)) continue; // may go past the base area: the board grows
-        n.x = x; n.y = y; found = true; break;
+        const x = u.x + r * Math.cos(a * Math.PI / 180), y = u.y + r * Math.sin(a * Math.PI / 180);
+        if (x < u.w / 2 + 8 || y < u.h / 2 + 8 || hits(u, x, y)) continue;
+        u.x = x; u.y = y; found = true; break;
       }
       if (found) break;
     }
   });
-  // a movable half of a couple settles right beside its partner if that spot is free
-  // only one half can move: tuck it against its fixed partner, slightly overlapping, if nothing else is in the way
-  CP.forEach(([a, b]) => { [[N[a], N[b]], [N[b], N[a]]].some(([m, o]) => {
-    if (!m.m || o.m) return false;
-    const gap = (m.w + o.w) / 2 - Math.min(m.w, o.w) * OV, side = m.x < o.x ? -1 : 1;
-    const free = (x, y) => !N.some(q => q !== m && q !== o && Math.abs(q.x - x) < (q.w + m.w) / 2 + pad - 4 && Math.abs(q.y - y) < (q.h + m.h) / 2 + pad - 4);
-    for (const [x, y] of [[o.x + side * gap, o.y + o.h * DY], [o.x - side * gap, o.y + o.h * DY]]) if (free(x, y)) { m.x = x; m.y = y; return true; }
-    return false; }); });
   const out = {};
-  M.forEach(n => {
-    const left = Math.round(n.x - n.w / 2), top = Math.round(n.y - n.h / 2);
-    if (units[n.id]) units[n.id].parts.forEach(p => { out[p.id] = { x: Math.round(left + p.dx), y: Math.round(top + p.dy) }; });
-    else out[n.id] = { x: left, y: top };
-  });
+  M.forEach(u => { const left = u.x - u.w / 2, top = u.y - u.h / 2;
+    u.members.forEach(id => { out[id] = { x: Math.round(left + u.off[id].dx), y: Math.round(top + u.off[id].dy) }; }); });
   return out;
 }
 // glide cards to their new spots, then record one undo step
@@ -712,7 +730,7 @@ function moveCards(target, msg) {
 }
 function arrangeAll() { moveCards(arrange(visIds(st.now), { spread: 900 }), 'Cards arranged: connected cards are close together.'); }
 function arrangeAround(id) {
-  const ids = [id, ...neighbours(id, st.now)];
+  const ids = [id, ...neighbours(id, st.now), ...partnersOf(id, st.now)];
   moveCards(arrange(ids, { anchor: .05, maxMove: 220, iters: 180 }), 'Moved this card and the cards it connects to.');
 }
 // cards that just became visible get a spot next to the cards they connect to

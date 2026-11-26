@@ -33,7 +33,7 @@ Titles are listed in `site/data/catalog.json` (`{ "id", "type": "game" | "series
 
 **Sagas.** A film series or a book series can be one board: add `"parts": [{ "n": "Full name", "short": "Short name" }, …]` and `"unit": "Minute"` or `"Chapter"` to the story file. People pick the film or book and the minute or chapter inside it; positions are stored as part×1000+minute/chapter, so earlier parts always count as seen. Blade Runner (both films) and Harry Potter (all seven books) work this way.
 
-**Writing a new story.** The Breaking Bad, Blade Runner and Harry Potter files are generated from compact tables in `tools/stories/*.py`. Run `python3 tools/build_story.py` to rebuild them; it rounds every position *up* to the next step so nothing can show early, and creates an empty `<id>-images.json` for default images the first time.
+**Writing a new story.** The Breaking Bad, Blade Runner and Harry Potter files are generated from compact tables in `tools/stories/*.py`. Run `python3 tools/build_story.py` to rebuild them; it rounds every position *up* to the next step so nothing can show early, and creates an empty `<id>-images.json` for default images the first time. `COUPLES` (with an optional break-up position) and `KIDS` (parent, child) make cards sit together on the board.
 
 Story data lives in `site/data/<game>.json`:
 - `steps` – timeline steps `{ch, title, text, kw}` in story order; `kw` are matching keywords (any language, lower case, accents removed).

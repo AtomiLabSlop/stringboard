@@ -133,3 +133,5 @@ LINKS = [
 ]
 
 COUPLES = [("deckard", "rachael", 1068), ("k", "joi", 2016)]
+
+KIDS = [("rachael", "ana", 2160), ("deckard", "ana", 2160)]

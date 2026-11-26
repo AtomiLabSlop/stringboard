@@ -144,3 +144,5 @@ LINKS = [
 ]
 
 COUPLES = [("harry", "ginny", 6024), ("ron", "hermione", 7031), ("lupin", "tonks", 6029)]
+
+KIDS = [("lily", "harry", 1001), ("weasleys", "ron", 1006), ("weasleys", "ginny", 1006), ("weasleys", "twins", 1006)]

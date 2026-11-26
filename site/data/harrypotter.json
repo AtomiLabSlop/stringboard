@@ -1724,5 +1724,27 @@
    "tonks",
    41
   ]
+ ],
+ "kids": [
+  [
+   "lily",
+   "harry",
+   0
+  ],
+  [
+   "weasleys",
+   "ron",
+   2
+  ],
+  [
+   "weasleys",
+   "ginny",
+   2
+  ],
+  [
+   "weasleys",
+   "twins",
+   2
+  ]
  ]
 }
