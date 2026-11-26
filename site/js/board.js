@@ -84,6 +84,8 @@ function buildCards() {
     cardsEl.append(d); els[c.id] = d;
     d.addEventListener('pointerdown', () => { chain = null; });
     dragify(d, () => st.pos[c.id] || { x: c.x, y: c.y }, p => { moveGroup(c.id, p); st.pos[c.id] = p; followPartner(c.id); }, () => { if (flipped.has(c.id) || expanded.has(c.id)) cornerClick(c.id); });
+    // double-click a card to open its settings (not on the corner, which turns it over)
+    d.addEventListener('dblclick', e => { if (mode || performance.now() - cornerTap < 600 || e.target.closest('.cset,.txt')) return; openCardPanel(c.id); });
     d.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCardPanel(c.id); } });
   });
 }
@@ -94,11 +96,17 @@ const flipped = new Set(), expanded = new Set();
 /* turning a card over: the whole corner square counts, including the cut-out hole where the pointer would otherwise hit the board */
 document.addEventListener('pointerdown', e => {
   if (e.button > 0) return;
-  const d = document.querySelector('#cards .card.hot'); if (!d || !d.querySelector('.corner') || getComputedStyle(d.querySelector('.corner')).display === 'none') return;
-  const r = d.querySelector('.corner').getBoundingClientRect();
-  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
-  e.preventDefault(); e.stopPropagation(); cornerClick(d.dataset.id);
+  // the top-most card under the pointer whose corner square holds the point
+  const d = [...document.querySelectorAll('#cards .card.hot')].sort((m, n) => n.style.zIndex - m.style.zIndex).find(d => {
+    const k = d.querySelector('.corner'); if (!k || getComputedStyle(k).display === 'none') return false;
+    const r = k.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom; });
+  if (!d) return;
+  e.preventDefault(); e.stopPropagation(); chain = null;
+  // pressing the corner can still drag the card; only a tap (no movement) turns it over
+  const id = d.dataset.id, tap = () => { cornerTap = performance.now(); cornerClick(id); };
+  if (mode) tap(); else d._drag(e, tap);
 }, true);
+let cornerTap = 0;
 /* the lifted corner leaves a hole the pointer falls through; keep the card "hot" while the pointer is anywhere inside its box */
 function hotCard(d) {
   if (d.classList.contains('hot')) return; d.classList.add('hot');
@@ -443,6 +451,9 @@ function dragify(el, get, set, onClick) {
     if (mode || e.button > 0 || e.target.closest('.corner,.cset,.back ul')) return;
     if (e.target.closest('.txt') && document.activeElement === e.target.closest('.txt')) return;
     if (!e.target.closest('.txt')) e.preventDefault();
+    el._drag(e);
+  });
+  el._drag = (e, click = onClick) => {
     const start = toVirtual(e), p0 = { ...get() }; let moved = false;
     el.setPointerCapture(e.pointerId);
     const mv = ev => {
@@ -457,10 +468,10 @@ function dragify(el, get, set, onClick) {
       el.removeEventListener('pointermove', mv); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up);
       el.classList.remove('drag');
       if (ev.type === 'pointercancel' && !moved) return;
-      if (moved) { save(); if (openCard && el.dataset.id === openCard) placeCardPanel(openCard); } else onClick && onClick(e);
+      if (moved) { save(); if (openCard && el.dataset.id === openCard) placeCardPanel(openCard); } else click && click(e);
     };
     el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
-  });
+  };
 }
 
 /* ---------- card panel ---------- */
