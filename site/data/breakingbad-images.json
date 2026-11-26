@@ -2,31 +2,31 @@
   "_help": "Default card images for Breaking Bad. Put a direct https link to an image you have the right to use in 'url' (png, jpg, webp or svg). Leave it empty to show the silhouette. 'credit' is optional and is shown in the card panel. The ids match the 'chars' in breakingbad.json.",
   "images": {
     "walt": {
-      "url": "",
+      "url": "https://m.media-amazon.com/images/M/MV5BZGU1MDVlOWItMGVhNy00MmNlLWE1NjktMTM0M2UwMjAzZTQzXkEyXkFqcGc@._V1_.jpg",
       "credit": ""
     },
     "jesse": {
-      "url": "",
+      "url": "https://m.media-amazon.com/images/M/MV5BYWEyMDYzNmYtYWIwNi00NDVjLWE4MWYtMGI2NGI2YmMwNGU2XkEyXkFqcGc@._V1_.jpg",
       "credit": ""
     },
     "skyler": {
-      "url": "",
+      "url": "https://m.media-amazon.com/images/M/MV5BNjhkYjExZTAtMTgwNS00ZGMwLWJhODQtMDBiZmE1OTkwZDhmXkEyXkFqcGc@._V1_.jpg",
       "credit": ""
     },
     "hank": {
-      "url": "",
+      "url": "https://m.media-amazon.com/images/M/MV5BZjZkMjAzMWItMzZkOC00OWNkLWE5ZmMtZTcxMWFkZDlmMDRkXkEyXkFqcGc@._V1_.jpg",
       "credit": ""
     },
     "marie": {
-      "url": "",
+      "url": "https://m.media-amazon.com/images/M/MV5BOThlYjQ5Y2YtZTU4My00NTAxLWE3M2MtYmRiMDFmMWIyMThlXkEyXkFqcGc@._V1_.jpg",
       "credit": ""
     },
     "flynn": {
-      "url": "",
+      "url": "https://m.media-amazon.com/images/M/MV5BYjNjM2EyNDEtNTcxMS00N2JmLThiN2YtMmRjNDYyNzEwNWIyXkEyXkFqcGc@._V1_QL75_UY281_CR0,0,500,281_.jpg",
       "credit": ""
     },
     "gomez": {
-      "url": "",
+      "url": "https://m.media-amazon.com/images/M/MV5BMTc5ODk2NTE0MF5BMl5BanBnXkFtZTcwNjQ0MTI3OQ@@._V1_.jpg",
       "credit": ""
     },
     "krazy8": {
