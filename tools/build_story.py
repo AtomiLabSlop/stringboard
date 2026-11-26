@@ -60,8 +60,8 @@ def build(mod):
     for a, b, p in mod.LINKS:
         assert a in ids and b in ids, (a, b)
         links.append([a, b, idx(p)])
-    couples = [[a, b, idx(p)] for a, b, p in getattr(mod, 'COUPLES', [])]
-    for a, b, _ in couples:
+    couples = [[c[0], c[1], idx(c[2])] + ([idx(c[3])] if len(c) > 3 else []) for c in getattr(mod, 'COUPLES', [])]  # optional 4th: break-up
+    for a, b, *_ in couples:
         assert a in ids and b in ids, (a, b)
     out = dict(mod.META)
     out.update({"matcher": MATCHER, "steps": steps, "chars": chars, "links": links, "couples": couples})

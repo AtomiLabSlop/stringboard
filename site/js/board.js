@@ -71,7 +71,7 @@ function buildCards() {
     const d = document.createElement('div');
     d.className = 'card' + (c.main ? ' main' : '') + (c.note ? ' note-card' : '');
     d.dataset.id = c.id; d.tabIndex = 0; d.setAttribute('role', 'button');
-    d.innerHTML = `<div class="phw"><div class="pht">${sil(c)}<img alt="" referrerpolicy="no-referrer" draggable="false"></div>${XSVG}</div><div class="nm"></div><div class="rl"></div><ul class="cf"></ul>` +
+    d.innerHTML = `<div class="phw"><div class="pht">${sil(c)}<img alt="" referrerpolicy="no-referrer" draggable="false"></div>${XSVG}</div><div class="nm"></div><div class="rl"></div><div class="ex"></div><ul class="cf"></ul>` +
       `<div class="back"><div class="bn"></div><ul class="bf"></ul></div><svg class="cink" aria-hidden="true"></svg>` +
       `<svg class="curl" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="cg-${c.id}" x1=".66" y1=".66" x2=".18" y2=".18">` +
       `<stop offset="0" class="s0"/><stop offset=".12" class="s1"/><stop offset=".42" class="s2"/><stop offset=".78" class="s3"/><stop offset="1" class="s4"/></linearGradient></defs>` +
@@ -113,19 +113,28 @@ function cornerClick(id) {
   setTimeout(() => { flipped.has(id) ? flipped.delete(id) : flipped.add(id); renderCards(); d.classList.remove('turning'); }, 140);
 }
 /* couples the story has confirmed by this point (data: [a, b, from]) */
-const aliveAt = (id, v) => { const c = byId(id); return !(c.dead != null && v >= c.dead); };
-// latest couple first, and only while both are alive (a widow(er) can be in a new couple later)
-const couplesAt = v => st.set.couples ? (S.couples || []).filter(([a, b, s]) => s <= v && byId(a).a <= v && byId(b).a <= v && aliveAt(a, v) && aliveAt(b, v)).sort((x, y) => y[2] - x[2]) : [];
-const partnerOf = (id, v = view) => { const p = couplesAt(v).find(([a, b]) => a === id || b === id); return p ? (p[0] === id ? p[1] : p[0]) : null; };
+/* couples: [a, b, from, until?]. A couple stays a couple after a death; a break-up (until) ends it, and the cards then say "Ex of …" */
+const couplesAt = v => st.set.couples ? (S.couples || []).filter(([a, b, s, e]) => s <= v && (e == null || v < e) && byId(a).a <= v && byId(b).a <= v).sort((x, y) => y[2] - x[2]) : [];
+const partnersOf = (id, v = view) => couplesAt(v).filter(([a, b]) => a === id || b === id).map(([a, b]) => a === id ? b : a);
+const partnerOf = (id, v = view) => partnersOf(id, v)[0] || null;
+const exesOf = (id, v = view) => (S.couples || []).filter(([a, b, s, e]) => e != null && e <= v && (a === id || b === id)).map(([a, b]) => a === id ? b : a);
+/* the two cards of a couple always overlap by at least 5px somewhere along their edges; returns the partner's new spot or null */
+function touch(aPos, A, bPos, B, ov = 5) {
+  const al = aPos.x, ar = aPos.x + A.w, at = aPos.y, ab = aPos.y + A.h; let { x, y } = bPos;
+  if (Math.min(ar, x + B.w) - Math.max(al, x) < ov) x = x + B.w / 2 > (al + ar) / 2 ? ar - ov : al + ov - B.w;
+  if (Math.min(ab, y + B.h) - Math.max(at, y) < ov) y = y + B.h / 2 > (at + ab) / 2 ? ab - ov : at + ov - B.h;
+  return x === bPos.x && y === bPos.y ? null : { x: Math.round(x), y: Math.round(y) };
+}
+function enforcePairs(v = view) {
+  couplesAt(v).forEach(([a, b]) => { const A = els[a], B = els[b]; if (!A || !B || A.hidden || B.hidden) return;
+    const pa = st.pos[a] || { x: byId(a).x, y: byId(a).y }, pb = st.pos[b] || { x: byId(b).x, y: byId(b).y };
+    const n = touch(pa, { w: A.offsetWidth, h: A.offsetHeight }, pb, { w: B.offsetWidth, h: B.offsetHeight }); if (n) st.pos[b] = n; });
+}
 /* dragging one half of a couple: it may move around its partner, but never more than a small gap away; further and the partner follows */
 function followPartner(id) {
-  const o = partnerOf(id); if (!o || !els[o] || els[o].hidden) return;
-  const a = st.pos[id], b = st.pos[o] || { x: byId(o).x, y: byId(o).y }, A = els[id], B = els[o];
-  const ax = a.x + A.offsetWidth / 2, ay = a.y + A.offsetHeight / 2, bx = b.x + B.offsetWidth / 2, by = b.y + B.offsetHeight / 2;
-  const maxD = (A.offsetWidth + B.offsetWidth) / 2 + 40, d = Math.hypot(bx - ax, by - ay);
-  if (d <= maxD) return;
-  const k = maxD / d, nb = { x: Math.round(ax + (bx - ax) * k - B.offsetWidth / 2), y: Math.round(ay + (by - ay) * k - B.offsetHeight / 2) };
-  st.pos[o] = nb; B.style.left = nb.x + 'px'; B.style.top = nb.y + 'px';
+  partnersOf(id).forEach(o => { const A = els[id], B = els[o]; if (!B || B.hidden) return;
+    const n = touch(st.pos[id], { w: A.offsetWidth, h: A.offsetHeight }, st.pos[o] || { x: byId(o).x, y: byId(o).y }, { w: B.offsetWidth, h: B.offsetHeight });
+    if (n) { st.pos[o] = n; B.style.left = n.x + 'px'; B.style.top = n.y + 'px'; } });
 }
 const custom = id => (st.cards[id] = st.cards[id] || {});
 /* Stacking: cards under strings 10+, strings 500, cards over strings 600+, notes 900, pins 1000. Last moved card is highest in its layer. */
@@ -176,6 +185,8 @@ function renderCards() {
     d.querySelector('.corner').setAttribute('aria-label', fm === 'peek' ? (expanded.has(c.id) ? 'Show less' : 'Show everything') : flipped.has(c.id) ? 'Turn card face up' : 'Turn card over');
     d.querySelector('.nm').textContent = cu.n || c.n;
     d.querySelector('.rl').textContent = cu.r || roleAt(c, view);
+    const ex = exesOf(c.id, view).filter(o => byId(o).a <= view).map(o => (st.cards[o] || {}).n || byId(o).n);
+    d.querySelector('.ex').textContent = ex.length ? 'Ex of ' + ex.join(' and ') : '';
     const ph = d.querySelector('.pht'), img = ph.querySelector('img');
     const src = cu.img || (IMGS[c.id] && IMGS[c.id].url);
     if (src) { if (img.getAttribute('src') !== src) { delete img.dataset.failed; img.src = src; } ph.classList.toggle('has', img.dataset.failed !== src); }
@@ -590,15 +601,27 @@ function neighbours(id, v) { const n = new Set(); visLinks(v).forEach(([a, b]) =
 // maxMove: hard cap on how far a card may travel. init: optional starting positions for cards without one.
 function arrange(movable, { v = st.now, anchor = 0, maxMove = Infinity, iters = 220, spread = 0, init = {} } = {}) {
   const ids = visIds(v), mv = new Set(movable);
-  // couples sit as one unit: the second card slightly overlaps the first, a little lower (like two photos pinned together)
+  // couples sit as one unit: partners slightly overlap the main card, a little lower (like photos pinned together); right side first, then left
   const OV = .08, DY = .1, pairOf = {}, follower = new Set();
-  couplesAt(v).forEach(([a, b]) => { if (mv.has(a) && mv.has(b) && !follower.has(a) && !pairOf[a]) { pairOf[a] = b; follower.add(b); } });
+  couplesAt(v).forEach(([a, b]) => {
+    if (!mv.has(a) || !mv.has(b) || follower.has(a) || follower.has(b) || pairOf[b]) return;
+    (pairOf[a] = pairOf[a] || []).length < 2 && (pairOf[a].push(b), follower.add(b)); });
   const posOf = id => { const c = byId(id); return init[id] || st.pos[id] || { x: c.x, y: c.y }; };
+  const unit = id => { // offsets of the main card and its partners inside the unit's box
+    const s = cardSize(id), fs = (pairOf[id] || []).map(f => ({ f, ...cardSize(f) })), R = fs[0], L = fs[1];
+    const lx = L ? L.w * (1 - OV) : 0, parts = [{ id, dx: lx, dy: 0 }];
+    if (R) parts.push({ id: R.f, dx: lx + s.w * (1 - OV), dy: s.h * DY });
+    if (L) parts.push({ id: L.f, dx: 0, dy: s.h * DY });
+    const w = Math.max(...parts.map(p => p.dx + cardSize(p.id).w)), h = Math.max(...parts.map(p => p.dy + cardSize(p.id).h));
+    return { w, h, parts };
+  };
+  const units = {};
   const N = ids.filter(id => !follower.has(id)).map(id => { const s = cardSize(id), p = posOf(id); let w = s.w, h = s.h;
-    if (pairOf[id]) { const t = cardSize(pairOf[id]); w = s.w * (1 - OV) + t.w; h = Math.max(s.h, s.h * DY + t.h); }
-    return { id, w, h, cw: s.w, ch: s.h, x: p.x + w / 2, y: p.y + h / 2, ox: p.x + w / 2, oy: p.y + h / 2, m: mv.has(id), nb: [] }; });
+    if (pairOf[id]) { const u = units[id] = unit(id); w = u.w; h = u.h; }
+    const px = p.x - (units[id] ? units[id].parts[0].dx : 0);
+    return { id, w, h, cw: s.w, ch: s.h, x: px + w / 2, y: p.y + h / 2, ox: px + w / 2, oy: p.y + h / 2, m: mv.has(id), nb: [] }; });
   const ix = Object.fromEntries(N.map((n, i) => [n.id, i]));
-  Object.entries(pairOf).forEach(([a, b]) => { ix[b] = ix[a]; });              // links to the follower pull on the pair
+  Object.entries(pairOf).forEach(([a, fs]) => fs.forEach(b => { ix[b] = ix[a]; })); // links to a partner pull on the whole unit
   visLinks(v).forEach(([a, b]) => { if (ix[a] != null && ix[b] != null && ix[a] !== ix[b]) { N[ix[a]].nb.push(ix[b]); N[ix[b]].nb.push(ix[a]); } });
   const CP = couplesAt(v).map(([a, b]) => [ix[a], ix[b]]).filter(([a, b]) => a != null && b != null && a !== b);
   CP.forEach(([a, b]) => { for (let k = 0; k < 3; k++) { N[a].nb.push(b); N[b].nb.push(a); } }); // couples: much stronger pull
@@ -668,8 +691,8 @@ function arrange(movable, { v = st.now, anchor = 0, maxMove = Infinity, iters = 
   const out = {};
   M.forEach(n => {
     const left = Math.round(n.x - n.w / 2), top = Math.round(n.y - n.h / 2);
-    out[n.id] = { x: left, y: top };
-    if (pairOf[n.id]) out[pairOf[n.id]] = { x: Math.round(left + n.cw * (1 - OV)), y: Math.round(top + n.ch * DY) };
+    if (units[n.id]) units[n.id].parts.forEach(p => { out[p.id] = { x: Math.round(left + p.dx), y: Math.round(top + p.dy) }; });
+    else out[n.id] = { x: left, y: top };
   });
   return out;
 }
@@ -700,6 +723,7 @@ function placeNew(ids, v) {
       init[id] = { x: ps.reduce((s, p) => s + p.x, 0) / ps.length + hash(id) * 90, y: ps.reduce((s, p) => s + p.y, 0) / ps.length + 120 + hash(id + 'y') * 40 }; }
     else init[id] = { x: c.x, y: c.y }; });
   Object.assign(st.pos, arrange(ids, { v, init, iters: 200 }));
+  renderCards(); enforcePairs(v);
 }
 
 /* ---------- timeline + progress update ---------- */

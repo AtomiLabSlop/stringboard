@@ -418,3 +418,8 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 /* back of a dead character's card: no cross over the text, just a small red note under the name */
 .card.flipped .xx{display:none!important}
 .card.dead .back .bn::after{content:"dead";display:block;margin-top:1px;font-size:calc(var(--fs)*.72);font-style:italic;font-weight:500;color:#a8201a}
+
+.card .ex{font-size:calc(var(--fs)*.72);font-style:italic;color:var(--fg2);opacity:.85;margin-top:1px}
+.card .ex:empty{display:none}
+/* the back is plain paper: nothing from the photo side shows through */
+.card .back{z-index:2}
