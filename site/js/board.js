@@ -73,8 +73,9 @@ function buildCards() {
     d.dataset.id = c.id; d.tabIndex = 0; d.setAttribute('role', 'button');
     d.innerHTML = `<div class="phw"><div class="pht">${sil(c)}<img alt="" referrerpolicy="no-referrer" draggable="false"></div>${XSVG}</div><div class="nm"></div><div class="rl"></div><ul class="cf"></ul>` +
       `<div class="back"><div class="bn"></div><ul class="bf"></ul></div><svg class="cink" aria-hidden="true"></svg>` +
-      `<svg class="curl" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="cg-${c.id}" x1=".62" y1=".62" x2=".12" y2=".2"><stop offset="0" class="s1"/><stop offset=".55" class="s2"/><stop offset="1" class="s3"/></linearGradient></defs>` +
-      `<path d="M100 0 Q70 70 0 100 Q-3 68 12 47 Q34 12 100 0Z" fill="url(#cg-${c.id})"/><path d="M100 0 Q70 70 0 100" fill="none" stroke="rgba(0,0,0,.14)" stroke-width="1.2"/></svg>` +
+      `<svg class="curl" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="cg-${c.id}" x1=".66" y1=".66" x2=".18" y2=".18">` +
+      `<stop offset="0" class="s0"/><stop offset=".12" class="s1"/><stop offset=".42" class="s2"/><stop offset=".78" class="s3"/><stop offset="1" class="s4"/></linearGradient></defs>` +
+      `<path d="M100 0 C82 36 36 66 -16 84 Q-8 95 0 100 Q70 70 100 0Z" fill="url(#cg-${c.id})"/><path d="M100 0 Q70 70 0 100" fill="none" stroke="rgba(0,0,0,.12)" stroke-width="1"/></svg>` +
       `<button class="corner" type="button" tabindex="-1" aria-label="Turn card over"></button><button class="cset" type="button" tabindex="-1" aria-label="Card settings"><sl-icon name="sliders2"></sl-icon></button>`;
     d.querySelector('.corner').addEventListener('click', e => { e.stopPropagation(); cornerClick(c.id); });
     d.querySelector('.cset').addEventListener('click', e => { e.stopPropagation(); openCardPanel(c.id); });
