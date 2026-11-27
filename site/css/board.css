@@ -453,3 +453,9 @@ body.lamp-on .lampwrap .bulb{color:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,2
 .gtools button:hover{background:rgba(255,255,255,.1)}
 .gtools sl-icon{font-size:11px}
 .grpbox.mod .gmod{color:#f2c75c}
+
+/* Next episode confirmation */
+.epdlg::part(panel){max-width:400px}
+.epdlg .eptitle{margin:0 0 8px;font-weight:600;font-size:1.05rem}
+.epdlg sl-button+sl-button{margin-left:8px}
+#tlNext.ep::part(base){color:#f2c14e}

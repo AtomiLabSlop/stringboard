@@ -157,7 +157,7 @@ ch.addEventListener('keydown',e=>{if(e.key==='Enter')start.click()});
 $('#reset').addEventListener('click',()=>{SB.applyBackground(null);$('#cat').value='game';fillTitles();game.value='';ch.value='';last.value='';all.checked=false;S=null;$('#cont').classList.add('hidden');update();game.focus()});
 function go(now,reveal){
   const g=game.value,st=SB.getState(g);
-  st.now=now;st.reveal=!!reveal;st.chapter=reveal?SB.maxChapter(S):Math.min(chNum(),SB.maxChapter(S));st.type=SB.typeOf(S);
+  st.now=now;st.nowCh=S.steps[now]?S.steps[now].ch:null;st.reveal=!!reveal;st.chapter=reveal?SB.maxChapter(S):Math.min(chNum(),SB.maxChapter(S));st.type=SB.typeOf(S);
   SB.setState(g,st);location.href='board.html?game='+encodeURIComponent(g);
 }
 start.addEventListener('click',async()=>{

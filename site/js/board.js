@@ -18,6 +18,7 @@ const els = {};
 
 let saveT;
 function save() {
+  if (S && S.steps[st.now]) st.nowCh = S.steps[st.now].ch;   // progress also kept as a story position, so it survives added steps
   clearTimeout(saveT); saveT = setTimeout(() => { if (!SB.setState(GAME, st)) toast('Could not save – browser storage is full.'); }, 250);
   if (!hist.mute) { clearTimeout(hist.t); hist.t = setTimeout(commitHist, 600); }
 }
@@ -356,7 +357,16 @@ function renderTimeline() {
   const s = S.steps[view];
   $('#capT').textContent = (view === st.now ? 'Now · ' : '') + SB.posLabel(S, s.ch) + ' · ' + s.title + '.';
   $('#capD').textContent = s.text;
-  $('#tlPrev').disabled = view <= 0; $('#tlNext').disabled = view >= st.now;
+  $('#tlPrev').disabled = view <= 0;
+  const ne = view >= st.now && nextEpisode();   // TV: at your progress, Next offers the following episode
+  $('#tlNext').disabled = view >= st.now && !ne; $('#tlNext').label = ne ? 'Next episode' : 'Next event';
+  $('#tlNext').classList.toggle('ep', !!ne);
+}
+/* the episode after the one you're at (series only): { ch, i, title } where i is the last step of that episode */
+function nextEpisode() {
+  if (SB.typeOf(S) !== 'series') return null;
+  const cur = S.steps[st.now].ch, s = S.steps.find(x => x.ch > cur); if (!s) return null;
+  return { ch: s.ch, i: SB.chapterEnd(S, s.ch), title: s.title };
 }
 /* chapter box: pops up for 5 s when you move through the story; chevron opens the details, pin keeps it up */
 let capT = null, capPinned = false, capOpen = false;
@@ -383,7 +393,15 @@ $('#capPin').addEventListener('click', () => setPin(!capPinned));
 capBox.addEventListener('pointerleave', () => { if (!capPinned) flashCap(); });
 function stepTo(v) { v = Math.max(0, Math.min(st.now, v)); if (v === view) return; view = v; renderTimeline(); renderCards(); flashCap(); if (openCard) openCardPanel(openCard); }
 $('#tlPrev').addEventListener('click', () => stepTo(view - 1));
-$('#tlNext').addEventListener('click', () => stepTo(view + 1));
+$('#tlNext').addEventListener('click', () => {
+  if (view < st.now) return stepTo(view + 1);
+  const ne = nextEpisode(); if (!ne) return;
+  const lab = SB.posLabel(S, ne.ch);
+  $('#epTitle').textContent = lab + ' · ' + ne.title; $('#epGo').textContent = 'Move to ' + lab; $('#epGo').dataset.i = ne.i;
+  $('#epDlg').show();
+});
+$('#epCancel').addEventListener('click', () => $('#epDlg').hide());
+$('#epGo').addEventListener('click', () => { $('#epDlg').hide(); advanceTo(+$('#epGo').dataset.i); });
 /* ---------- scaling: board keeps a fixed virtual space so cards stay put relative to the map ---------- */
 /* zoom + pan (not part of the saved board) */
 let zoom = 1; const pan = { x: 0, y: 0 }; const ZMIN = 0.5, ZMAX = 3;
@@ -909,9 +927,13 @@ $('#uGo').addEventListener('click', async () => {
     msg.textContent = String($('#uTxt').value ?? '').trim() ? "Couldn't recognize that yet. Try a mission name or a character you just met." : 'Nothing new to add. Describe what happened, or enter a later chapter.';
     msg.className = 'status no'; return;
   }
+  $('#upd').hide(); advanceTo(next);
+});
+/* move your progress forward to step `next`: new cards get pinned up (shared by Update progress and Next episode) */
+function advanceTo(next) {
   undoNow = st.now; const fresh = S.chars.filter(c => c.a > st.now && c.a <= next).map(c => c.id);
   st.now = next; view = next;
-  $('#upd').hide(); renderTimeline(); renderCards();
+  renderTimeline(); renderCards(); flashCap();
   if (fresh.length) placeNew(fresh, next);
   renderCards(); save(); clearTimeout(hist.t); commitHist();
   if (fresh.length) {
@@ -919,7 +941,7 @@ $('#uGo').addEventListener('click', async () => {
     toast(`${fresh.length} new card${fresh.length > 1 ? 's' : ''} pinned up. Tidy the cards connected to ${fresh.length > 1 ? 'them' : 'it'}?`, 'Tidy up',
       () => moveCards(arrange(around, { anchor: .05, maxMove: 220, iters: 180 }), 'Tidied the new cards and their connections.'));
   } else toast('Board updated. New things are pinned up.', 'Undo', undo);
-});
+}
 
 /* ---------- ink: marker + eraser ---------- */
 function setMode(m) {
@@ -1134,6 +1156,10 @@ document.addEventListener('keydown', e => {
   SB.loadImages(GAME).then(m => { IMGS = m; if (S) renderCards(); });
   try { S = await SB.load(GAME); } catch (e) { document.body.innerHTML = '<p style="padding:40px">Could not load the story data. <a href="index.html">Back</a></p>'; return; }
   SB.applyBackground(S);
+  // boards saved before every episode had its own step: map the old step index to its episode
+  const OLD = { breakingbad: [101,102,103,105,106,107,202,203,205,206,208,209,211,212,213,301,303,306,307,308,311,312,313,401,404,408,410,411,412,413,501,502,503,505,507,508,509,511,513,514,515,516] };
+  if (st.nowCh == null && OLD[GAME] && st.now != null && st.lay === 1) st.nowCh = OLD[GAME][Math.min(st.now, OLD[GAME].length - 1)];
+  if (st.nowCh != null) st.now = SB.chapterEnd(S, st.nowCh);
   st.now = Math.min(st.now, S.steps.length - 1);
   st.set = Object.assign({}, DEF, st.set || {}); if (st.set.style === 'photo') st.set.style = 'authentic'; st.pos = st.pos || {}; st.cards = st.cards || {}; st.ink = st.ink || []; st.cardInk = st.cardInk || {}; st.notes = st.notes || []; st.order = st.order || [];
   view = st.now;
